@@ -59,12 +59,42 @@ export function Header() {
         scrolled ? "shadow-[0_1px_0_0_var(--stroke-ink),0_8px_24px_-16px_rgba(11,22,34,0.4)]" : "border-b b-ink"
       }`}
     >
-      <div className="alta-container flex h-[72px] items-center justify-between gap-4">
-        <Logo onDark />
-
-        <nav aria-label="القائمة الرئيسية" className="hidden lg:block">
+      {/* Three equal columns so the logo is optically centred in the bar
+          regardless of how wide the nav or the actions are. On mobile the nav
+          column is empty, so the logo still lands dead centre. */}
+      <div className="alta-container grid h-[72px] grid-cols-[1fr_auto_1fr] items-center gap-3">
+        <nav aria-label="القائمة الرئيسية" className="hidden justify-self-start lg:block">
           <ul className="flex items-center gap-1">
-            {mainNav.map((item) => (
+            {mainNav.slice(0, 4).map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className={`group relative flex items-center gap-1 px-3 py-2 text-[13.5px] font-medium transition-colors ${
+                    isActive(item.href) ? "text-primary" : "text-text-muted hover:text-primary"
+                  }`}
+                >
+                  {item.label}
+                  <span
+                    className={`pointer-events-none absolute inset-x-3 bottom-0 h-px origin-center bg-primary-container transition-transform duration-300 ${
+                      isActive(item.href) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                    }`}
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className="justify-self-center lg:justify-self-center">
+          <Logo onDark />
+        </div>
+
+        {/* Third column: the remaining nav plus the actions, kept together so
+            the grid stays exactly three columns and the logo stays centred. */}
+        <div className="flex items-center justify-end gap-3 justify-self-end">
+        <nav aria-label="بقية القائمة" className="hidden lg:block">
+          <ul className="flex items-center gap-1">
+            {mainNav.slice(4).map((item) => (
               <li
                 key={item.href}
                 className="relative"
@@ -73,10 +103,10 @@ export function Header() {
               >
                 <Link
                   href={item.href}
-                  className={`group relative flex items-center gap-1 px-3 py-2 text-[14px] font-medium transition-colors ${
+                  className={`group relative flex items-center gap-1 px-3 py-2 text-[13.5px] font-medium transition-colors ${
                     isActive(item.href)
-                      ? "text-gold-ink"
-                      : "text-ink/80 hover:text-gold-ink"
+                      ? "text-primary"
+                      : "text-text-muted hover:text-primary"
                   }`}
                 >
                   {item.label}
@@ -112,8 +142,7 @@ export function Header() {
           </ul>
         </nav>
 
-        <div className="flex items-center gap-3">
-          <Button href="/request-quote" className="hidden md:inline-flex">
+          <Button href="/request-quote" className="hidden lg:inline-flex">
             {cta.requestQuote}
           </Button>
           <button
@@ -121,7 +150,7 @@ export function Header() {
             aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}
             aria-expanded={open}
             onClick={() => setOpen(!open)}
-            className="grid size-11 place-items-center rounded-md border b-ink text-ink lg:hidden"
+            className="grid size-10 place-items-center rounded-md border b-gold text-primary lg:hidden"
           >
             <Icon name={open ? "close" : "menu"} className="size-5" strokeWidth={2} />
           </button>

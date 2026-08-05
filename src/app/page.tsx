@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { ServiceCard, StepCard, TickList } from "@/components/ui/Cards";
 import { Icon } from "@/components/ui/Icon";
 import { PartnerCarousel } from "@/components/ui/PartnerCarousel";
+import { AutoCarousel } from "@/components/ui/AutoCarousel";
 import { services } from "@/content/services";
 import { home, about, projects, mediaCenter } from "@/content/pages";
 import { cta, company } from "@/content/site";
@@ -68,11 +69,18 @@ export default async function HomePage() {
             <p className="mt-6 max-w-xl text-[15px] leading-[1.9] text-text-muted md:text-[16px]">
               {heroBody}
             </p>
+            {/* The quote CTA is desktop-only. On a phone the two large
+                buttons stacked full-width dominated the hero; the same action
+                is one tap away in the menu and at the foot of every page. */}
             <div className="mt-9 flex flex-wrap gap-3">
-              <Button href="/services" size="lg" withArrow>
+              <Button href="/services" withArrow className="w-auto">
                 {cta.exploreServices}
               </Button>
-              <Button href="/request-quote" variant="secondary" size="lg">
+              <Button
+                href="/request-quote"
+                variant="secondary"
+                className="hidden md:inline-flex"
+              >
                 {cta.requestQuote}
               </Button>
             </div>
@@ -97,16 +105,19 @@ export default async function HomePage() {
           title={home.servicesTitle}
           body={home.intro.body}
         />
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {services.map((s) => (
-            <ServiceCard
-              key={s.slug}
-              href={`/services/${s.slug}`}
-              icon={s.icon}
-              title={s.title}
-              body={s.short}
-            />
-          ))}
+        <div className="mt-12">
+          <AutoCarousel speed={0.3} ariaLabel="خدماتنا">
+            {services.map((s) => (
+              <div key={s.slug} className="w-[260px] shrink-0 sm:w-[280px]">
+                <ServiceCard
+                  href={`/services/${s.slug}`}
+                  icon={s.icon}
+                  title={s.title}
+                  body={s.short}
+                />
+              </div>
+            ))}
+          </AutoCarousel>
         </div>
       </Section>
 
@@ -267,19 +278,20 @@ export default async function HomePage() {
       {/* ------------------------------------------------------------ NEWS */}
       <Section tone="paper">
         <SectionTitle eyebrow="MEDIA CENTER" title="آخر الأخبار والرؤى" />
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {mediaCenter.articles.slice(0, 4).map((a) => (
+        <div className="mt-12">
+        <AutoCarousel speed={0.25} reverse ariaLabel="آخر الأخبار والرؤى">
+          {mediaCenter.articles.map((a) => (
             <Link
               key={a.title}
               href="/media-center"
-              className="group flex h-full flex-col overflow-hidden rounded-lg border b-ink bg-paper transition-all hover:-translate-y-1 hover:border-[color:var(--color-primary-container)]"
+              className="group flex w-[260px] shrink-0 flex-col overflow-hidden rounded-lg border b-ink bg-paper transition-all hover:-translate-y-1 hover:border-[color:var(--color-primary-container)] sm:w-[290px]"
             >
               <div className="relative aspect-[16/10] overflow-hidden">
                 <Image
                   src={a.image}
                   alt=""
                   fill
-                  sizes="(max-width: 640px) 100vw, 25vw"
+                  sizes="290px"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
@@ -301,6 +313,7 @@ export default async function HomePage() {
               </div>
             </Link>
           ))}
+        </AutoCarousel>
         </div>
       </Section>
 

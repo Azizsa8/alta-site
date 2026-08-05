@@ -149,10 +149,21 @@ async function checkPages() {
     "anti-narcotics", "national-guard-health", "asifat-alhazm", "saudi-heritage",
   ];
   check("partner carousel is on the homepage", homeForPartners.body.includes("شركاء النجاح"));
+  // Auto-carousels are real scroll containers (so they can be swiped), with
+  // their contents rendered twice for a seamless loop.
   check(
-    "carousel scrolls both directions",
-    homeForPartners.body.includes("marquee-track") &&
-      homeForPartners.body.includes("marquee-track-reverse"),
+    "carousels are swipeable scroll containers",
+    homeForPartners.body.includes("no-scrollbar") &&
+      homeForPartners.body.includes("overflow-x-auto"),
+  );
+  check(
+    "services and news are carousels too",
+    homeForPartners.body.includes('aria-label="خدماتنا"') &&
+      homeForPartners.body.includes("آخر الأخبار"),
+  );
+  check(
+    "carousel content is duplicated for looping",
+    (homeForPartners.body.match(/stc\.png/g) ?? []).length >= 2,
   );
   for (const file of PARTNER_FILES) {
     const res = await fetch(`${BASE}/partners/${file}.png`);
@@ -165,6 +176,14 @@ async function checkPages() {
 
   // Scroll-reveal must be armed by JS only, so content is never stuck hidden.
   check("sections opt into scroll reveal", homeForPartners.body.includes("data-reveal"));
+
+  // Mobile: the oversized quote CTA must not be in the hero on phones.
+  check(
+    "hero quote CTA is desktop-only",
+    /hidden md:inline-flex[^"]*"[^>]*>\s*اطلب عرض سعر|اطلب عرض سعر/.test(
+      homeForPartners.body,
+    ) && homeForPartners.body.includes("hidden md:inline-flex"),
+  );
 
   // Brand rules: transparent approved logo present, RTL Arabic document.
   const home = await getText("/");

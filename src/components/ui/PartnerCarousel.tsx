@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { partnerRows } from "@/content/partners";
+import { AutoCarousel } from "./AutoCarousel";
 
 /**
  * Partner logo carousel.
@@ -20,35 +21,31 @@ import { partnerRows } from "@/content/partners";
  */
 export function PartnerCarousel() {
   return (
-    <div
-      className="group relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]"
-      aria-label="شركاء النجاح"
-    >
+    <div className="space-y-4">
       {partnerRows.map((row, rowIndex) => (
-        <div
+        <AutoCarousel
           key={rowIndex}
-          className={`flex w-max gap-4 py-3 ${
-            rowIndex === 0 ? "marquee-track" : "marquee-track-reverse"
-          }`}
+          reverse={rowIndex === 1}
+          speed={rowIndex === 0 ? 0.35 : 0.3}
+          ariaLabel={rowIndex === 0 ? "شركاء النجاح" : undefined}
         >
-          {[...row, ...row].map((partner, i) => (
+          {row.map((partner) => (
             <div
-              key={`${partner.file}-${i}`}
-              aria-hidden={i >= row.length}
+              key={partner.file}
               title={partner.name}
-              className="flex h-[92px] w-[168px] shrink-0 items-center justify-center rounded-xl border b-soft bg-white p-4 opacity-80 saturate-[0.75] transition duration-300 hover:scale-[1.04] hover:opacity-100 hover:saturate-100"
+              className="flex h-[88px] w-[150px] shrink-0 items-center justify-center rounded-xl border b-soft bg-white p-4 opacity-85 saturate-[0.8] transition duration-300 hover:scale-[1.04] hover:opacity-100 hover:saturate-100 sm:h-[92px] sm:w-[168px]"
             >
               <Image
                 src={`/partners/${partner.file}.png`}
-                alt={i >= row.length ? "" : partner.name}
+                alt={partner.name}
                 width={320}
                 height={180}
                 loading="lazy"
-                className="h-auto max-h-[60px] w-auto max-w-full object-contain"
+                className="h-auto max-h-[56px] w-auto max-w-full object-contain"
               />
             </div>
           ))}
-        </div>
+        </AutoCarousel>
       ))}
     </div>
   );

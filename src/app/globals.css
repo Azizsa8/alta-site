@@ -194,6 +194,15 @@
     background-color: rgba(9, 20, 32, 0.82);
     backdrop-filter: blur(16px);
   }
+  /* Carousels are swipeable; the scrollbar itself is visual noise. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   .glass-nav-dark {
     background-color: rgba(9, 20, 32, 0.82);
     backdrop-filter: blur(16px);
