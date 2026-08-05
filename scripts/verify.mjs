@@ -240,8 +240,46 @@ async function checkChat(runId) {
     sessionId,
   });
   check(
+    // Either the explicit quote route or the approved FAQ answer is correct
+    // here; both send the visitor to the quote form.
     "chat routes pricing questions to the quote form",
-    /request-quote|عرض سعر/.test(quoteAsk.json?.reply ?? ""),
+    /request-quote|عرض السعر|عرض سعر/.test(quoteAsk.json?.reply ?? ""),
+  );
+
+  /*
+   * Fallback retrieval quality.
+   *
+   * This suite runs with no GEMINI_API_KEY, so every reply here comes from the
+   * deterministic index — which is also what answers most real traffic on a
+   * free-tier key. Each question below returned a generic service list in
+   * production before the index was built.
+   */
+  const grounded = [
+    ["هل تعملون مع الفنادق؟", /فنادق|ضيافة/, "hotels → hospitality sector"],
+    ["ما هي رؤيتكم؟", /الشريك المفضل|رؤيتنا/, "vision → approved vision text"],
+    ["ما رسالتكم؟", /خدمات احترافية|رسالتنا/, "mission → approved mission text"],
+    ["ما قيم الشركة؟", /الجودة|الالتزام|قيمنا/, "values → approved values"],
+    ["حدثني عن مشاريعكم", /ALTA Hospitality|مشاريع/, "projects → featured project"],
+    ["كيف تديرون الجودة؟", /معايير القبول|الجودة/, "quality → approved answer"],
+    ["أريد وظيفة لديكم", /careers|الفرص|الكفاءات/, "careers → careers page"],
+    ["ما منهجية عملكم؟", /نفهم الاحتياج|منهجيتنا/, "methodology → the 4 steps"],
+    ["هل تخدمون المستشفيات؟", /الرعاية الصحية|صحي/, "hospitals → healthcare sector"],
+    ["ماذا تقدمون في التوريدات؟", /التوريدات|توريد/, "procurement → that service"],
+  ];
+  for (const [question, expect, label] of grounded) {
+    const res = await postJson("/api/chat", { message: question, sessionId });
+    const reply = res.json?.reply ?? "";
+    check(`fallback: ${label}`, expect.test(reply), reply.slice(0, 55));
+  }
+
+  // A question with no match must still not dead-end.
+  const unknown = await postJson("/api/chat", {
+    message: "زززز ققققق",
+    sessionId,
+  });
+  check(
+    "unmatched question still offers a route forward",
+    /request-quote/.test(unknown.json?.reply ?? ""),
   );
 
   // Explicit satisfaction signal.

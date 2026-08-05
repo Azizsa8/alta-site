@@ -3,7 +3,7 @@ import { generate, hasAiKey } from "@/lib/ai";
 import { recordEvent } from "@/lib/analytics";
 import { rateLimit, clientKey } from "@/lib/submissions";
 import { services } from "@/content/services";
-import { about, faq, sectors, projects } from "@/content/pages";
+import { about, faq, sectors, projects, home } from "@/content/pages";
 import { company } from "@/content/site";
 
 export const dynamic = "force-dynamic";
@@ -43,34 +43,223 @@ const SYSTEM = `أنت المساعد الرقمي لموقع ${company.nameAr}.
 - عند السؤال عن خدمة، اذكر اسمها ورابط صفحتها بصيغة /services/<slug>.
 - لا تَعِد بأسعار أو مدد تنفيذ؛ وجّه المستخدم إلى طلب عرض سعر.`;
 
-/** Deterministic answer used when the AI is unavailable — never a dead end. */
+/**
+ * Deterministic answer used when the AI is unavailable.
+ *
+ * This is NOT a rare edge case. On a free-tier key the primary model's daily
+ * allowance is exhausted quickly, so in practice this path answers the
+ * majority of questions. It is therefore built as a small retrieval index over
+ * the approved content — services, sectors, identity, projects and the FAQ —
+ * scored by term overlap, rather than a chain of ifs that bottoms out in a
+ * generic service list.
+ */
+
+/** Arabic orthographic variants that block naive matching. */
+function normalise(text: string) {
+  return text
+    .toLowerCase()
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ة/g, "ه")
+    .replace(/[ىي]/g, "ي")
+    .replace(/[ًٌٍَُِّْـ]/g, "")
+    .replace(/[^\p{L}\p{N}\s]/gu, " ");
+}
+
+/**
+ * Strip the definite article.
+ *
+ * Without this, "التوريدات" and "توريدات" are different tokens, and "الشركة"
+ * looks rare when it is actually the most common word in the corpus — which
+ * distorts IDF and lets a generic entry outrank a specific one.
+ */
+function stripArticle(token: string) {
+  return token.length > 5 && token.startsWith("ال") ? token.slice(2) : token;
+}
+
+/**
+ * Stop words. Note the verbs: "تقدمون", "تخدمون", "تعملون" carry no topical
+ * information but appear in question phrasing constantly, and each one was
+ * observed hijacking a match to whichever short entry happened to contain it.
+ */
+const STOP = new Set([
+  "من", "في", "على", "عن", "الى", "هل", "ما", "هي", "هو", "ماهي", "كيف",
+  "وما", "لكم", "لديكم", "عندكم", "التي", "الذي", "مع", "او", "و", "ماذا",
+  "تقدمون", "تعملون", "تخدمون", "تنفذون", "لديك", "حدثني", "اخبرني", "اريد",
+  "يمكن", "ممكن", "بشان", "حول", "the", "a", "of", "is", "do", "you", "what",
+  "how", "about", "tell", "your",
+]);
+
+function terms(text: string) {
+  return normalise(text)
+    .split(/\s+/)
+    .map(stripArticle)
+    .filter((w) => w.length > 2 && !STOP.has(w));
+}
+
+type Entry = { keys: string; answer: string };
+
+/** Everyday words for each approved sector name. */
+const SECTOR_SYNONYMS: Record<string, string> = {
+  "الرعاية الصحية": "مستشفيات مستشفى مراكز صحية عيادات طبي",
+  "الفنادق والضيافة": "فندق فنادق منتجع منتجعات نزلاء ضيافة",
+  التعليم: "مدارس مدرسة جامعات جامعة معاهد طلاب تعليمي",
+  "المصانع والمستودعات": "مصنع مصانع مستودع مستودعات لوجستي",
+  "الجهات الحكومية وشبه الحكومية": "حكومة حكومي وزارة وزارات هيئة أمانة بلدية",
+  "الشركات والمنشآت التجارية": "شركات شركة تجاري منشآت أعمال",
+  "القطاع غير الربحي": "جمعية جمعيات خيري وقف مؤسسات",
+  "المجمعات الإدارية والسكنية": "مجمع مجمعات سكني أبراج مباني عقار",
+  "الفعاليات والمؤتمرات": "فعالية مؤتمر معرض معارض مناسبات",
+  "المقاولون ومتعهدو الخدمات": "مقاول مقاولات متعهد تعهدات",
+};
+
+/** Built once at module load from the approved content. */
+const INDEX: Entry[] = [
+  ...services.map((s) => ({
+    // Deliberately NOT including s.sectors: it lists "الفنادق، المستشفيات…",
+    // which made every sector question match a service instead of the sector.
+    keys: `${s.title} ${s.short} ${s.offerings.map((o) => o.title).join(" ")}`,
+    answer: `${s.title}: ${s.short} تفاصيل الخدمة في /services/${s.slug}، ويمكنك طلب عرض سعر عبر /request-quote.`,
+  })),
+  ...sectors.items.map((s) => ({
+    // Synonyms matter: visitors ask about "المستشفيات", but the approved text
+    // for that sector says "الرعاية الصحية" and never uses the word.
+    keys: `${s.title} ${s.body} قطاع قطاعات ${SECTOR_SYNONYMS[s.title] ?? ""}`,
+    answer: `${s.title} — ${s.body} اطلع على جميع القطاعات في /sectors، أو ناقش احتياجك عبر /contact.`,
+  })),
+  ...faq.items.map((f) => ({ keys: f.q, answer: f.a })),
+  {
+    keys: "رؤيه رؤيتكم رؤيتنا",
+    answer: `${about.vision.title}: ${about.vision.headline} ${about.vision.body} المزيد في /about.`,
+  },
+  {
+    keys: "رساله رسالتكم رسالتنا",
+    answer: `${about.mission.title}: ${about.mission.body} المزيد في /about.`,
+  },
+  {
+    // Curated entries stay TIGHT. Length normalisation divides by sqrt(tokens),
+    // so padding an entry with near-synonyms actively lowers its score against
+    // a short FAQ question.
+    keys: "قيم قيمكم قيمنا مبادئ",
+    answer: `قيمنا: ${about.values
+      .map((v) => v.title)
+      .join("، ")}. تفاصيلها في /about.`,
+  },
+  {
+    keys: "من نحن نبذه تعريف الشركه about تاسيس مقر الرياض",
+    answer: `${about.lead[0]} المزيد في /about.`,
+  },
+  {
+    keys: "منهجيه منهجيتكم خطوات مراحل methodology",
+    answer: `منهجيتنا: ${home.methodology
+      .map((m) => `${m.step} ${m.title}`)
+      .join(" — ")}. التفاصيل في /about#methodology.`,
+  },
+  {
+    keys: "مشاريع مشاريعكم اعمالكم سابقه",
+    answer: `من مشاريعنا ${projects.featured.name} (${projects.featured.nameAr}): ${projects.featured.summary} التفاصيل في /projects.`,
+  },
+  {
+    keys: "وظائف وظيفه توظيف تقديم انضمام careers شركاء موردين تسجيل مورد كفاءات",
+    answer:
+      "نرحب بالكفاءات وبالشركاء والموردين. استعرض مجالات الفرص في /careers، وأرسل بياناتك عبر /contact مع تحديد المجال.",
+  },
+  {
+    keys: "سعر عرض تكلفه ميزانيه quote price عروض اسعار",
+    answer:
+      "للحصول على عرض سعر، عبّئ نموذج طلب عرض السعر في /request-quote مع وصف نطاق العمل، وسيتواصل معك الفريق المختص لاستكمال المعلومات.",
+  },
+  {
+    keys: "تواصل اتصال هاتف بريد عنوان موقع contact",
+    answer: `يمكنك التواصل معنا عبر نموذج التواصل في /contact. مقرنا في ${company.cityAr}.`,
+  },
+  {
+    keys: "خصوصيه بيانات حمايه سريه privacy",
+    answer:
+      "تُدار البيانات ضمن نطاق المشروع والصلاحيات المعتمدة، مع مراعاة الخصوصية والسرية. سياستنا الكاملة في /privacy-policy.",
+  },
+];
+
+/**
+ * Do two Arabic tokens refer to the same thing?
+ *
+ * Plain `includes` fails on the possessive and plural suffixes that dominate
+ * real questions — "مشاريعكم" never contains-matches "مشاريع". Comparing on a
+ * shared prefix of at least four characters handles those without pulling in a
+ * stemming dependency.
+ */
+function tokensMatch(a: string, b: string) {
+  if (a === b) return true;
+  const shorter = a.length <= b.length ? a : b;
+  const longer = shorter === a ? b : a;
+  return shorter.length >= 4 && longer.startsWith(shorter);
+}
+
+/** Pre-tokenised index, so scoring does no string splitting per request. */
+const INDEX_TOKENS = INDEX.map((entry) => ({
+  answer: entry.answer,
+  tokens: terms(entry.keys),
+}));
+
+/**
+ * Inverse document frequency over the index.
+ *
+ * Term length alone is a poor proxy for informativeness: "الشركة" is long but
+ * appears nearly everywhere, while "قيم" is short and appears in one entry.
+ * Weighting by rarity is what makes "هل تعملون مع الفنادق؟" resolve to the
+ * hotels sector rather than to whichever entry happens to share a common verb.
+ */
+const DOC_FREQ = (() => {
+  const freq = new Map<string, number>();
+  for (const entry of INDEX_TOKENS) {
+    for (const token of new Set(entry.tokens)) {
+      freq.set(token, (freq.get(token) ?? 0) + 1);
+    }
+  }
+  return freq;
+})();
+
+function idf(token: string) {
+  // Count prefix-compatible documents, mirroring how matching works.
+  let df = 0;
+  for (const [indexed, count] of DOC_FREQ) {
+    if (tokensMatch(token, indexed)) df += count;
+  }
+  return Math.log((INDEX_TOKENS.length + 1) / (df + 1)) + 0.2;
+}
+
 function fallbackReply(message: string): string {
-  const text = message.toLowerCase();
+  const asked = terms(message);
+  if (asked.length === 0) return genericReply();
 
-  const matched = services.find((s) =>
-    [s.title, ...s.offerings.map((o) => o.title)].some((t) =>
-      text.includes(t.slice(0, 6).toLowerCase()),
-    ),
-  );
-  if (matched) {
-    return `${matched.title}: ${matched.short} يمكنك الاطلاع على التفاصيل في /services/${matched.slug}، أو طلب عرض سعر عبر /request-quote.`;
+  const weights = asked.map((t) => Math.max(idf(t), 0));
+  let best: { score: number; answer: string } | null = null;
+
+  for (const entry of INDEX_TOKENS) {
+    let raw = 0;
+    asked.forEach((q, i) => {
+      if (entry.tokens.includes(q)) {
+        raw += weights[i];
+      } else if (entry.tokens.some((t) => tokensMatch(q, t))) {
+        // A prefix hit is weaker evidence than the exact word. Without this
+        // discount, "مشاريعكم" scores the same against an entry that literally
+        // lists it and one that merely contains "مشاريع", and insertion order
+        // silently decides the winner.
+        raw += weights[i] * 0.75;
+      }
+    });
+    if (raw === 0) continue;
+
+    // Normalise by document length so verbose entries cannot win purely by
+    // having more words to collide with.
+    const score = raw / Math.sqrt(entry.tokens.length);
+    if (!best || score > best.score) best = { score, answer: entry.answer };
   }
 
-  const faqHit = faq.items.find((f) =>
-    f.q
-      .split(" ")
-      .filter((w) => w.length > 4)
-      .some((w) => text.includes(w.toLowerCase())),
-  );
-  if (faqHit) return faqHit.a;
+  // Require real evidence before claiming a match.
+  return best && best.score >= 0.35 ? best.answer : genericReply();
+}
 
-  if (/سعر|عرض|تكلفة|quote|price/.test(text)) {
-    return "للحصول على عرض سعر، عبّئ نموذج طلب عرض السعر في /request-quote مع وصف نطاق العمل، وسيتواصل معك الفريق المختص لاستكمال المعلومات.";
-  }
-  if (/تواصل|اتصال|هاتف|contact/.test(text)) {
-    return `يمكنك التواصل معنا عبر نموذج التواصل في /contact. مقرنا في ${company.cityAr}.`;
-  }
-
+function genericReply(): string {
   return `نقدم في ${company.nameAr} حلولاً متكاملة تشمل: ${services
     .map((s) => s.title)
     .join("، ")}. أخبرني بالمجال الذي يهمك، أو اطلب عرض سعر عبر /request-quote.`;
