@@ -34,6 +34,9 @@ export function Section({
   return (
     <section
       id={id}
+      // Every section opts into the scroll reveal here, so no page can be
+      // missed and no page needs editing to gain the animation.
+      data-reveal=""
       className={`${tones[tone]} py-[52px] md:py-[72px] ${
         rule ? (isDark ? "rule-soft" : "rule-ink") : ""
       } ${className}`}

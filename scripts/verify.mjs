@@ -139,6 +139,33 @@ async function checkPages() {
     }
   }
 
+  // Approved partner logos — all eighteen from the approved sheet, served and
+  // rendered in the carousel. A missing file would 404 silently in an <img>.
+  const homeForPartners = await getText("/");
+  const PARTNER_FILES = [
+    "stc", "king-saud-university", "nic", "intercontinental", "petlas",
+    "alyamama", "princess-nourah-university", "iie", "jahez", "socpa",
+    "lilly", "nabatat", "saudi-camel-sports", "state-security",
+    "anti-narcotics", "national-guard-health", "asifat-alhazm", "saudi-heritage",
+  ];
+  check("partner carousel is on the homepage", homeForPartners.body.includes("شركاء النجاح"));
+  check(
+    "carousel scrolls both directions",
+    homeForPartners.body.includes("marquee-track") &&
+      homeForPartners.body.includes("marquee-track-reverse"),
+  );
+  for (const file of PARTNER_FILES) {
+    const res = await fetch(`${BASE}/partners/${file}.png`);
+    check(`partner logo ${file}.png served`, res.status === 200, `got ${res.status}`);
+  }
+  check(
+    "all 18 partners referenced in the markup",
+    PARTNER_FILES.every((f) => homeForPartners.body.includes(`${f}.png`)),
+  );
+
+  // Scroll-reveal must be armed by JS only, so content is never stuck hidden.
+  check("sections opt into scroll reveal", homeForPartners.body.includes("data-reveal"));
+
   // Brand rules: transparent approved logo present, RTL Arabic document.
   const home = await getText("/");
   check("home references approved transparent mark", home.body.includes("alta-mark"));

@@ -212,8 +212,13 @@
     }
   }
 
+  /* Each row is rendered twice, so -50% lands the duplicate exactly where the
+     original started — the loop point is invisible. */
   .marquee-track {
-    animation: alta-marquee 40s linear infinite;
+    animation: alta-marquee 46s linear infinite;
+  }
+  .marquee-track-reverse {
+    animation: alta-marquee 52s linear infinite reverse;
   }
   @keyframes alta-marquee {
     from {
@@ -223,6 +228,48 @@
       transform: translateX(-50%);
     }
   }
+  /* Pause both rows while the visitor is reading them. */
+  .group:hover .marquee-track,
+  .group:hover .marquee-track-reverse {
+    animation-play-state: paused;
+  }
+
+  /* --- Scroll reveal ---------------------------------------------------
+     Only armed once JS has added `.js-reveal` to <html>. If scripting fails
+     the content simply renders visible, rather than being permanently
+     invisible behind an animation that will never run. */
+  .js-reveal [data-reveal] {
+    opacity: 0;
+    transform: translateY(26px);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  .js-reveal [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Gold underline that draws itself in as a section appears. */
+  .js-reveal [data-reveal] .title-rule::after {
+    width: 0;
+    transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+  }
+  .js-reveal [data-reveal].is-visible .title-rule::after {
+    width: 56px;
+  }
+
+  /* Cards stagger in rather than arriving as one block. */
+  .js-reveal [data-reveal].is-visible > * > .stagger > * {
+    animation: alta-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes alta-rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .reveal {
@@ -230,7 +277,20 @@
       opacity: 1;
       transform: none;
     }
-    .marquee-track {
+    .marquee-track,
+    .marquee-track-reverse {
+      animation: none;
+    }
+    .js-reveal [data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .js-reveal [data-reveal] .title-rule::after {
+      width: 56px;
+      transition: none;
+    }
+    .js-reveal [data-reveal].is-visible > * > .stagger > * {
       animation: none;
     }
     html {

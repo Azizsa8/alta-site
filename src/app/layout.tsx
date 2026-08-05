@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ChatWidget } from "@/components/ui/ChatWidget";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { ThemeVars } from "@/components/theme/ThemeVars";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
@@ -90,6 +91,7 @@ export default function RootLayout({
           تخطَّ إلى المحتوى
         </a>
         <OrganizationJsonLd />
+        <ScrollReveal />
         <SiteChrome>
           <Header />
         </SiteChrome>

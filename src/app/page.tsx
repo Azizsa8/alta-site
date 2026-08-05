@@ -4,8 +4,9 @@ import { Section, SectionTitle, Pill } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { ServiceCard, StepCard, TickList } from "@/components/ui/Cards";
 import { Icon } from "@/components/ui/Icon";
+import { PartnerCarousel } from "@/components/ui/PartnerCarousel";
 import { services } from "@/content/services";
-import { home, about, projects, clientStrip, mediaCenter } from "@/content/pages";
+import { home, about, projects, mediaCenter } from "@/content/pages";
 import { cta, company } from "@/content/site";
 import { readSettings } from "@/lib/settings";
 
@@ -143,21 +144,9 @@ export default async function HomePage() {
 
       {/* ---------------------------------------------------- CLIENT STRIP */}
       <Section tone="paper">
-        <SectionTitle eyebrow="CLIENTS & PARTNERS" title="عملاؤنا وشركاؤنا" />
-        <div
-          className="mt-10 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
-          aria-label="نماذج من عملائنا"
-        >
-          <div className="marquee-track flex w-max gap-3">
-            {[...clientStrip, ...clientStrip].map((name, i) => (
-              <span
-                key={`${name}-${i}`}
-                className="whitespace-nowrap rounded-md border b-ink bg-paper-dim px-6 py-4 text-[13px] font-semibold text-ink-muted"
-              >
-                {name}
-              </span>
-            ))}
-          </div>
+        <SectionTitle eyebrow="CLIENTS & PARTNERS" title="شركاء النجاح" />
+        <div className="mt-10">
+          <PartnerCarousel />
         </div>
       </Section>
 

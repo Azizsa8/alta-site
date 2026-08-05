@@ -22,8 +22,6 @@ const pct = (arr, p) => {
   const s = [...arr].sort((a, b) => a - b);
   return s.length ? s[Math.min(s.length - 1, Math.floor((p / 100) * s.length))] : 0;
 };
-const sum = (a) => a.reduce((x, y) => x + y, 0);
-
 async function timed(fn) {
   const t0 = Date.now();
   try {
