@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html class="dark" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ALTA Investment Company</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface": "#091420",
+            "on-primary-fixed": "#271900",
+            "on-tertiary-container": "#384453",
+            "secondary-container": "#6f4f00",
+            "inverse-on-surface": "#26313e",
+            "stroke-gold": "rgba(222,172,84,0.28)",
+            "on-error": "#690005",
+            "surface-bright": "#2f3a48",
+            "on-secondary": "#412d00",
+            "inverse-primary": "#7d5800",
+            "on-secondary-container": "#f0c36e",
+            "surface-container-highest": "#2b3643",
+            "stroke-soft": "rgba(255,255,255,0.08)",
+            "on-surface": "#d8e3f5",
+            "primary-container": "#d9a84e",
+            "tertiary-container": "#a5b1c3",
+            "surface-container": "#16202d",
+            "secondary-fixed": "#ffdea5",
+            "outline-variant": "#4f4537",
+            "on-error-container": "#ffdad6",
+            "on-primary": "#422c00",
+            "text-muted": "#a8b2bf",
+            "on-secondary-fixed": "#271900",
+            "secondary": "#edc06b",
+            "surface-elevated": "#101f2e",
+            "inverse-surface": "#d8e3f5",
+            "background": "#091420",
+            "error-container": "#93000a",
+            "on-primary-fixed-variant": "#5f4100",
+            "text-primary": "#f7f8fb",
+            "secondary-fixed-dim": "#edc06b",
+            "on-primary-container": "#5a3e00",
+            "on-background": "#d8e3f5",
+            "on-secondary-fixed-variant": "#5d4200",
+            "info": "#4b99ff",
+            "on-tertiary-fixed-variant": "#3c4856",
+            "on-tertiary-fixed": "#111c2a",
+            "tertiary-fixed": "#d7e3f6",
+            "outline": "#9b8f7e",
+            "on-tertiary": "#26313f",
+            "surface-container-lowest": "#040f1b",
+            "surface-variant": "#2b3643",
+            "on-surface-variant": "#d3c4b2",
+            "primary": "#f7c366",
+            "surface-container-high": "#202b38",
+            "surface-tint": "#f2be62",
+            "surface-panel": "#0d1b29",
+            "primary-fixed": "#ffdea9",
+            "surface-container-low": "#111c29",
+            "success": "#56d28b",
+            "tertiary": "#c1ccdf",
+            "primary-fixed-dim": "#f2be62",
+            "tertiary-fixed-dim": "#bcc7d9",
+            "error": "#ff7070",
+            "surface-dim": "#091420"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin": "24px",
+            "section-desktop": "72px",
+            "gap-grid": "60px",
+            "container-max": "1180px",
+            "gutter": "16px",
+            "base": "4px",
+            "gap-component": "24px",
+            "section-mobile": "52px"
+          },
+          "fontFamily": {
+            "hero-title": ["Hanken Grotesk"],
+            "hero-title-mobile": ["Hanken Grotesk"],
+            "stat-lg": ["Hanken Grotesk"],
+            "label-sm": ["Hanken Grotesk"],
+            "subheading": ["Hanken Grotesk"],
+            "section-title": ["Hanken Grotesk"],
+            "body-md": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "hero-title": ["78px", { "lineHeight": "1.12", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "hero-title-mobile": ["44px", { "lineHeight": "1.2", "fontWeight": "800" }],
+            "stat-lg": ["48px", { "lineHeight": "1.0", "fontWeight": "700" }],
+            "label-sm": ["11px", { "lineHeight": "1.55", "letterSpacing": "0.05em", "fontWeight": "600" }],
+            "subheading": ["17px", { "lineHeight": "1.8", "fontWeight": "400" }],
+            "section-title": ["42px", { "lineHeight": "1.0", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "1.9", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background: radial-gradient(circle at 20% 10%, rgba(217, 168, 78, .08), transparent 28%), linear-gradient(180deg, #050d16 0%, #06111d 50%, #07121e 100%);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md text-body-md overflow-x-hidden">
+<!-- Header -->
+<header class="fixed top-0 w-full z-50 bg-surface/82 backdrop-blur-lg border-b border-stroke-soft shadow-md transition-all duration-300 ease-in-out">
+<div class="flex justify-between items-center px-margin py-4 max-w-container-max mx-auto">
+<div class="flex items-center gap-3 dir-ltr min-w-[220px]">
+<div class="font-hero-title text-2xl font-black text-primary tracking-tighter">ALTA</div>
+</div>
+<nav class="hidden md:flex flex-1 justify-center gap-6 text-on-surface font-body-md text-body-md">
+<a class="text-on-surface hover:text-primary transition-colors duration-300" href="#">About</a>
+<a class="text-on-surface hover:text-primary transition-colors duration-300" href="#">Insights</a>
+<a class="text-on-surface hover:text-primary transition-colors duration-300" href="#">Portfolio</a>
+<a class="text-on-surface hover:text-primary transition-colors duration-300" href="#">Strategy</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1" href="#">Solutions</a>
+</nav>
+<div class="hidden md:flex items-center gap-3 min-w-[220px] justify-end">
+<a class="px-6 py-3 rounded-lg border border-stroke-gold text-primary hover:bg-stroke-soft transition-colors duration-200" href="#">Contact Us</a>
+<a class="px-6 py-3 rounded-lg bg-primary text-on-primary font-bold hover:brightness-110 shadow-[0_10px_30px_rgba(217,168,78,0.18)] transition-all duration-200" href="#">Client Portal</a>
+</div>
+<button class="md:hidden text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<main class="pt-[100px]">
+<!-- Hero -->
+<section class="relative min-h-[650px] flex items-center border-b border-stroke-soft overflow-hidden py-section-mobile md:py-section-desktop">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,_rgba(217,168,78,0.13),_transparent_25%),_linear-gradient(90deg,_rgba(2,8,14,0.05),_rgba(2,8,14,0.45))] pointer-events-none z-0"></div>
+<div class="max-w-container-max mx-auto px-margin relative z-10 w-full grid grid-cols-1 md:grid-cols-2 gap-gap-grid items-center">
+<div class="max-w-[590px]">
+<h1 class="font-hero-title-mobile text-hero-title-mobile md:font-hero-title md:text-hero-title mb-6">نستثمر في المستقبل لنصنع تأثيراً <span class="text-primary">مستداماً</span></h1>
+<p class="text-text-muted font-subheading text-subheading mb-8 max-w-[560px]">
+            نقدم حلولاً متكاملة في التشغيل والصيانة، الضيافة، الإعاشة، الطاقة، التقنية والفعاليات بأعلى معايير الجودة والاحترافية.
+          </p>
+<div class="flex flex-wrap gap-4">
+<a class="px-6 py-3 rounded-lg bg-primary text-on-primary font-bold hover:brightness-110 shadow-[0_10px_30px_rgba(217,168,78,0.18)] transition-all duration-200" href="#">استكشف خدماتنا</a>
+<a class="px-6 py-3 rounded-lg border border-stroke-gold text-primary hover:bg-stroke-soft transition-colors duration-200" href="#">تواصل معنا</a>
+</div>
+</div>
+<div class="relative min-h-[520px] flex justify-center items-center">
+<div class="absolute w-[430px] h-[200px] border border-stroke-gold/50 rounded-full shadow-[0_0_60px_rgba(217,168,78,0.08)] -rotate-6"></div>
+<div class="absolute w-[500px] h-[250px] border border-stroke-gold/50 rounded-full shadow-[0_0_60px_rgba(217,168,78,0.08)] rotate-12"></div>
+<div class="w-full h-full bg-cover bg-center rounded-xl overflow-hidden border border-stroke-soft shadow-2xl relative z-10" data-alt="A striking digital installation art piece featuring glowing, generative geometric shapes suspended in a vast, minimalist gallery space. The room is illuminated by high-key, soft white lighting that creates a bright, modern light-mode aesthetic. The artwork relies on a sophisticated palette of deep blacks and pristine whites, punctuated by intense accents of vibrant red. The mood is serene yet technologically advanced." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAGpUowY7z4Sxsb5dZ3m28mVv7h9kyEY7K_eiAoXpetFINAgljCGtvu4W5QkTsAHChdtScDfQF2SnYrueDwepLyQQ9i2OZVPJrn45UhDSXOTPz4xmf7Sr8u6BA5Dzg5yuO1FlIkyyF6oGlJW9pXWvvYqAYa8YmtnfOI7NI6GP4c3aUmAWy9-P0MmrxT97A6erMadB2wiSgjyFDl0HWbyMziefLopbYtK4l_pgkUaAAWA0S67jsb0YNnHw')">
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent/20"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Services Bento Grid -->
+<section class="py-section-mobile md:py-section-desktop border-b border-stroke-soft">
+<div class="max-w-container-max mx-auto px-margin">
+<h2 class="font-section-title text-section-title text-center mb-12">خدماتنا</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+<div class="bg-surface-panel border border-stroke-soft rounded-xl p-6 hover:border-primary hover:shadow-[0_20px_60px_rgba(0,0,0,0.36)] transition-all duration-300 group">
+<div class="text-primary mb-4"><span class="material-symbols-outlined text-4xl">engineering</span></div>
+<h3 class="font-bold text-lg mb-2">التشغيل والصيانة</h3>
+<p class="text-text-muted text-sm line-clamp-3">إدارة وتشغيل وصيانة المرافق بكفاءة واحترافية على مدار الساعة.</p>
+<div class="mt-4 text-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">المزيد <span class="material-symbols-outlined align-middle text-sm">arrow_left</span></div>
+</div>
+<div class="bg-surface-panel border border-stroke-soft rounded-xl p-6 hover:border-primary hover:shadow-[0_20px_60px_rgba(0,0,0,0.36)] transition-all duration-300 group">
+<div class="text-primary mb-4"><span class="material-symbols-outlined text-4xl">room_service</span></div>
+<h3 class="font-bold text-lg mb-2">الضيافة والإعاشة</h3>
+<p class="text-text-muted text-sm line-clamp-3">خدمات ضيافة وإعاشة بمعايير عالمية تناسب احتياجاتك.</p>
+<div class="mt-4 text-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">المزيد <span class="material-symbols-outlined align-middle text-sm">arrow_left</span></div>
+</div>
+<div class="bg-surface-panel border border-stroke-soft rounded-xl p-6 hover:border-primary hover:shadow-[0_20px_60px_rgba(0,0,0,0.36)] transition-all duration-300 group">
+<div class="text-primary mb-4"><span class="material-symbols-outlined text-4xl">support_agent</span></div>
+<h3 class="font-bold text-lg mb-2">الاستشارات الإدارية</h3>
+<p class="text-text-muted text-sm line-clamp-3">استشارات متخصصة لرفع الكفاءة وتحقيق النمو المستدام.</p>
+<div class="mt-4 text-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">المزيد <span class="material-symbols-outlined align-middle text-sm">arrow_left</span></div>
+</div>
+<div class="bg-surface-panel border border-stroke-soft rounded-xl p-6 hover:border-primary hover:shadow-[0_20px_60px_rgba(0,0,0,0.36)] transition-all duration-300 group">
+<div class="text-primary mb-4"><span class="material-symbols-outlined text-4xl">inventory_2</span></div>
+<h3 class="font-bold text-lg mb-2">التوريدات</h3>
+<p class="text-text-muted text-sm line-clamp-3">توريد منتجات ومستلزمات عالية الجودة تدعم أعمالك بكفاءة.</p>
+<div class="mt-4 text-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">المزيد <span class="material-symbols-outlined align-middle text-sm">arrow_left</span></div>
+</div>
+<div class="bg-surface-panel border border-stroke-soft rounded-xl p-6 hover:border-primary hover:shadow-[0_20px_60px_rgba(0,0,0,0.36)] transition-all duration-300 group">
+<div class="text-primary mb-4"><span class="material-symbols-outlined text-4xl">campaign</span></div>
+<h3 class="font-bold text-lg mb-2">الدعاية والإعلام</h3>
+<p class="text-text-muted text-sm line-clamp-3">حلول إعلامية وإبداعية تعزز من حضورك وتصنع أثراً.</p>
+<div class="mt-4 text-primary text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">المزيد <span class="material-symbols-outlined align-middle text-sm">arrow_left</span></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats -->
+<section class="py-section-mobile md:py-section-desktop border-b border-stroke-soft bg-surface-container-low relative overflow-hidden">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(217,168,78,0.05),_transparent_50%)]"></div>
+<div class="max-w-container-max mx-auto px-margin relative z-10">
+<h2 class="font-section-title text-section-title text-center mb-12">أرقام تعكس ثقتكم بنا</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+<div class="text-center border-l border-stroke-soft last:border-0 p-4">
+<span class="material-symbols-outlined text-4xl text-primary mb-4">groups</span>
+<div class="font-stat-lg text-stat-lg text-primary mb-2">500+</div>
+<div class="text-text-muted">موظف محترف</div>
+</div>
+<div class="text-center border-l border-stroke-soft md:border-l p-4 border-b md:border-b-0 border-stroke-soft">
+<span class="material-symbols-outlined text-4xl text-primary mb-4">handshake</span>
+<div class="font-stat-lg text-stat-lg text-primary mb-2">150+</div>
+<div class="text-text-muted">عميل وشريك نجاح</div>
+</div>
+<div class="text-center border-l border-stroke-soft p-4">
+<span class="material-symbols-outlined text-4xl text-primary mb-4">assignment</span>
+<div class="font-stat-lg text-stat-lg text-primary mb-2">200+</div>
+<div class="text-text-muted">مشروع مكتمل</div>
+</div>
+<div class="text-center p-4">
+<span class="material-symbols-outlined text-4xl text-primary mb-4">verified</span>
+<div class="font-stat-lg text-stat-lg text-primary mb-2">100%</div>
+<div class="text-text-muted">الالتزام بالجودة</div>
+</div>
+</div>
+</div>
+</section>
+<!-- About -->
+<section class="py-section-mobile md:py-section-desktop border-b border-stroke-soft">
+<div class="max-w-container-max mx-auto px-margin grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+<div class="relative h-[400px] rounded-2xl overflow-hidden border border-stroke-soft shadow-2xl">
+<img class="object-cover w-full h-full absolute inset-0" data-alt="A modern, high-end corporate office interior with sleek glass partitions, dark wood accents, and warm ambient lighting. A sophisticated palette of deep navy and brushed gold elements. The mood is professional, secure, and luxurious." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxjPA7NajVbv-TCyAtVbAoCowDO8waP62hO6bWFchmDiNXlmZXVJendz0VoTde1EQPDDo0BblAu1ERvVxGOq3f3xH89JvQBxutrIjZorkgEWinP2nOCpWA5WmqeUI1q_CjLGEOnedWXWBjd-GgbRypq1ZyvGi94FyMznkrQKldtSIuXuZAJx6kNAlCc0ps0vceVGunEoUZcWN3g81C8oThUHhX8hlMzggt3rKL_HTTVPcTeRuSw7KZpQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-elevated/90 to-transparent flex flex-col justify-end p-8">
+<div class="font-hero-title text-3xl font-black text-primary tracking-tighter mb-2">ALTA</div>
+<div class="text-text-muted">شركة التا للاستثمار</div>
+</div>
+</div>
+<div>
+<h2 class="font-section-title text-section-title mb-6">عن شركة التا للاستثمار</h2>
+<p class="text-text-muted font-subheading text-subheading mb-8">
+                     شركة سعودية رائدة تقدم حلولاً متكاملة في عدة قطاعات حيوية نسعى من خلالها إلى تحقيق قيمة مستدامة لعملائنا وشركائنا، عبر الابتكار والجودة والالتزام بأعلى المعايير.
+                 </p>
+<a class="px-6 py-3 rounded-lg bg-surface-bright text-text-primary border border-stroke-soft hover:border-primary transition-colors inline-flex items-center gap-2" href="#">المزيد عن الشركة</a>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-section-desktop bg-surface-container-lowest border-t border-stroke-soft">
+<div class="max-w-container-max mx-auto px-margin grid grid-cols-1 md:grid-cols-2 gap-gap-grid">
+<div>
+<div class="font-hero-title text-xl font-bold text-primary mb-4">ALTA Investment Company</div>
+<p class="text-text-muted text-sm max-w-md">نقدم حلولاً متكاملة في التشغيل والصيانة، الضيافة، الإعاشة، التوريدات، الدعاية والإعلام والفعاليات.</p>
+</div>
+<div class="flex flex-col md:items-end justify-between">
+<div class="flex gap-4 mb-8 md:mb-0">
+<a class="text-text-muted hover:text-primary transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="text-text-muted hover:text-primary transition-colors duration-200" href="#">Terms of Service</a>
+<a class="text-text-muted hover:text-primary transition-colors duration-200" href="#">Contact</a>
+</div>
+<div class="text-text-muted text-sm">
+             © 2024 ALTA Investment Company. All rights reserved. Sovereign. Technical. Precise.
+          </div>
+</div>
+</div>
+</footer>
+</body></html>

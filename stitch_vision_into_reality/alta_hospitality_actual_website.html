@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ALTA Hospitality AI - منصة تشغيل الفنادق بالذكاء الاصطناعي" />
+  <title>ALTA Hospitality AI</title>
+
+  <style>
+    :root{
+      --bg:#06111d;
+      --bg-2:#0a1623;
+      --panel:#0d1b29;
+      --panel-2:#101f2e;
+      --line:rgba(222,172,84,.28);
+      --line-soft:rgba(255,255,255,.08);
+      --gold:#d9a84e;
+      --gold-2:#f0c36e;
+      --text:#f7f8fb;
+      --muted:#a8b2bf;
+      --green:#56d28b;
+      --red:#ff7070;
+      --blue:#4b99ff;
+      --shadow:0 20px 60px rgba(0,0,0,.36);
+      --radius:18px;
+      --container:1180px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Tahoma, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(217,168,78,.08), transparent 28%),
+        linear-gradient(180deg,#050d16 0%,#06111d 50%,#07121e 100%);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+
+    .container{
+      width:min(var(--container), calc(100% - 32px));
+      margin:auto;
+    }
+
+    .section{
+      padding:72px 0;
+      border-top:1px solid var(--line-soft);
+    }
+
+    .section-title{
+      margin:0 0 10px;
+      text-align:center;
+      font-size:clamp(28px,3vw,42px);
+      font-weight:800;
+    }
+
+    .section-subtitle{
+      margin:0 auto 34px;
+      text-align:center;
+      max-width:700px;
+      color:var(--muted);
+      line-height:1.9;
+    }
+
+    .gold{color:var(--gold-2)}
+
+    /* Header */
+    .site-header{
+      position:sticky;
+      top:0;
+      z-index:50;
+      background:rgba(4,12,21,.82);
+      backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--line-soft);
+    }
+
+    .nav{
+      min-height:78px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      direction:ltr;
+      min-width:220px;
+    }
+
+    .brand-mark{
+      width:52px;
+      height:52px;
+      display:grid;
+      place-items:center;
+      border:2px solid var(--gold);
+      transform:rotate(45deg);
+      position:relative;
+      box-shadow:0 0 28px rgba(217,168,78,.16);
+    }
+
+    .brand-mark:before,
+    .brand-mark:after{
+      content:"";
+      position:absolute;
+      inset:8px;
+      border:1px solid var(--gold);
+    }
+
+    .brand-mark:after{
+      inset:16px;
+      background:rgba(217,168,78,.12);
+    }
+
+    .brand-text strong{
+      display:block;
+      font-size:26px;
+      letter-spacing:4px;
+      color:var(--gold-2);
+    }
+
+    .brand-text span{
+      display:block;
+      font-size:9px;
+      color:#d6b46d;
+      letter-spacing:1.5px;
+      margin-top:2px;
+    }
+
+    .menu{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:1;
+      gap:26px;
+      font-size:14px;
+      color:#e8edf2;
+    }
+
+    .menu a{
+      position:relative;
+      padding:30px 0 26px;
+      white-space:nowrap;
+    }
+
+    .menu a:after{
+      content:"";
+      position:absolute;
+      right:0;
+      bottom:20px;
+      width:0;
+      height:2px;
+      background:var(--gold);
+      transition:.25s;
+    }
+
+    .menu a:hover:after,
+    .menu a.active:after{width:100%}
+
+    .nav-actions{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:220px;
+      justify-content:flex-end;
+    }
+
+    .btn{
+      border:none;
+      border-radius:10px;
+      min-height:48px;
+      padding:0 24px;
+      cursor:pointer;
+      transition:.25s ease;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      font-weight:700;
+    }
+
+    .btn-primary{
+      background:linear-gradient(135deg,var(--gold-2),var(--gold));
+      color:#09111a;
+      box-shadow:0 10px 30px rgba(217,168,78,.18);
+    }
+
+    .btn-primary:hover{transform:translateY(-2px);filter:brightness(1.06)}
+
+    .btn-outline{
+      background:transparent;
+      color:var(--gold-2);
+      border:1px solid rgba(217,168,78,.72);
+    }
+
+    .btn-outline:hover{background:rgba(217,168,78,.08)}
+
+    .hamburger{
+      display:none;
+      width:44px;
+      height:44px;
+      border:1px solid var(--line-soft);
+      background:var(--panel);
+      color:white;
+      border-radius:10px;
+      font-size:20px;
+    }
+
+    /* Hero */
+    .hero{
+      position:relative;
+      min-height:650px;
+      display:flex;
+      align-items:center;
+      overflow:hidden;
+      border-bottom:1px solid var(--line-soft);
+    }
+
+    .hero:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 20% 50%, rgba(217,168,78,.13), transparent 25%),
+        linear-gradient(90deg, rgba(2,8,14,.05), rgba(2,8,14,.45));
+      pointer-events:none;
+    }
+
+    .hero-grid{
+      position:relative;
+      z-index:2;
+      display:grid;
+      grid-template-columns:1fr 1.1fr;
+      align-items:center;
+      gap:60px;
+    }
+
+    .hero-copy{
+      max-width:590px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid rgba(217,168,78,.42);
+      background:rgba(217,168,78,.05);
+      padding:9px 14px;
+      border-radius:999px;
+      color:#e4c17a;
+      font-size:13px;
+      margin-bottom:18px;
+    }
+
+    .hero h1{
+      margin:0;
+      font-size:clamp(44px,5.4vw,78px);
+      line-height:1.12;
+      letter-spacing:-1px;
+    }
+
+    .hero p{
+      color:#c3ccd6;
+      line-height:2;
+      font-size:17px;
+      margin:24px 0 30px;
+      max-width:560px;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+    }
+
+    .hero-art{
+      position:relative;
+      min-height:520px;
+      display:grid;
+      place-items:center;
+    }
+
+    .orbit{
+      position:absolute;
+      border:1px solid rgba(217,168,78,.28);
+      border-radius:50%;
+      box-shadow:0 0 60px rgba(217,168,78,.08);
+    }
+
+    .orbit.one{width:430px;height:200px;transform:rotate(-5deg)}
+    .orbit.two{width:500px;height:250px;transform:rotate(15deg)}
+    .orbit.three{width:360px;height:360px}
+
+    .hotel{
+      position:relative;
+      width:250px;
+      height:360px;
+      border:1px solid rgba(217,168,78,.55);
+      background:
+        linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px),
+        linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+        linear-gradient(180deg,#101b27,#08111a);
+      background-size:24px 24px,24px 24px,100% 100%;
+      box-shadow:0 35px 90px rgba(0,0,0,.55),0 0 45px rgba(217,168,78,.12);
+      transform:perspective(900px) rotateY(-8deg);
+      z-index:3;
+    }
+
+    .hotel:before{
+      content:"HOTEL";
+      position:absolute;
+      top:-44px;
+      left:50%;
+      transform:translateX(-50%);
+      color:var(--gold-2);
+      font-weight:900;
+      letter-spacing:4px;
+      border:1px solid rgba(217,168,78,.5);
+      background:#0c1620;
+      padding:10px 18px;
+      border-radius:5px;
+      box-shadow:0 8px 20px rgba(0,0,0,.35);
+    }
+
+    .hotel-top{
+      position:absolute;
+      top:-22px;
+      left:22px;
+      right:22px;
+      height:22px;
+      background:#172331;
+      border:1px solid rgba(217,168,78,.45);
+    }
+
+    .windows{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:11px;
+      padding:40px 24px 20px;
+    }
+
+    .window{
+      height:28px;
+      border:1px solid rgba(217,168,78,.26);
+      background:linear-gradient(180deg,#e2b65f,#805c21);
+      box-shadow:0 0 12px rgba(217,168,78,.18);
+      opacity:.82;
+    }
+
+    .hotel-base{
+      position:absolute;
+      bottom:-35px;
+      left:-32px;
+      right:-32px;
+      height:72px;
+      background:#111e2a;
+      border:1px solid rgba(217,168,78,.48);
+      clip-path:polygon(8% 0,92% 0,100% 100%,0 100%);
+    }
+
+    .node{
+      position:absolute;
+      z-index:4;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:#e7c57f;
+      font-size:13px;
+    }
+
+    .node span:first-child{
+      width:48px;
+      height:48px;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      background:#0c1722;
+      border:1px solid rgba(217,168,78,.7);
+      box-shadow:0 0 22px rgba(217,168,78,.1);
+      font-size:20px;
+    }
+
+    .node.n1{top:65px;right:20px}
+    .node.n2{top:185px;right:-10px}
+    .node.n3{bottom:55px;right:35px}
+    .node.n4{top:95px;left:-15px}
+    .node.n5{bottom:115px;left:-35px}
+
+    /* Agent cards */
+    .agents-grid{
+      display:grid;
+      grid-template-columns:repeat(6,1fr);
+      gap:14px;
+    }
+
+    .agent-card{
+      min-height:230px;
+      padding:22px 18px;
+      border:1px solid var(--line-soft);
+      background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));
+      border-radius:14px;
+      text-align:center;
+      transition:.25s ease;
+    }
+
+    .agent-card:hover{
+      transform:translateY(-6px);
+      border-color:rgba(217,168,78,.5);
+      box-shadow:var(--shadow);
+    }
+
+    .bot{
+      width:74px;
+      height:74px;
+      margin:0 auto 18px;
+      border-radius:24px;
+      background:linear-gradient(160deg,#edf4ff,#9fb5d0);
+      position:relative;
+      box-shadow:inset 0 -12px 20px rgba(2,10,20,.18),0 10px 30px rgba(0,0,0,.25);
+    }
+
+    .bot:before{
+      content:"";
+      position:absolute;
+      width:48px;
+      height:30px;
+      border-radius:13px;
+      background:#112338;
+      top:16px;
+      left:13px;
+      box-shadow:0 0 12px rgba(75,153,255,.4);
+    }
+
+    .bot:after{
+      content:"••";
+      position:absolute;
+      top:18px;
+      left:25px;
+      color:#73b7ff;
+      letter-spacing:7px;
+      font-size:16px;
+    }
+
+    .agent-card h3{
+      font-size:17px;
+      margin:0 0 10px;
+    }
+
+    .agent-card p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.8;
+      font-size:13px;
+    }
+
+    /* Dashboard */
+    .dashboard-wrap{
+      display:grid;
+      grid-template-columns:1.35fr .65fr;
+      gap:24px;
+      align-items:stretch;
+    }
+
+    .dashboard{
+      border:1px solid var(--line-soft);
+      border-radius:var(--radius);
+      padding:16px;
+      background:linear-gradient(180deg,#0a1520,#07111a);
+      box-shadow:var(--shadow);
+    }
+
+    .dash-top{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .metric{
+      padding:14px;
+      border-radius:10px;
+      border:1px solid var(--line-soft);
+      background:#0d1a27;
+    }
+
+    .metric small{color:var(--muted)}
+    .metric strong{display:block;font-size:22px;margin-top:8px}
+    .metric em{font-style:normal;font-size:11px;color:var(--green)}
+
+    .chart{
+      height:220px;
+      border:1px solid var(--line-soft);
+      border-radius:12px;
+      background:
+        linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+      background-size:100% 40px,70px 100%;
+      padding:18px;
+      overflow:hidden;
+    }
+
+    .chart svg{width:100%;height:100%}
+
+    .dash-bottom{
+      display:grid;
+      grid-template-columns:1fr 1fr 1.5fr;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .small-panel{
+      min-height:110px;
+      border:1px solid var(--line-soft);
+      border-radius:10px;
+      background:#0d1a27;
+      padding:14px;
+    }
+
+    .small-panel strong{font-size:28px}
+
+    .dashboard-copy{
+      border:1px solid var(--line-soft);
+      border-radius:var(--radius);
+      padding:44px 34px;
+      background:
+        radial-gradient(circle at 80% 20%,rgba(217,168,78,.08),transparent 35%),
+        linear-gradient(180deg,#0b1723,#08131e);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .dashboard-copy h2{
+      font-size:clamp(32px,4vw,54px);
+      margin:0 0 18px;
+      line-height:1.25;
+    }
+
+    .dashboard-copy p{
+      color:var(--muted);
+      line-height:1.95;
+      margin-bottom:26px;
+    }
+
+    /* benefits */
+    .benefits-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+    }
+
+    .benefit{
+      border:1px solid var(--line-soft);
+      background:linear-gradient(180deg,#0d1a27,#0a1520);
+      border-radius:14px;
+      padding:24px;
+      display:flex;
+      align-items:center;
+      gap:18px;
+    }
+
+    .benefit-icon{
+      font-size:36px;
+      color:var(--gold-2);
+      width:52px;
+      text-align:center;
+    }
+
+    .benefit h3{margin:0 0 8px}
+    .benefit p{margin:0;color:var(--muted);font-size:13px;line-height:1.7}
+
+    /* clients */
+    .clients-row{
+      display:grid;
+      grid-template-columns:repeat(6,1fr);
+      gap:12px;
+    }
+
+    .client{
+      min-height:82px;
+      border:1px solid var(--line-soft);
+      background:rgba(255,255,255,.02);
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:14px;
+      color:#d7dee8;
+      font-weight:700;
+      font-size:14px;
+    }
+
+    /* stats */
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      border:1px solid rgba(217,168,78,.36);
+      border-radius:18px;
+      overflow:hidden;
+      background:
+        linear-gradient(90deg,rgba(217,168,78,.07),transparent 18%,transparent 82%,rgba(217,168,78,.07)),
+        #0a1520;
+    }
+
+    .stat{
+      text-align:center;
+      padding:34px 15px;
+      border-left:1px solid var(--line-soft);
+    }
+
+    .stat:last-child{border-left:none}
+    .stat strong{display:block;color:var(--gold-2);font-size:48px;line-height:1}
+    .stat span{display:block;margin-top:12px;color:#e5e9ef}
+
+    /* features */
+    .features{
+      display:grid;
+      grid-template-columns:repeat(8,1fr);
+      border:1px solid var(--line-soft);
+      border-radius:18px;
+      overflow:hidden;
+    }
+
+    .feature{
+      padding:24px 12px;
+      min-height:145px;
+      text-align:center;
+      border-left:1px solid var(--line-soft);
+      background:rgba(255,255,255,.015);
+    }
+
+    .feature:last-child{border-left:none}
+    .feature .icon{font-size:28px;margin-bottom:12px;color:var(--gold-2)}
+    .feature strong{display:block;font-size:14px;margin-bottom:6px}
+    .feature span{font-size:11px;color:var(--muted);line-height:1.55}
+
+    /* CTA */
+    .cta{
+      margin:72px auto 38px;
+      border-radius:20px;
+      padding:44px;
+      background:
+        radial-gradient(circle at 8% 50%,rgba(255,255,255,.22),transparent 17%),
+        radial-gradient(circle at 92% 50%,rgba(255,255,255,.14),transparent 18%),
+        linear-gradient(135deg,#9f6b20,#e9bd63 48%,#b77e2d);
+      color:#07111a;
+      display:grid;
+      grid-template-columns:1.3fr .7fr;
+      align-items:center;
+      gap:20px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .cta h2{font-size:clamp(30px,4vw,50px);margin:0 0 14px}
+    .cta p{margin:0 0 24px;line-height:1.8}
+
+    .devices{
+      position:relative;
+      min-height:210px;
+    }
+
+    .laptop{
+      position:absolute;
+      width:250px;
+      height:145px;
+      border:10px solid #151b21;
+      background:#0b1723;
+      left:30px;
+      top:20px;
+      border-radius:10px;
+      box-shadow:0 20px 40px rgba(0,0,0,.28);
+    }
+
+    .laptop:before{
+      content:"";
+      position:absolute;
+      left:-25px;
+      right:-25px;
+      bottom:-24px;
+      height:20px;
+      background:#30363c;
+      clip-path:polygon(10% 0,90% 0,100% 100%,0 100%);
+    }
+
+    .phone{
+      position:absolute;
+      width:65px;
+      height:125px;
+      border:7px solid #1a2026;
+      background:#0b1723;
+      right:25px;
+      bottom:12px;
+      border-radius:15px;
+      box-shadow:0 15px 30px rgba(0,0,0,.22);
+    }
+
+    .mini-ui{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      padding:16px;
+    }
+
+    .mini-ui i{
+      display:block;
+      height:26px;
+      border-radius:4px;
+      background:linear-gradient(180deg,rgba(75,153,255,.25),rgba(217,168,78,.12));
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    /* Footer */
+    footer{
+      padding:24px 0 34px;
+      color:#8f9aa7;
+      text-align:center;
+      font-size:13px;
+      border-top:1px solid var(--line-soft);
+    }
+
+    /* Responsive */
+    @media (max-width:1100px){
+      .menu{display:none}
+      .hamburger{display:inline-grid;place-items:center}
+      .nav-actions .btn{display:none}
+      .hero-grid{grid-template-columns:1fr}
+      .hero-copy{text-align:center;margin:auto}
+      .hero-actions{justify-content:center}
+      .hero-art{order:-1;min-height:460px;transform:scale(.9)}
+      .agents-grid{grid-template-columns:repeat(3,1fr)}
+      .dashboard-wrap{grid-template-columns:1fr}
+      .benefits-grid{grid-template-columns:repeat(2,1fr)}
+      .features{grid-template-columns:repeat(4,1fr)}
+      .clients-row{grid-template-columns:repeat(3,1fr)}
+    }
+
+    @media (max-width:720px){
+      .section{padding:52px 0}
+      .nav{min-height:66px}
+      .brand{min-width:0}
+      .brand-text strong{font-size:21px}
+      .brand-text span{display:none}
+      .hero{min-height:auto;padding:48px 0}
+      .hero-art{transform:scale(.72);margin:-60px 0}
+      .hero h1{font-size:43px}
+      .agents-grid{grid-template-columns:1fr 1fr}
+      .dash-top{grid-template-columns:1fr 1fr}
+      .dash-bottom{grid-template-columns:1fr}
+      .benefits-grid{grid-template-columns:1fr}
+      .clients-row{grid-template-columns:1fr 1fr}
+      .stats{grid-template-columns:1fr 1fr}
+      .stat:nth-child(2){border-left:none}
+      .features{grid-template-columns:1fr 1fr}
+      .cta{grid-template-columns:1fr;padding:32px 22px;text-align:center}
+      .devices{min-height:190px;transform:scale(.82)}
+    }
+
+    @media (max-width:480px){
+      .agents-grid{grid-template-columns:1fr}
+      .clients-row{grid-template-columns:1fr}
+      .stats{grid-template-columns:1fr}
+      .stat{border-left:none;border-bottom:1px solid var(--line-soft)}
+      .stat:last-child{border-bottom:none}
+      .features{grid-template-columns:1fr}
+      .feature{border-left:none;border-bottom:1px solid var(--line-soft)}
+      .feature:last-child{border-bottom:none}
+      .hero-art{transform:scale(.60);margin:-100px 0}
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="#home" aria-label="ALTA Hospitality AI">
+      <div class="brand-mark"></div>
+      <div class="brand-text">
+        <strong>ALTA</strong>
+        <span>HOSPITALITY AI</span>
+      </div>
+    </a>
+
+    <nav class="menu" aria-label="القائمة الرئيسية">
+      <a href="#home" class="active">الرئيسية</a>
+      <a href="#features">المميزات</a>
+      <a href="#agents">الوكلاء الذكيون</a>
+      <a href="#pricing">الأسعار</a>
+      <a href="#clients">العملاء</a>
+      <a href="#resources">الموارد</a>
+      <a href="#contact">تواصل معنا</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a class="btn btn-outline" href="#contact">احجز عرضًا توضيحيًا</a>
+      <button class="hamburger" id="menuButton" aria-label="فتح القائمة">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="home">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <div class="eyebrow">✦ منصة سعودية ذكية للضيافة</div>
+        <h1>الجيل الجديد من تشغيل الفنادق <span class="gold">بالذكاء الاصطناعي</span></h1>
+        <p>
+          منصة متكاملة تعتمد على وكلاء ذكاء اصطناعي لإدارة التشغيل، تجربة النزيل،
+          الصيانة، المبيعات والتسويق من لوحة تحكم واحدة.
+        </p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary">ابدأ التجربة</a>
+          <a href="#dashboard" class="btn btn-outline">احجز عرضًا توضيحيًا</a>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit one"></div>
+        <div class="orbit two"></div>
+        <div class="orbit three"></div>
+
+        <div class="hotel">
+          <div class="hotel-top"></div>
+          <div class="windows">
+            <span class="window"></span><span class="window"></span><span class="window"></span><span class="window"></span><span class="window"></span>
+            <span class="window"></span><span class="window"></span><span class="window"></span><span class="window"></span><span class="window"></span>
+            <span class="window"></span><span class="window"></span><span class="window"></span><span class="window"></span><span class="window"></span>
+            <span class="window"></span><span class="window"></span><span class="window"></span><span class="window"></span><span class="window"></span>
+            <span class="window"></span><span class="window"></span><span class="window"></span><span class="window"></span><span class="window"></span>
+            <span class="window"></span><span class="window"></span><span class="window"></span><span class="window"></span><span class="window"></span>
+            <span class="window"></span><span class="window"></span><span class="window"></span><span class="window"></span><span class="window"></span>
+          </div>
+          <div class="hotel-base"></div>
+        </div>
+
+        <div class="node n1"><span>🛎</span><b>خدمة النزيل</b></div>
+        <div class="node n2"><span>🛠</span><b>الصيانة</b></div>
+        <div class="node n3"><span>📣</span><b>التسويق</b></div>
+        <div class="node n4"><span>🛡</span><b>الجودة</b></div>
+        <div class="node n5"><span>💼</span><b>الموظف التنفيذي</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="agents">
+    <div class="container">
+      <h2 class="section-title">الوكلاء الذكيون</h2>
+      <p class="section-subtitle">مجموعة من وكلاء الذكاء الاصطناعي يعملون من أجلك على مدار الساعة</p>
+
+      <div class="agents-grid">
+        <article class="agent-card">
+          <div class="bot"></div>
+          <h3>موظف الاستقبال</h3>
+          <p>إدارة الحجوزات والمكالمات وتسجيل الوصول والمغادرة.</p>
+        </article>
+        <article class="agent-card">
+          <div class="bot"></div>
+          <h3>خدمة النزيل</h3>
+          <p>الرد على الطلبات والشكاوى عبر جميع القنوات.</p>
+        </article>
+        <article class="agent-card">
+          <div class="bot"></div>
+          <h3>الصيانة</h3>
+          <p>إدارة البلاغات والصيانة والجولات الدورية.</p>
+        </article>
+        <article class="agent-card">
+          <div class="bot"></div>
+          <h3>التسويق</h3>
+          <p>إنشاء الحملات وتحليل الأداء وزيادة الحجوزات.</p>
+        </article>
+        <article class="agent-card">
+          <div class="bot"></div>
+          <h3>المبيعات</h3>
+          <p>إدارة العملاء والعروض وتحسين الإيرادات.</p>
+        </article>
+        <article class="agent-card">
+          <div class="bot"></div>
+          <h3>المدير التنفيذي</h3>
+          <p>تحليلات وتقارير ذكية لاتخاذ قرارات أفضل.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="dashboard">
+    <div class="container dashboard-wrap">
+      <div class="dashboard">
+        <div class="dash-top">
+          <div class="metric">
+            <small>نسبة الإشغال</small>
+            <strong>75%</strong>
+            <em>+12%</em>
+          </div>
+          <div class="metric">
+            <small>الإيرادات</small>
+            <strong>1.25M</strong>
+            <em>+8.2%</em>
+          </div>
+          <div class="metric">
+            <small>الشكاوى</small>
+            <strong>24</strong>
+            <em style="color:var(--red)">-15%</em>
+          </div>
+          <div class="metric">
+            <small>رضا النزلاء</small>
+            <strong>4.8/5</strong>
+            <em>+0.6</em>
+          </div>
+        </div>
+
+        <div class="chart">
+          <svg viewBox="0 0 700 220" preserveAspectRatio="none" aria-label="رسم بياني">
+            <defs>
+              <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#4b99ff" stop-opacity=".35"/>
+                <stop offset="100%" stop-color="#4b99ff" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,172 C70,160 100,105 165,120 C230,135 265,70 330,80 C390,88 410,145 470,130 C540,112 570,54 700,75 L700,220 L0,220 Z" fill="url(#area)"/>
+            <path d="M0,172 C70,160 100,105 165,120 C230,135 265,70 330,80 C390,88 410,145 470,130 C540,112 570,54 700,75" fill="none" stroke="#4b99ff" stroke-width="4"/>
+          </svg>
+        </div>
+
+        <div class="dash-bottom">
+          <div class="small-panel">
+            <small>البلاغات المفتوحة</small>
+            <strong>18</strong>
+          </div>
+          <div class="small-panel">
+            <small>سرعة الاستجابة</small>
+            <strong>65%</strong>
+          </div>
+          <div class="small-panel">
+            <small>توصيات الذكاء الاصطناعي</small>
+            <p style="color:var(--muted);line-height:1.7">زيادة طاقم الاستقبال وقت الذروة وتحسين عرض الغرف الأعلى طلبًا.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-copy">
+        <span class="eyebrow">لوحة تحكم ذكية</span>
+        <h2>كل ما تحتاجه في <span class="gold">لوحة واحدة</span></h2>
+        <p>
+          راقب الأداء، الإشغال، الإيرادات، الشكاوى، رضا النزلاء، والكثير من البيانات
+          لحظيًا مع توصيات ذكية لتحسين التشغيل وزيادة الأرباح.
+        </p>
+        <a class="btn btn-outline" href="#features">استكشف اللوحة</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">لماذا <span class="gold">ALTA؟</span></h2>
+      <div class="benefits-grid">
+        <article class="benefit">
+          <div class="benefit-icon">⚡</div>
+          <div><h3>تشغيل أسرع</h3><p>أتمتة المهام والعمليات لتقليل الوقت والجهد.</p></div>
+        </article>
+        <article class="benefit">
+          <div class="benefit-icon">📉</div>
+          <div><h3>تقليل التكاليف</h3><p>تحسين المصروفات التشغيلية وزيادة الكفاءة.</p></div>
+        </article>
+        <article class="benefit">
+          <div class="benefit-icon">★</div>
+          <div><h3>رفع رضا النزيل</h3><p>تجربة استثنائية تزيد من الولاء والتقييمات.</p></div>
+        </article>
+        <article class="benefit">
+          <div class="benefit-icon">🤖</div>
+          <div><h3>ذكاء يعمل 24/7</h3><p>وكلاء ذكيون لا يتوقفون عن العمل.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="clients">
+    <div class="container">
+      <h2 class="section-title">عملاؤنا</h2>
+      <p class="section-subtitle">شراكات نعتز بها ونجاحات نفخر بتحقيقها</p>
+      <div class="clients-row">
+        <div class="client">مدارس حفص</div>
+        <div class="client">شركة الإبداع العربي</div>
+        <div class="client">شركة فيدا المتحدة</div>
+        <div class="client">شركة المباني الوطنية</div>
+        <div class="client">STC</div>
+        <div class="client">مستشفى الدرعية</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pricing">
+    <div class="container">
+      <div class="stats">
+        <div class="stat"><strong>99%</strong><span>رضا العملاء</span></div>
+        <div class="stat"><strong>24/7</strong><span>تشغيل ذكي</span></div>
+        <div class="stat"><strong>70%</strong><span>تقليل وقت الاستجابة</span></div>
+        <div class="stat"><strong>3x</strong><span>زيادة كفاءة التشغيل</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <div class="container">
+      <h2 class="section-title">تكاملات ومميزات متكاملة</h2>
+      <p class="section-subtitle">بنية تقنية مرنة وآمنة تتكامل مع أنظمة الفندق الحالية</p>
+
+      <div class="features">
+        <div class="feature"><div class="icon">▦</div><strong>تكامل PMS</strong><span>أنظمة إدارة الفنادق</span></div>
+        <div class="feature"><div class="icon">◉</div><strong>واتساب</strong><span>تواصل تلقائي وذكي</span></div>
+        <div class="feature"><div class="icon">★</div><strong>Google Reviews</strong><span>إدارة التقييمات</span></div>
+        <div class="feature"><div class="icon">♜</div><strong>ذكاء تنبؤي</strong><span>توقع الطلب والإيرادات</span></div>
+        <div class="feature"><div class="icon">⌁</div><strong>تحليلات فورية</strong><span>تقارير لحظية ودقيقة</span></div>
+        <div class="feature"><div class="icon">⌂</div><strong>تعدد الفروع</strong><span>إدارة مركزية مرنة</span></div>
+        <div class="feature"><div class="icon">♙</div><strong>صلاحيات متقدمة</strong><span>تحكم كامل وآمن</span></div>
+        <div class="feature"><div class="icon">☁</div><strong>سحابي وآمن</strong><span>بياناتك في أمان</span></div>
+      </div>
+
+      <div class="cta" id="contact">
+        <div>
+          <h2>ابدأ اليوم في تحويل فندقك إلى فندق ذكي</h2>
+          <p>احجز عرضك التجريبي المجاني واكتشف كيف يمكن لـ ALTA أن تُحدث فرقًا في تشغيل فندقك.</p>
+          <a class="btn" style="background:#06111d;color:#f3c96f" href="mailto:info@alta.sa">احجز العرض التجريبي</a>
+        </div>
+
+        <div class="devices" aria-hidden="true">
+          <div class="laptop"><div class="mini-ui"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+          <div class="phone"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    © 2026 ALTA Hospitality AI — جميع الحقوق محفوظة
+  </div>
+</footer>
+
+<script>
+  const menuButton = document.getElementById('menuButton');
+  const menu = document.querySelector('.menu');
+
+  menuButton.addEventListener('click', () => {
+    const opened = menu.style.display === 'flex';
+    if (opened) {
+      menu.style.display = '';
+      menu.style.position = '';
+    } else {
+      Object.assign(menu.style, {
+        display:'flex',
+        position:'absolute',
+        top:'66px',
+        right:'16px',
+        left:'16px',
+        background:'#08131e',
+        padding:'18px',
+        border:'1px solid rgba(255,255,255,.08)',
+        borderRadius:'14px',
+        flexDirection:'column',
+        gap:'0'
+      });
+    }
+  });
+
+  document.querySelectorAll('.menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 1100) {
+        menu.removeAttribute('style');
+      }
+    });
+  });
+</script>
+</body>
+</html>

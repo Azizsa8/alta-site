@@ -1,0 +1,228 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   ALTA Investment Company — "Sovereign Gold & Midnight"
+   Tokens transcribed from the approved DESIGN.md theme.
+   ========================================================================== */
+
+@theme {
+  /* --- Midnight surfaces (dark bands) --- */
+  --color-surface: #091420;
+  --color-surface-dim: #06111d;
+  --color-surface-bright: #2f3a48;
+  --color-surface-lowest: #040f1b;
+  --color-surface-low: #111c29;
+  --color-surface-mid: #16202d;
+  --color-surface-high: #202b38;
+  --color-surface-highest: #2b3643;
+  --color-surface-panel: #0d1b29;
+  --color-surface-elevated: #101f2e;
+
+  /* --- Light surfaces (the 414 layout alternates light / midnight) --- */
+  --color-paper: #ffffff;
+  --color-paper-dim: #f6f7f9;
+  --color-paper-alt: #eef1f5;
+
+  /* --- Gold --- */
+  --color-primary: #f7c366;
+  --color-primary-container: #d9a84e;
+  --color-secondary: #edc06b;
+  --color-on-primary: #422c00;
+  /* Darkened gold, for text + icons sitting on light surfaces (WCAG AA). */
+  --color-gold-ink: #8a6410;
+  --color-gold-deep: #5f4100;
+
+  /* --- Text --- */
+  --color-text-primary: #f7f8fb;
+  --color-text-muted: #a8b2bf;
+  --color-ink: #0b1622;
+  --color-ink-muted: #55606d;
+
+  /* --- Structure --- */
+  --color-tertiary: #c1ccdf;
+  --color-outline: #9b8f7e;
+  --color-outline-variant: #4f4537;
+  --color-success: #56d28b;
+  --color-info: #4b99ff;
+  --color-danger: #d64545;
+
+  /* --- Typography --- */
+  --font-sans: var(--font-arabic), var(--font-grotesk), system-ui, sans-serif;
+  --font-display: var(--font-grotesk), var(--font-arabic), system-ui, sans-serif;
+
+  /* --- Radii (DESIGN.md "Shapes") --- */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+
+  /* --- Spacing rhythm --- */
+  --spacing-gutter: 16px;
+  --spacing-margin: 24px;
+  --spacing-section: 72px;
+  --spacing-section-sm: 52px;
+}
+
+/* Alpha-based strokes and shadows live as plain custom properties. */
+:root {
+  --stroke-gold: rgba(222, 172, 84, 0.28);
+  --stroke-soft: rgba(255, 255, 255, 0.08);
+  --stroke-ink: rgba(11, 22, 34, 0.1);
+  --shadow-panel: 0 24px 60px -24px rgba(0, 0, 0, 0.36);
+  --glow-gold: 0 12px 32px -10px rgba(217, 168, 78, 0.35);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Latin numerals inside Arabic copy read better tabular. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background: var(--color-primary-container);
+    color: var(--color-on-primary);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary-container);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .alta-container {
+    width: 100%;
+    max-width: 1180px;
+    margin-inline: auto;
+    padding-inline: 24px;
+  }
+
+  @media (max-width: 640px) {
+    .alta-container {
+      padding-inline: 16px;
+    }
+  }
+
+  /* Structural hairlines — DESIGN.md asks for 1px rules over pure whitespace. */
+  .rule-soft {
+    border-top: 1px solid var(--stroke-soft);
+  }
+  .rule-ink {
+    border-top: 1px solid var(--stroke-ink);
+  }
+
+  .b-gold {
+    border-color: var(--stroke-gold);
+  }
+  .b-soft {
+    border-color: var(--stroke-soft);
+  }
+  .b-ink {
+    border-color: var(--stroke-ink);
+  }
+
+  .shadow-panel {
+    box-shadow: var(--shadow-panel);
+  }
+  .shadow-gold {
+    box-shadow: var(--glow-gold);
+  }
+
+  /* Gold rule under section titles, as in the approved design. */
+  .title-rule::after {
+    content: "";
+    display: block;
+    width: 56px;
+    height: 2px;
+    margin-block-start: 14px;
+    margin-inline: auto;
+    background: var(--color-primary-container);
+  }
+  .title-rule-start::after {
+    margin-inline: 0;
+  }
+
+  /* The faint "blueprint" diagonals from the approved hero. */
+  .blueprint::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(
+        115deg,
+        transparent 39.7%,
+        var(--stroke-gold) 39.85%,
+        transparent 40%
+      ),
+      linear-gradient(
+        65deg,
+        transparent 69.7%,
+        var(--stroke-gold) 69.85%,
+        transparent 70%
+      );
+  }
+}
+
+@layer utilities {
+  .glass-nav {
+    background-color: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(16px);
+  }
+  .glass-nav-dark {
+    background-color: rgba(9, 20, 32, 0.82);
+    backdrop-filter: blur(16px);
+  }
+
+  /* Entrance animation, disabled for users who ask for reduced motion. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    animation: alta-reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes alta-reveal {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .marquee-track {
+    animation: alta-marquee 40s linear infinite;
+  }
+  @keyframes alta-marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+    .marquee-track {
+      animation: none;
+    }
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}

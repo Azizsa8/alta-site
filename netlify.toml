@@ -1,0 +1,32 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# The Next runtime plugin MUST stay declared explicitly. Netlify's auto-detection
+# is not reliable here: a git build can report framework "next" yet plugin_state
+# "none", publish .next as raw static files and 404 every route — while the build
+# reports success. After deploying, check the deploy's function count is not 0.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Never set NETLIFY_NEXT_PLUGIN_SKIP: it makes the runtime skip every lifecycle
+# hook, so no serverless function is created and all API routes silently vanish.
+
+[functions]
+  node_bundler = "esbuild"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/brand/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
