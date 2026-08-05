@@ -23,7 +23,19 @@
  *    disabled by default via `thinkingBudget: 0`.
  */
 
-export const MODEL_CHAIN = ["gemini-2.5-flash", "gemini-flash-lite-latest"];
+/**
+ * Failover chain, in order.
+ *
+ * `thinking` records whether the model accepts `generationConfig.thinkingConfig`.
+ * It is NOT uniform: gemini-2.5-flash accepts it, gemini-flash-lite-latest
+ * rejects the whole request with `400 invalid argument`. Sending it blindly to
+ * every model turns the fallback into a hard failure exactly when the primary
+ * is exhausted — i.e. precisely when the fallback is needed.
+ */
+export const MODEL_CHAIN: { id: string; thinking: boolean }[] = [
+  { id: "gemini-2.5-flash", thinking: true },
+  { id: "gemini-flash-lite-latest", thinking: false },
+];
 
 const ENDPOINT = (model: string) =>
   `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
@@ -57,7 +69,7 @@ export async function generate(
 
   let lastReason: AiResult["reason"] = "network";
 
-  for (const model of MODEL_CHAIN) {
+  for (const { id: model, thinking } of MODEL_CHAIN) {
     try {
       const res = await fetch(`${ENDPOINT(model)}?key=${key}`, {
         method: "POST",
@@ -71,8 +83,11 @@ export async function generate(
             temperature: opts.temperature ?? 0.4,
             maxOutputTokens: opts.maxOutputTokens ?? 1024,
             // Thinking tokens count against maxOutputTokens; leaving this on
-            // starves the actual answer. See rule 3 above.
-            thinkingConfig: { thinkingBudget: opts.thinkingBudget ?? 0 },
+            // starves the actual answer (rule 3). Only sent to models that
+            // accept the field — see MODEL_CHAIN.
+            ...(thinking
+              ? { thinkingConfig: { thinkingBudget: opts.thinkingBudget ?? 0 } }
+              : {}),
             ...(opts.responseMimeType
               ? { responseMimeType: opts.responseMimeType }
               : {}),
