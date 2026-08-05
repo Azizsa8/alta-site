@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { services } from "@/content/services";
+import { platforms } from "@/content/platforms";
 import { company } from "@/content/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -31,6 +32,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.85,
+    })),
+    {
+      url: `${company.origin}/services/ai-engineering/platforms`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    },
+    ...platforms.map((p) => ({
+      url: `${company.origin}/services/ai-engineering/platforms/${p.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
     })),
   ];
 }

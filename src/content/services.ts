@@ -40,10 +40,14 @@ export type IconName =
 
 export const services: Service[] = [
   {
+    // Slug kept as approved in the content document (/services/ai-engineering)
+    // so the published URL and its SEO entry stay valid; the client-facing
+    // title now reads "AI and Information Technology" as requested.
     slug: "ai-engineering",
-    title: "هندسة الذكاء الاصطناعي",
-    titleEn: "AI ENGINEERING",
-    short: "تصميم حلول ووكلاء أذكياء وأتمتة العمليات وربطها باحتياجات المنشأة.",
+    title: "الذكاء الاصطناعي وتقنية المعلومات",
+    titleEn: "AI & INFORMATION TECHNOLOGY",
+    short:
+      "تصميم حلول ووكلاء أذكياء، وبناء المنصات والتطبيقات، وأتمتة العمليات وربطها باحتياجات المنشأة.",
     headline: "ذكاء اصطناعي مصمم لخدمة أهداف العمل",
     intro:
       "نساعد المنشآت على الانتقال من الاهتمام بالذكاء الاصطناعي إلى تطبيقات عملية قابلة للقياس. تبدأ خدمتنا بتحديد فرص الاستخدام ذات الأولوية، ثم تصميم الحلول والوكلاء الأذكياء، وربطها بالأنظمة والبيانات، ووضع ضوابط الحوكمة والمتابعة.",

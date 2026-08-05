@@ -109,6 +109,14 @@ const PAGES = [
   ["/services/media-social", ["حضور مؤسسي يصنع الثقة", "الهوية البصرية"]],
   ["/services/events-exhibitions", ["تجارب متكاملة", "تصميم مفهوم الفعالية"]],
   ["/services/research-surveys", ["بيانات موثوقة", "دراسات السوق"]],
+  [
+    "/services/ai-engineering/platforms",
+    ["برامجنا وتطبيقاتنا ومنصاتنا", "ALTA Hospitality AI"],
+  ],
+  [
+    "/services/ai-engineering/platforms/alta-hospitality",
+    ["ALTA Hospitality AI", "الوكلاء الأذكياء", "لوحة واحدة", "تكامل PMS"],
+  ],
   ["/sectors", ["القطاعات التي نخدمها", "الفنادق والضيافة"]],
   ["/projects", ["المشاريع وسابقة الأعمال", "ALTA Hospitality", "alta-hospitality"]],
   ["/media-center", ["المركز الإعلامي", "أخبار الشركة"]],
@@ -270,6 +278,56 @@ async function checkChat(runId) {
     const res = await postJson("/api/chat", { message: question, sessionId });
     const reply = res.json?.reply ?? "";
     check(`fallback: ${label}`, expect.test(reply), reply.slice(0, 55));
+  }
+
+  /*
+   * Imperfect Arabic. Visitors greet, introduce themselves and misspell —
+   * often all three at once. A greeting scored against the content index
+   * returns a confidently irrelevant service answer, so these are handled
+   * before retrieval.
+   */
+  const social = [
+    ["السلام عليكم", /وعليكم السلام/, "full greeting"],
+    ["سلام عليكم", /وعليكم السلام/, "greeting missing the article"],
+    ["اسلام عليكم", /وعليكم السلام/, "misspelled greeting"],
+    ["مرحبا", /أهلاً|مرحب/, "marhaba"],
+    ["هلا", /أهلاً|مرحب/, "hala"],
+    ["صباح الخير", /أهلاً|مرحب/, "morning greeting"],
+    ["أنا اسمي عبدالعزيز", /عبدالعزيز/, "full self-introduction"],
+    ["اسمي عبدالعزيز", /عبدالعزيز/, "short self-introduction"],
+    ["انا اسمي عبد العزيز", /عبد العزيز|عبدالعزيز/, "two-part name"],
+    ["hello", /أهلاً|مرحب/, "english hello"],
+    ["my name is Aziz", /Aziz/, "english introduction"],
+    ["شكرا لك", /العفو/, "thanks"],
+    ["مشكور", /العفو/, "colloquial thanks"],
+  ];
+  for (const [message, expect, label] of social) {
+    const res = await postJson("/api/chat", { message, sessionId });
+    const reply = res.json?.reply ?? "";
+    check(`arabic: ${label}`, expect.test(reply), reply.slice(0, 55));
+  }
+
+  // A greeting that also carries a question must answer the QUESTION.
+  const mixed = await postJson("/api/chat", {
+    message: "السلام عليكم، ما هي خدمات التوريدات لديكم؟",
+    sessionId,
+  });
+  check(
+    "arabic: greeting + question answers the question",
+    /توريد/.test(mixed.json?.reply ?? ""),
+    (mixed.json?.reply ?? "").slice(0, 55),
+  );
+
+  // Misspellings of real topics must still resolve.
+  const typos = [
+    ["ما هي خدمات الضيافه؟", /ضيافة|إعاشة/, "ة→ه"],
+    ["عايز اعرف عن التوريدت", /توريد/, "dropped letter"],
+    ["وش خدماتكم في الصيانه", /صيانة|تشغيل/, "colloquial + ة→ه"],
+  ];
+  for (const [message, expect, label] of typos) {
+    const res = await postJson("/api/chat", { message, sessionId });
+    check(`arabic typo: ${label}`, expect.test(res.json?.reply ?? ""),
+      (res.json?.reply ?? "").slice(0, 55));
   }
 
   // A question with no match must still not dead-end.

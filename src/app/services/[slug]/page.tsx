@@ -60,6 +60,39 @@ export default async function ServicePage({ params }: Params) {
         ]}
       />
 
+      {/* ---------------------------- SUB-PAGES (AI & IT only, for now) ---- */}
+      {service.slug === "ai-engineering" && (
+        <Section tone="paper" className="!pb-0">
+          <Link
+            href="/services/ai-engineering/platforms"
+            className="group relative flex flex-col gap-5 overflow-hidden rounded-xl border b-gold bg-surface-panel p-8 transition-all hover:-translate-y-1 hover:shadow-panel md:flex-row md:items-center md:justify-between"
+          >
+            <div className="blueprint absolute inset-0 opacity-40" />
+            <div className="relative">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+                PROGRAMS, APPS &amp; PLATFORMS
+              </p>
+              <h2 className="font-display text-[22px] font-bold text-text-primary md:text-[26px]">
+                برامجنا وتطبيقاتنا ومنصاتنا
+              </h2>
+              <p className="mt-3 max-w-2xl text-[13.5px] leading-[1.9] text-text-muted">
+                منتجات رقمية جاهزة للتشغيل مبنية على وكلاء الذكاء الاصطناعي — من بينها{" "}
+                <span className="font-bold text-primary">ALTA Hospitality AI</span> لتشغيل
+                الفنادق والمنتجعات.
+              </p>
+            </div>
+            <span className="relative inline-flex shrink-0 items-center gap-2 rounded-[10px] border b-gold px-5 py-3 text-[13px] font-semibold text-primary">
+              استعرض المنصات
+              <Icon
+                name="arrow"
+                className="size-4 transition-transform group-hover:-translate-x-1"
+                strokeWidth={2.2}
+              />
+            </span>
+          </Link>
+        </Section>
+      )}
+
       {/* --------------------------------------------------------- OFFERINGS */}
       <Section tone="paper">
         <SectionTitle eyebrow="WHAT WE OFFER" title="ماذا نقدم؟" />

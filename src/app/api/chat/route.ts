@@ -41,7 +41,9 @@ const SYSTEM = `أنت المساعد الرقمي لموقع ${company.nameAr}.
 - اعتمد حصراً على المعلومات المرفقة. إذا لم تكن المعلومة موجودة، قل بوضوح إنها تُستكمل عبر التواصل مع الفريق، ووجّه المستخدم إلى /contact أو /request-quote.
 - لا تذكر أي أرقام هاتف أو بريد إلكتروني أو تراخيص أو شهادات أو إحصاءات غير واردة في المعلومات.
 - عند السؤال عن خدمة، اذكر اسمها ورابط صفحتها بصيغة /services/<slug>.
-- لا تَعِد بأسعار أو مدد تنفيذ؛ وجّه المستخدم إلى طلب عرض سعر.`;
+- لا تَعِد بأسعار أو مدد تنفيذ؛ وجّه المستخدم إلى طلب عرض سعر.
+- قد يكتب المستخدم بلهجة عامية أو بأخطاء إملائية أو دون تشكيل أو بحروف ناقصة. افهم المقصود ولا تصحح له ولا تعلّق على الأخطاء، وأجب مباشرة عن نيته.
+- إذا كان السؤال غير واضح تماماً، اذكر أقرب احتمالين واطلب توضيحاً موجزاً بدلاً من الاعتذار العام.`;
 
 /**
  * Deterministic answer used when the AI is unavailable.
@@ -87,6 +89,11 @@ const STOP = new Set([
   "تقدمون", "تعملون", "تخدمون", "تنفذون", "لديك", "حدثني", "اخبرني", "اريد",
   "يمكن", "ممكن", "بشان", "حول", "the", "a", "of", "is", "do", "you", "what",
   "how", "about", "tell", "your",
+  // Colloquial question openers, and "خدماتكم" — it appears in almost every
+  // question, so it points at whichever entry is shortest rather than at the
+  // topic the visitor actually named.
+  "وش", "ايش", "شو", "وشو", "كيفيه", "خدماتكم", "خدماتك", "عندكم", "لديكم",
+  "عايز", "ابغى", "ودي", "بغيت",
 ]);
 
 function terms(text: string) {
@@ -191,7 +198,137 @@ function tokensMatch(a: string, b: string) {
   if (a === b) return true;
   const shorter = a.length <= b.length ? a : b;
   const longer = shorter === a ? b : a;
-  return shorter.length >= 4 && longer.startsWith(shorter);
+  if (shorter.length >= 4 && longer.startsWith(shorter)) return true;
+  // Tolerate one typo on reasonably long words: visitors type quickly on
+  // phone keyboards and "الضيافه" / "الضيافة" / "الضياقة" all mean the same
+  // question. Restricted to length >= 5 so short words cannot fuzzily collide.
+  if (shorter.length >= 5 && Math.abs(a.length - b.length) <= 1) {
+    return withinOneEdit(a, b);
+  }
+  return false;
+}
+
+/** True when `a` and `b` differ by at most one insertion, deletion or substitution. */
+function withinOneEdit(a: string, b: string) {
+  if (a === b) return true;
+  const [short, long] = a.length <= b.length ? [a, b] : [b, a];
+  if (long.length - short.length > 1) return false;
+
+  let i = 0;
+  let j = 0;
+  let edits = 0;
+  while (i < short.length && j < long.length) {
+    if (short[i] === long[j]) {
+      i++;
+      j++;
+      continue;
+    }
+    if (++edits > 1) return false;
+    if (short.length === long.length) i++;
+    j++;
+  }
+  return true;
+}
+
+/* ------------------------------------------------- conversational intents */
+
+/**
+ * Greetings, thanks and self-introductions.
+ *
+ * Real Arabic input is rarely clean: "السلام عليكم" arrives as "سلام عليكم",
+ * "اسلام عليكم" or "السلام عليكم ورحمة الله", and people introduce themselves
+ * as "أنا اسمي عبدالعزيز", "اسمي عبدالعزيز" or just "عبدالعزيز معك". These are
+ * matched before the retrieval index, because a greeting scored against the
+ * content index produces a confidently wrong service answer.
+ */
+/*
+ * NOTE: no `\b` anywhere below. JavaScript defines the word-boundary assertion
+ * over ASCII word characters, so `/\bسلام/` never matches Arabic text — it
+ * fails silently, which is exactly how the first version of this passed review
+ * and then matched nothing at runtime.
+ */
+const GREETING_PATTERNS = [
+  /سلام\s*عليكم/,
+  /السلام/,
+  /مرحب/,
+  /اهلا|اهلين|هلا/,
+  /صباح\s*(الخير|النور)/,
+  /مساء\s*(الخير|النور)/,
+  /تحيه|تحياتي/,
+  /^\s*(hi|hello|hey|salam|assalam|greetings)\b/i,
+];
+
+const THANKS_PATTERNS = [
+  /شكر/,
+  /مشكور/,
+  /يعطيك\s*العافيه/,
+  /تسلم/,
+  /\bthanks?\b/i,
+  /\bthank you\b/i,
+];
+
+/** Matched against the RAW message so the captured name keeps its casing. */
+const NAME_PATTERNS = [
+  /(?:انا|أنا)\s+اسمي\s+([\p{L}\s]{2,30})/u,
+  /اسمي\s+([\p{L}\s]{2,30})/u,
+  /(?:انا|أنا)\s+([\p{L}]{3,20})\s*$/u,
+  /معك\s+([\p{L}]{3,20})/u,
+  /my name is\s+([\p{L}\s]{2,30})/iu,
+  /(?:^|\s)i(?:'m| am)\s+([\p{L}\s]{2,30})/iu,
+];
+
+/** Words that follow "أنا" but are not names. */
+const NOT_A_NAME = /(ابحث|أبحث|اريد|أريد|احتاج|أحتاج|عندي|اسال|أسأل|مهتم|جديد)/;
+
+function extractName(raw: string): string | null {
+  for (const re of NAME_PATTERNS) {
+    const m = raw.match(re);
+    if (!m?.[1]) continue;
+    const name = m[1].trim().split(/\s+/).slice(0, 2).join(" ");
+    if (name.length >= 3 && !NOT_A_NAME.test(name)) return name;
+  }
+  return null;
+}
+
+function matchesAny(text: string, patterns: RegExp[]) {
+  return patterns.some((re) => re.test(text));
+}
+
+/**
+ * Handle conversational openers deterministically.
+ *
+ * Returns null when the message is a real question, so it falls through to
+ * retrieval (or the AI).
+ */
+function socialReply(raw: string): string | null {
+  const t = normalise(raw);
+  // Name comes from the raw text so "Aziz" is not returned as "aziz".
+  const name = extractName(raw);
+  const isGreeting = matchesAny(t, GREETING_PATTERNS);
+  const stripped = t
+    .replace(/سلام\s*عليكم|السلام|عليكم|ورحمه|الله|وبركاته|مرحبا|اهلا|اهلين|هلا/g, "")
+    .replace(/صباح\s*(الخير|النور)|مساء\s*(الخير|النور)/g, "")
+    .replace(/انا\s+اسمي|اسمي|معك/g, "")
+    .replace(/\b(hi|hello|hey|my name is|i am|thanks?|thank you)\b/gi, "")
+    .replace(
+      name ? new RegExp(normalise(name).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g") : /$^/,
+      "",
+    )
+    .trim();
+
+  // A greeting or introduction carrying a real question: answer the question.
+  const hasQuestion = terms(stripped).length >= 2;
+
+  if (name && !hasQuestion) {
+    return `أهلاً ${name}، سعدنا بتواصلك مع ${company.nameAr}. كيف يمكنني مساعدتك؟ يمكنك سؤالي عن خدماتنا أو القطاعات التي نخدمها، أو طلب عرض سعر عبر /request-quote.`;
+  }
+  if (isGreeting && !hasQuestion) {
+    return `وعليكم السلام ورحمة الله وبركاته، أهلاً بك في ${company.nameAr}. كيف يمكنني مساعدتك؟ يمكنك سؤالي عن خدماتنا أو طلب عرض سعر عبر /request-quote.`;
+  }
+  if (matchesAny(t, THANKS_PATTERNS) && !hasQuestion) {
+    return "العفو، سعدنا بخدمتك. إن احتجت أي معلومة أخرى عن خدماتنا أو أردت عرض سعر فأنا هنا.";
+  }
+  return null;
 }
 
 /** Pre-tokenised index, so scoring does no string splitting per request. */
@@ -228,6 +365,9 @@ function idf(token: string) {
 }
 
 function fallbackReply(message: string): string {
+  const social = socialReply(message);
+  if (social) return social;
+
   const asked = terms(message);
   if (asked.length === 0) return genericReply();
 
@@ -266,7 +406,9 @@ function genericReply(): string {
 }
 
 export async function POST(req: Request) {
-  const limit = rateLimit(`chat:${clientKey(req)}`, 25);
+  // A real visitor conversation runs well past 25 turns/minute once greetings,
+  // follow-ups and suggestion chips are counted; 25 was throttling legitimate use.
+  const limit = rateLimit(`chat:${clientKey(req)}`, 80);
   if (!limit.allowed) {
     return NextResponse.json(
       { reply: "تم تجاوز الحد المسموح من الرسائل. يرجى المحاولة بعد قليل." },
@@ -303,6 +445,23 @@ export async function POST(req: Request) {
 
   let reply: string;
   let degraded = false;
+
+  // Greetings, thanks and self-introductions are answered deterministically,
+  // before the model. They need no reasoning, they must never burn free-tier
+  // quota, and a greeting scored against the content index would otherwise
+  // produce a confidently irrelevant service answer.
+  const social = socialReply(message);
+  if (social) {
+    await recordEvent({
+      type: "chat_turn",
+      source: "assistant",
+      sessionId: body.sessionId,
+      path: body.path,
+      text: social,
+      meta: { intent: "social" },
+    });
+    return NextResponse.json({ reply: social, degraded: false });
+  }
 
   if (hasAiKey()) {
     const history = (body.history ?? [])

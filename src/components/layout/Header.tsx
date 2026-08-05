@@ -60,7 +60,7 @@ export function Header() {
       }`}
     >
       <div className="alta-container flex h-[72px] items-center justify-between gap-4">
-        <Logo />
+        <Logo onDark />
 
         <nav aria-label="القائمة الرئيسية" className="hidden lg:block">
           <ul className="flex items-center gap-1">

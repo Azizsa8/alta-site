@@ -47,7 +47,15 @@ export const mainNav: NavItem[] = [
     label: "خدماتنا",
     href: "/services",
     children: [
-      { label: "هندسة الذكاء الاصطناعي", href: "/services/ai-engineering" },
+      {
+        label: "الذكاء الاصطناعي وتقنية المعلومات",
+        href: "/services/ai-engineering",
+      },
+      { label: "— برامجنا ومنصاتنا", href: "/services/ai-engineering/platforms" },
+      {
+        label: "— ALTA Hospitality AI",
+        href: "/services/ai-engineering/platforms/alta-hospitality",
+      },
       { label: "التشغيل والصيانة والنظافة", href: "/services/facilities-management" },
       { label: "الضيافة وخدمات الإعاشة", href: "/services/hospitality-catering" },
       { label: "الاستشارات الإدارية وتأهيل المنشآت", href: "/services/management-consulting" },
@@ -77,7 +85,11 @@ export const footerNav = [
   {
     title: "خدماتنا",
     links: [
-      { label: "هندسة الذكاء الاصطناعي", href: "/services/ai-engineering" },
+      {
+        label: "الذكاء الاصطناعي وتقنية المعلومات",
+        href: "/services/ai-engineering",
+      },
+      { label: "برامجنا ومنصاتنا", href: "/services/ai-engineering/platforms" },
       { label: "التشغيل والصيانة والنظافة", href: "/services/facilities-management" },
       { label: "الضيافة وخدمات الإعاشة", href: "/services/hospitality-catering" },
       { label: "الاستشارات وتأهيل المنشآت", href: "/services/management-consulting" },

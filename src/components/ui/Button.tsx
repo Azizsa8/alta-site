@@ -16,9 +16,11 @@ const variants: Record<Variant, string> = {
   // Transparent with a gold hairline — used on midnight surfaces.
   secondary:
     "border border-[color:var(--stroke-gold)] text-primary hover:bg-primary/10 hover:-translate-y-0.5",
-  // Dark pill on light surfaces (the "المزيد عن الشركة" button in the approved design).
+  // Raised panel button — the "المزيد عن الشركة" affordance in the approved
+  // design. On the midnight base this is a lifted surface with a gold hairline,
+  // not the dark-on-light pill it was when the site had white sections.
   onDark:
-    "bg-surface text-text-primary hover:bg-surface-elevated hover:-translate-y-0.5",
+    "bg-surface-elevated text-text-primary border border-[color:var(--stroke-gold)] hover:bg-surface-high hover:-translate-y-0.5",
   ghost:
     "text-gold-ink hover:text-gold-deep underline-offset-4 hover:underline px-0 min-h-0",
 };

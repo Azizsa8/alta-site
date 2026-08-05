@@ -18,25 +18,32 @@
   --color-surface-panel: #0d1b29;
   --color-surface-elevated: #101f2e;
 
-  /* --- Light surfaces (the 414 layout alternates light / midnight) --- */
-  --color-paper: #ffffff;
-  --color-paper-dim: #f6f7f9;
-  --color-paper-alt: #eef1f5;
+  /* --- Base surfaces ---
+     DESIGN.md specifies "Dark Mode Luxury", and code.html ships
+     <html class="dark"><body class="bg-surface">. The whole site is therefore
+     dark; these three are the base / raised / highest tiers of that dark
+     stack. They keep the names `paper*` because every component already reads
+     them, which is what makes the palette switchable in one place with no page
+     left behind. */
+  --color-paper: #091420;
+  --color-paper-dim: #0d1b29;
+  --color-paper-alt: #101f2e;
 
   /* --- Gold --- */
   --color-primary: #f7c366;
   --color-primary-container: #d9a84e;
   --color-secondary: #edc06b;
   --color-on-primary: #422c00;
-  /* Darkened gold, for text + icons sitting on light surfaces (WCAG AA). */
-  --color-gold-ink: #8a6410;
-  --color-gold-deep: #5f4100;
+  /* Gold for text + icons on the dark base. The bright tone is correct here;
+     the darkened variant it replaced was calibrated for white backgrounds. */
+  --color-gold-ink: #f2be62;
+  --color-gold-deep: #d9a84e;
 
   /* --- Text --- */
   --color-text-primary: #f7f8fb;
   --color-text-muted: #a8b2bf;
-  --color-ink: #0b1622;
-  --color-ink-muted: #55606d;
+  --color-ink: #d8e3f5;
+  --color-ink-muted: #a8b2bf;
 
   /* --- Structure --- */
   --color-tertiary: #c1ccdf;
@@ -67,7 +74,8 @@
 :root {
   --stroke-gold: rgba(222, 172, 84, 0.28);
   --stroke-soft: rgba(255, 255, 255, 0.08);
-  --stroke-ink: rgba(11, 22, 34, 0.1);
+  /* Hairlines on the dark base — was a dark-on-light rule. */
+  --stroke-ink: rgba(255, 255, 255, 0.08);
   --shadow-panel: 0 24px 60px -24px rgba(0, 0, 0, 0.36);
   --glow-gold: 0 12px 32px -10px rgba(217, 168, 78, 0.35);
 }
@@ -75,6 +83,9 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* Makes native controls — select menus, scrollbars, date pickers — render
+       dark. Without it they stay light and look pasted onto the page. */
+    color-scheme: dark;
   }
 
   body {
@@ -178,8 +189,9 @@
 }
 
 @layer utilities {
+  /* DESIGN.md > Elevation: frosted nav at 82% over the midnight base. */
   .glass-nav {
-    background-color: rgba(255, 255, 255, 0.86);
+    background-color: rgba(9, 20, 32, 0.82);
     backdrop-filter: blur(16px);
   }
   .glass-nav-dark {
