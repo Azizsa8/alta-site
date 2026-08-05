@@ -517,6 +517,23 @@ async function checkAdminDashboard() {
   check("session cookie is issued", setCookie.includes("alta_admin="));
   check("session cookie is HttpOnly", /httponly/i.test(setCookie));
   check("session cookie is SameSite=Lax", /samesite=lax/i.test(setCookie));
+  // Over plain http the cookie must NOT be Secure, or a local `next start`
+  // login would be silently dropped by the browser.
+  check("no Secure flag over http", !/;\s*secure/i.test(setCookie));
+
+  // REGRESSION: the Secure flag was originally gated on process.env.NETLIFY,
+  // which is build-time only and absent in the deployed runtime — so the
+  // production cookie shipped without Secure. It must follow the forwarded
+  // protocol instead.
+  const httpsLogin = await fetch(`${BASE}/api/admin/login`, {
+    method: "POST",
+    headers: { ...JSON_HEADERS, ...asVisitor({ "x-forwarded-proto": "https" }) },
+    body: JSON.stringify({ username: ADMIN_USERNAME, password: ADMIN_PASSWORD }),
+  });
+  check(
+    "Secure flag is set when x-forwarded-proto is https",
+    /;\s*secure/i.test(httpsLogin.headers.get("set-cookie") ?? ""),
+  );
 
   const cookie = setCookie.split(";")[0];
 

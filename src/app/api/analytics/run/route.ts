@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { runDailyAnalysis, riyadhDay, previousDay } from "@/lib/analytics";
+import { isProductionRuntime } from "@/lib/adminAuth";
 
 export const dynamic = "force-dynamic";
 /** Stay inside the platform budget — the AI client already times out at 25s. */
@@ -15,7 +16,9 @@ export const maxDuration = 60;
 function authorised(req: Request) {
   const expected = process.env.CRON_SECRET;
   // With no secret configured we only allow local/dev use, never public prod.
-  if (!expected) return !process.env.NETLIFY;
+  // NODE_ENV, not NETLIFY: the latter is build-time only and is absent in the
+  // deployed runtime, so a check against it would silently fail open.
+  if (!expected) return !isProductionRuntime();
   return req.headers.get("x-cron-secret") === expected;
 }
 

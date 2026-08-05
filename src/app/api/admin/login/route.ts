@@ -4,6 +4,7 @@ import {
   createSession,
   verifyPassword,
   isLoginConfigured,
+  requestIsHttps,
 } from "@/lib/adminAuth";
 import { rateLimit, clientKey } from "@/lib/submissions";
 
@@ -56,7 +57,9 @@ export async function POST(req: Request) {
   res.cookies.set(SESSION_COOKIE, session.value, {
     httpOnly: true, // not readable by JS, so XSS cannot lift the session
     sameSite: "lax", // survives a normal navigation, blocks cross-site POSTs
-    secure: Boolean(process.env.NETLIFY),
+    // Derived from the request: TLS terminates upstream on Netlify, so the
+    // runtime sees plain http and only x-forwarded-proto knows the truth.
+    secure: requestIsHttps(req),
     path: "/",
     maxAge: session.maxAge,
   });

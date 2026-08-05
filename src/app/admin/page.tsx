@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import { SESSION_COOKIE, readSession, isLoginConfigured } from "@/lib/adminAuth";
+import {
+  SESSION_COOKIE,
+  readSession,
+  isLoginConfigured,
+  isProductionRuntime,
+} from "@/lib/adminAuth";
 import {
   readReport,
   listReportDays,
@@ -72,7 +77,7 @@ export default async function AdminDashboard({ searchParams }: Props) {
   // is NOT configured, only local development may pass (never Netlify).
   if (isLoginConfigured()) {
     if (!session) redirect("/admin/login");
-  } else if (process.env.NETLIFY) {
+  } else if (isProductionRuntime()) {
     redirect("/admin/login");
   }
 

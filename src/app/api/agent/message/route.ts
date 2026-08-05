@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { handleInboundMessage } from "@/lib/agents/core";
+import { isProductionRuntime } from "@/lib/adminAuth";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -14,7 +15,7 @@ export const maxDuration = 60;
  */
 function authorised(req: Request) {
   const expected = process.env.ADMIN_TOKEN;
-  if (!expected) return !process.env.NETLIFY; // local dev only
+  if (!expected) return !isProductionRuntime(); // local dev only
   const header = req.headers.get("authorization") ?? "";
   return header === `Bearer ${expected}`;
 }

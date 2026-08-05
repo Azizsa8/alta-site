@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // `netlify deploy --build` writes bundled output here. It is generated
+    // code, and linting it buries real findings under thousands of warnings.
+    ".netlify/**",
+    ".data/**",
   ]),
 ]);
 

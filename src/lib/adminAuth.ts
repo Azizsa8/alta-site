@@ -76,6 +76,39 @@ export function readSession(cookieValue: string | undefined): { username: string
   return { username: Buffer.from(userB64, "base64url").toString("utf8") };
 }
 
+/* ------------------------------------------------------------ environment -- */
+
+/**
+ * Is this a production runtime?
+ *
+ * Do NOT use `process.env.NETLIFY` for this. It is set during the *build* but
+ * is absent inside the deployed Lambda, so any check written against it
+ * silently evaluates false in production — which is the wrong direction for a
+ * security guard. NODE_ENV is set to "production" by the Next build itself and
+ * is present at runtime.
+ */
+export function isProductionRuntime() {
+  return process.env.NODE_ENV === "production";
+}
+
+/**
+ * Should the session cookie carry the `Secure` flag?
+ *
+ * Derived from the request rather than the environment: Netlify terminates TLS
+ * upstream, so the Lambda sees plain http and only `x-forwarded-proto` records
+ * what the browser actually used. This also keeps `next start` over
+ * http://localhost working, where a Secure cookie would be silently dropped.
+ */
+export function requestIsHttps(req: Request) {
+  const forwarded = req.headers.get("x-forwarded-proto");
+  if (forwarded) return forwarded.split(",")[0].trim() === "https";
+  try {
+    return new URL(req.url).protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 /* ------------------------------------------------------------- gateway -- */
 
 function bearerMatches(req: Request) {
@@ -91,9 +124,9 @@ function bearerMatches(req: Request) {
 export function isAdminRequest(req: Request, cookieValue?: string) {
   if (bearerMatches(req)) return true;
   if (readSession(cookieValue)) return true;
-  // Nothing configured at all: allow locally, never in production.
+  // Nothing configured at all: allow in local development, never in production.
   const configured = process.env.ADMIN_TOKEN || process.env.ADMIN_PASSWORD_HASH;
-  return !configured && !process.env.NETLIFY;
+  return !configured && !isProductionRuntime();
 }
 
 export function isLoginConfigured() {
