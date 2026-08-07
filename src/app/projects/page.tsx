@@ -129,7 +129,54 @@ export default function ProjectsPage() {
         </div>
       </Section>
 
+      {/* -------------------------------------------------------- PORTFOLIO */}
+      <Section tone="paper">
+        <SectionTitle eyebrow="PORTFOLIO" title="سابقة الأعمال" />
+        <div className="mt-12 space-y-6">
+          {projects.portfolio.map((activity) => (
+            <div
+              key={activity.title}
+              className="rounded-lg border b-ink bg-paper-dim p-6 md:p-8"
+            >
+              <h3 className="font-display text-[17px] font-bold text-gold-ink md:text-[19px]">
+                {activity.title}
+              </h3>
+
+              <div className="mt-6 grid gap-x-8 gap-y-6 md:grid-cols-2">
+                {activity.groups.map((group, groupIndex) => (
+                  <div key={group.title || groupIndex}>
+                    {/* Sub-activity heading is omitted when absent rather than
+                        rendered blank — several activities have no sub-grouping. */}
+                    {group.title && (
+                      <h4 className="mb-3 text-[13.5px] font-bold text-ink">
+                        {group.title}
+                      </h4>
+                    )}
+                    <ul className="space-y-2.5">
+                      {group.items.map((item) => (
+                        <li key={item} className="flex items-start gap-2.5">
+                          <Icon
+                            name="check"
+                            className="mt-1 size-3.5 shrink-0 text-primary-container"
+                            strokeWidth={2.6}
+                          />
+                          <span className="text-[13px] leading-[1.8] text-ink-muted">
+                            {item}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
       {/* ------------------------------------------------------ BY ACTIVITY */}
+      {/* Stays on `paper`: the cards inside are bg-paper-dim, so a paper-dim
+          section would erase the contrast that separates them. */}
       <Section tone="paper">
         <SectionTitle
           eyebrow="CLIENTS BY ACTIVITY"

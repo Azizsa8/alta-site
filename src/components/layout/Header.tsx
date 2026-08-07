@@ -59,11 +59,18 @@ export function Header() {
         scrolled ? "shadow-[0_1px_0_0_var(--stroke-ink),0_8px_24px_-16px_rgba(11,22,34,0.4)]" : "border-b b-ink"
       }`}
     >
-      {/* Three equal columns so the logo is optically centred in the bar
-          regardless of how wide the nav or the actions are. On mobile the nav
-          column is empty, so the logo still lands dead centre. */}
-      <div className="alta-container grid h-[72px] grid-cols-[1fr_auto_1fr] items-center gap-3">
-        <nav aria-label="القائمة الرئيسية" className="hidden justify-self-start lg:block">
+      {/* Three columns so the logo is optically centred in the bar regardless of
+          how wide the nav or the actions are. On mobile the nav column is empty,
+          so the logo still lands dead centre.
+
+          The side tracks are minmax(0,1fr), NOT 1fr. A bare `1fr` is
+          minmax(auto,1fr): the auto minimum refuses to shrink below the
+          content's min-content width, so once the nav plus the CTA outgrew the
+          track it pushed inward and overlapped the logo instead of wrapping.
+          minmax(0,1fr) lets the track shrink so nothing can spill into the
+          centre column. */}
+      <div className="alta-container grid h-[72px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
+        <nav aria-label="القائمة الرئيسية" className="hidden justify-self-start xl:block">
           <ul className="flex items-center gap-1">
             {mainNav.slice(0, 4).map((item) => (
               <li key={item.href}>
@@ -85,14 +92,14 @@ export function Header() {
           </ul>
         </nav>
 
-        <div className="justify-self-center lg:justify-self-center">
+        <div className="shrink-0 justify-self-center">
           <Logo onDark />
         </div>
 
         {/* Third column: the remaining nav plus the actions, kept together so
             the grid stays exactly three columns and the logo stays centred. */}
         <div className="flex items-center justify-end gap-3 justify-self-end">
-        <nav aria-label="بقية القائمة" className="hidden lg:block">
+        <nav aria-label="بقية القائمة" className="hidden xl:block">
           <ul className="flex items-center gap-1">
             {mainNav.slice(4).map((item) => (
               <li
@@ -142,7 +149,7 @@ export function Header() {
           </ul>
         </nav>
 
-          <Button href="/request-quote" className="hidden lg:inline-flex">
+          <Button href="/request-quote" className="hidden xl:inline-flex">
             {cta.requestQuote}
           </Button>
           <button
@@ -150,7 +157,7 @@ export function Header() {
             aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}
             aria-expanded={open}
             onClick={() => setOpen(!open)}
-            className="grid size-10 place-items-center rounded-md border b-gold text-primary lg:hidden"
+            className="grid size-10 place-items-center rounded-md border b-gold text-primary xl:hidden"
           >
             <Icon name={open ? "close" : "menu"} className="size-5" strokeWidth={2} />
           </button>
@@ -159,7 +166,7 @@ export function Header() {
 
       {/* Mobile sheet */}
       {open && (
-        <div className="max-h-[calc(100dvh-72px)] overflow-y-auto border-t b-ink bg-paper lg:hidden">
+        <div className="max-h-[calc(100dvh-72px)] overflow-y-auto border-t b-ink bg-paper xl:hidden">
           <nav aria-label="قائمة الجوال" className="alta-container py-4">
             <ul className="flex flex-col">
               {mainNav.map((item) => (

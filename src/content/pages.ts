@@ -308,6 +308,122 @@ export const projects = {
       { title: "سحابي وآمن", body: "بياناتك في أمان" },
     ],
   },
+  /**
+   * Delivered projects, grouped by activity and sub-activity.
+   *
+   * Supplied directly by the client (Mr. Faisal, 2026-08-05) as the
+   * authoritative "سابقة الأعمال" list. Distinct from `byActivity` below, which
+   * names CLIENTS from section 17 of the approved document; this names the WORK.
+   *
+   * The client asked for a one-line description and an image per project. Neither
+   * was supplied, and inventing them would put unverified claims about real
+   * client engagements on a live site — precisely what the approved document
+   * forbids. The UI therefore renders the names alone, cleanly, until real copy
+   * arrives.
+   *
+   * A group with an empty `title` has no sub-activity; the UI omits the heading
+   * rather than rendering a blank one.
+   */
+  portfolio: [
+    {
+      title: "التشغيل والصيانة",
+      groups: [
+        {
+          title: "المباني والترميم",
+          items: [
+            "ترميم وتأثيث مكاتب شركة الإبداع العربي.",
+            "إصلاحات وترميم مدارس الطائف.",
+            "إصلاحات وترميم مدارس جدة.",
+          ],
+        },
+        {
+          title: "التكييف والتبريد",
+          items: [
+            "توريد وتركيب أنظمة التكييف المركزي لشركة فيدا المتحدة.",
+            "أعمال التكييف لمصنع ستيال.",
+          ],
+        },
+        {
+          title: "النظافة",
+          items: [
+            "خدمات النظافة لمزرعة الأنعام.",
+            "خدمات النظافة لشركة الأنعام المتحدة.",
+            "خدمات النظافة لشركة كنوز القوة.",
+          ],
+        },
+      ],
+    },
+    {
+      title: "الإعاشة",
+      groups: [
+        {
+          title: "الإعاشة المطهية",
+          items: [
+            "خدمات الإعاشة لشركة العين الثاقبة.",
+            "خدمات الإعاشة لشركة كنوز الأعمال.",
+          ],
+        },
+      ],
+    },
+    {
+      title: "تقنية المعلومات",
+      groups: [
+        {
+          title: "",
+          items: [
+            "تنفيذ مشاريع تقنية لشركة التحكم التقنية.",
+            "مشاريع تقنية بالقاعدة الجوية.",
+          ],
+        },
+      ],
+    },
+    {
+      title: "الفعاليات والمعارض",
+      groups: [
+        {
+          title: "",
+          items: [
+            "معرض المسرح – جامعة الملك سعود.",
+            "معرض الإسعافات الأولية – STC.",
+            "معرض الإسناد الطبي – القوات المشتركة.",
+            "فعاليات معهد التربية الفكرية بالرياض.",
+          ],
+        },
+      ],
+    },
+    {
+      title: "الدعاية والإعلان",
+      groups: [
+        {
+          title: "",
+          items: [
+            "الهوية البصرية والحملات التسويقية لشركة الأنعام.",
+            "الهوية البصرية لشركة تريفورا.",
+            "الهوية البصرية لشركة خطوات إتقان.",
+            "الهوية البصرية لشركة الكنوز الذهبية.",
+            "الهوية البصرية لجمعية الإدارة الصحية.",
+            "الهوية البصرية لجمعية البحث والابتكار.",
+            "المواد الدعائية والتسويقية لفندق أنتور.",
+          ],
+        },
+      ],
+    },
+    {
+      title: "التوريدات",
+      groups: [
+        {
+          title: "",
+          items: [
+            "توريد مستلزمات التشغيل.",
+            "توريد المعدات والأجهزة.",
+            "توريد مواد الضيافة.",
+            "توريد المواد الغذائية.",
+            "توريد المستلزمات التشغيلية للقطاعين الحكومي والخاص.",
+          ],
+        },
+      ],
+    },
+  ],
   /** Clients grouped by activity — document section 17. */
   byActivity: [
     {

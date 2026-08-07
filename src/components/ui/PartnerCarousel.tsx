@@ -33,15 +33,22 @@ export function PartnerCarousel() {
             <div
               key={partner.file}
               title={partner.name}
-              className="flex h-[88px] w-[150px] shrink-0 items-center justify-center rounded-xl border b-soft bg-white p-4 opacity-85 saturate-[0.8] transition duration-300 hover:scale-[1.04] hover:opacity-100 hover:saturate-100 sm:h-[92px] sm:w-[168px]"
+              className="flex h-[104px] w-[176px] shrink-0 items-center justify-center rounded-xl border b-soft bg-white p-3 opacity-85 saturate-[0.8] transition duration-300 hover:scale-[1.04] hover:opacity-100 hover:saturate-100 sm:h-[112px] sm:w-[192px]"
             >
+              {/*
+                Fill the padded tile rather than cap at a fixed height. The
+                previous max-h-[56px] was the binding constraint for every logo,
+                so tall and square marks rendered far smaller than their tile and
+                looked lost in it. object-contain still prevents any distortion —
+                the padding, not a magic number, sets the breathing room.
+              */}
               <Image
                 src={`/partners/${partner.file}.png`}
                 alt={partner.name}
                 width={320}
                 height={180}
                 loading="lazy"
-                className="h-auto max-h-[56px] w-auto max-w-full object-contain"
+                className="h-full w-full object-contain"
               />
             </div>
           ))}
