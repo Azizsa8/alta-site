@@ -51,9 +51,26 @@ export function AutoCarousel({
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    // In RTL the scroll axis runs negative, so the direction must flip too.
+    /*
+     * Position is tracked here, in a always-positive 0..half space, and only
+     * mapped onto scrollLeft at the end. It is NOT accumulated by reading
+     * scrollLeft back.
+     *
+     * The previous version did `el.scrollLeft += speed * dir` and then wrapped
+     * by writing `el.scrollLeft -= half * dir`. Under RTL, dir is -1, so that
+     * wrap assigns a POSITIVE scrollLeft — and RTL's scroll range is
+     * [-(scrollWidth - clientWidth), 0]. Measured on the services row: the
+     * range is [-4300, 0] and `scrollLeft = 50` reads back as 0. So on the very
+     * first frame the "already at the start, jump to the seam" branch fired,
+     * the browser clamped the write to 0, and the next frame saw position 0
+     * again — pinned at zero forever, on every carousel, in the site's primary
+     * language.
+     *
+     * Owning the position removes the whole class of problem: nothing depends
+     * on how a browser reports or clamps a scroll offset in RTL.
+     */
     const rtl = getComputedStyle(el).direction === "rtl";
-    const dir = (reverse ? -1 : 1) * (rtl ? -1 : 1);
+    let pos = Math.abs(el.scrollLeft);
 
     let frame = 0;
     const step = () => {
@@ -62,12 +79,14 @@ export function AutoCarousel({
 
       const half = el.scrollWidth / 2;
       if (half < 1) return;
-      el.scrollLeft += speed * dir;
 
-      // Wrap at the seam. Using the absolute value keeps this correct in RTL,
-      // where scrollLeft counts downward from zero.
-      if (Math.abs(el.scrollLeft) >= half) el.scrollLeft -= half * dir;
-      else if (Math.abs(el.scrollLeft) < 1 && dir < 0) el.scrollLeft -= half * dir;
+      pos += reverse ? -speed : speed;
+      // Wrap in both directions. `half` is where the duplicated copy begins, so
+      // landing on it is visually identical to landing on 0.
+      if (pos >= half) pos -= half;
+      else if (pos < 0) pos += half;
+
+      el.scrollLeft = rtl ? -pos : pos;
     };
     frame = requestAnimationFrame(step);
 
@@ -76,11 +95,19 @@ export function AutoCarousel({
     };
     const release = () => {
       paused.current = false;
+      // Resync here as well as on wheel: a touch swipe or a mouse drag moves
+      // the row without ever firing a wheel event. A plain `scroll` listener
+      // cannot be used for this — our own per-frame writes would fire it and
+      // push `resumeAt` forward forever, permanently pausing the loop.
+      pos = Math.abs(el.scrollLeft);
       // Brief grace period so it does not lurch the instant a finger lifts.
       resumeAt.current = Date.now() + 1200;
     };
     // A manual scroll (swipe, trackpad, scrollbar) also counts as interaction.
+    // Resync from where the visitor actually left it, otherwise the loop would
+    // resume from its own stale position and snap the row backwards.
     const nudge = () => {
+      pos = Math.abs(el.scrollLeft);
       resumeAt.current = Date.now() + 1600;
     };
 
@@ -114,7 +141,20 @@ export function AutoCarousel({
     <div
       ref={ref}
       aria-label={ariaLabel}
-      className={`no-scrollbar flex gap-5 overflow-x-auto overscroll-x-contain scroll-smooth ${mask} ${className}`}
+      /*
+       * NO `scroll-smooth` here, deliberately.
+       *
+       * scroll-behavior: smooth turns every scrollLeft assignment into an
+       * ANIMATED scroll toward a target. This component writes scrollLeft once
+       * per animation frame, so each write re-targeted an animation that never
+       * had time to move — measured: with smooth, `el.scrollLeft = -50` reads
+       * back as 0; with auto it reads back as -50. The carousels sat
+       * completely still.
+       *
+       * Smooth belongs on user-initiated scrolling, not on a loop that is
+       * already producing its own per-frame motion.
+       */
+      className={`no-scrollbar flex gap-5 overflow-x-auto overscroll-x-contain ${mask} ${className}`}
     >
       {/* Rendered twice for the loop. The duplicate is hidden from assistive
           tech so each item is announced once. */}
