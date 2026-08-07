@@ -1,4 +1,7 @@
-import Link from "next/link";
+// LocaleLink, not next/link: every Button that takes an href is internal
+// navigation, so all 27 call sites inherit locale-correct routing from here
+// rather than each having to remember to prefix.
+import { LocaleLink } from "./LocaleLink";
 import { Icon } from "./Icon";
 
 type Variant = "primary" | "secondary" | "ghost" | "onDark";
@@ -84,9 +87,9 @@ export function Button({
 
   if (href) {
     return (
-      <Link href={href} className={cls}>
+      <LocaleLink href={href} className={cls}>
         {inner}
-      </Link>
+      </LocaleLink>
     );
   }
   return (

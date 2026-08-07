@@ -33,6 +33,39 @@ export function isLocale(value: string): value is Locale {
 }
 
 /**
+ * Prefixes an app-internal path with the active locale.
+ *
+ * Every href in `src/content` is written locale-free ("/about", "/about#vision")
+ * because the approved content should not know about routing. This is the one
+ * place that adds the segment, so a link cannot be half-migrated.
+ *
+ * Left alone: absolute URLs, protocol handlers (mailto:, tel:, wa.me links),
+ * bare fragments, and anything already carrying a locale — that last case
+ * matters because `<Button>` and `<LocaleLink>` can nest, and prefixing twice
+ * would produce /ar/ar/about.
+ */
+export function withLocale(href: string, locale: Locale): string {
+  if (!href.startsWith("/")) return href; // http(s):, mailto:, tel:, #hash
+  if (href.startsWith("//")) return href; // protocol-relative
+
+  const [pathPart, hash] = href.split("#");
+  const segments = pathPart.split("/").filter(Boolean);
+
+  if (segments.length > 0 && isLocale(segments[0])) return href;
+
+  const path = `/${locale}${segments.length ? `/${segments.join("/")}` : ""}`;
+  return hash ? `${path}#${hash}` : path;
+}
+
+/** Same path under a different locale — what the language switcher needs. */
+export function swapLocale(pathname: string, next: Locale): string {
+  const segments = pathname.split("/").filter(Boolean);
+  if (segments.length > 0 && isLocale(segments[0])) segments[0] = next;
+  else segments.unshift(next);
+  return `/${segments.join("/")}`;
+}
+
+/**
  * Widens a literal-typed content tree into its structural shape.
  *
  * The Arabic content modules are declared `as const`, so their type is a tree

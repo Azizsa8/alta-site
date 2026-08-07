@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Hanken_Grotesk, IBM_Plex_Sans_Arabic } from "next/font/google";
-import "./globals.css";
+// One level up: this layout moved into [locale]/, globals.css did not.
+import "../globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ChatWidget } from "@/components/ui/ChatWidget";
@@ -11,6 +12,16 @@ import { ThemeVars } from "@/components/theme/ThemeVars";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { company } from "@/content/site";
 import { home } from "@/content/pages";
+import { locales, defaultLocale, dir, isLocale, type Locale } from "@/i18n/config";
+
+/**
+ * Both locales are known at build time, so both trees prerender. Without this
+ * every page would fall back to on-demand rendering and lose the static output
+ * the site currently gets.
+ */
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
 /** Latin display face specified in DESIGN.md. */
 const grotesk = Hanken_Grotesk({
@@ -71,13 +82,22 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function LocaleLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+  params,
+}: Readonly<{
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}>) {
+  const raw = (await params).locale;
+  // An unknown segment reaching here would otherwise render <html lang="foo">.
+  // Middleware already rejects those, so this is belt-and-braces.
+  const locale: Locale = isLocale(raw) ? raw : defaultLocale;
+
   return (
     <html
-      lang="ar"
-      dir="rtl"
+      lang={locale}
+      dir={dir(locale)}
       className={`${grotesk.variable} ${arabic.variable} h-full antialiased`}
     >
       <head>

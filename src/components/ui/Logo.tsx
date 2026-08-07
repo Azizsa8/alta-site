@@ -1,5 +1,5 @@
-import Image from "next/image";
-import Link from "next/link";
+﻿import Image from "next/image";
+import { LocaleLink } from "./LocaleLink";
 import { company } from "@/content/site";
 
 /**
@@ -20,7 +20,7 @@ export function Logo({
   className?: string;
 }) {
   return (
-    <Link
+    <LocaleLink
       href="/"
       aria-label={company.nameAr}
       className={`inline-flex items-center gap-3 ${className}`}
@@ -49,7 +49,7 @@ export function Logo({
           {company.nameAr}
         </span>
       </span>
-    </Link>
+    </LocaleLink>
   );
 }
 

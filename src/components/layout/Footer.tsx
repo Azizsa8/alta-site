@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import { LocaleLink } from "@/components/ui/LocaleLink";
 import { Icon } from "@/components/ui/Icon";
 import { Logo } from "@/components/ui/Logo";
 import { SocialBar } from "@/components/ui/WhatsAppButton";
@@ -30,12 +30,12 @@ export function Footer() {
               <ul className="space-y-2.5">
                 {col.links.map((link) => (
                   <li key={link.href}>
-                    <Link
+                    <LocaleLink
                       href={link.href}
                       className="text-[13px] text-text-muted transition-colors hover:text-primary"
                     >
                       {link.label}
-                    </Link>
+                    </LocaleLink>
                   </li>
                 ))}
               </ul>
@@ -58,9 +58,9 @@ export function Footer() {
                   {company.email}
                 </a>
               ) : (
-                <Link href="/contact" className="hover:text-primary">
+                <LocaleLink href="/contact" className="hover:text-primary">
                   نموذج التواصل
-                </Link>
+                </LocaleLink>
               )}
             </li>
             <li className="flex items-center gap-2.5">
@@ -70,9 +70,9 @@ export function Footer() {
                   {company.phone}
                 </a>
               ) : (
-                <Link href="/request-quote" className="hover:text-primary">
+                <LocaleLink href="/request-quote" className="hover:text-primary">
                   اطلب عرض سعر
-                </Link>
+                </LocaleLink>
               )}
             </li>
             <li className="flex items-center gap-2.5">
@@ -102,13 +102,13 @@ export function Footer() {
             {/* Renders nothing until real profile URLs exist — see socialLinks. */}
             <SocialBar className="md:justify-end" />
             <div className="flex gap-3 text-[12px] text-text-muted">
-              <Link href="/privacy-policy" className="hover:text-primary">
+              <LocaleLink href="/privacy-policy" className="hover:text-primary">
                 سياسة الخصوصية
-              </Link>
+              </LocaleLink>
               <span aria-hidden>•</span>
-              <Link href="/terms" className="hover:text-primary">
+              <LocaleLink href="/terms" className="hover:text-primary">
                 الشروط والأحكام
-              </Link>
+              </LocaleLink>
             </div>
           </div>
         </div>

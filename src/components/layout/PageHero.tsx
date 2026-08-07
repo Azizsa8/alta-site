@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import { LocaleLink } from "@/components/ui/LocaleLink";
 import { Icon } from "@/components/ui/Icon";
 
 /**
@@ -37,16 +37,16 @@ export function PageHero({
           <nav aria-label="مسار التنقل" className="mb-6">
             <ol className="flex flex-wrap items-center gap-2 text-[12px] text-text-muted">
               <li>
-                <Link href="/" className="hover:text-primary">
+                <LocaleLink href="/" className="hover:text-primary">
                   الرئيسية
-                </Link>
+                </LocaleLink>
               </li>
               {trail.map((t) => (
                 <li key={t.href} className="flex items-center gap-2">
                   <Icon name="chevron" className="size-3 opacity-50" />
-                  <Link href={t.href} className="hover:text-primary">
+                  <LocaleLink href={t.href} className="hover:text-primary">
                     {t.name}
-                  </Link>
+                  </LocaleLink>
                 </li>
               ))}
             </ol>

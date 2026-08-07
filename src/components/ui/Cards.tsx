@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import { LocaleLink } from "./LocaleLink";
 import { Icon } from "./Icon";
 import type { IconName } from "./Icon";
 
@@ -20,7 +20,7 @@ export function ServiceCard({
   onDark?: boolean;
 }) {
   return (
-    <Link
+    <LocaleLink
       href={href}
       className={`group flex h-full flex-col rounded-lg border p-6 transition-all duration-200 hover:-translate-y-1 ${
         onDark
@@ -72,7 +72,7 @@ export function ServiceCard({
           strokeWidth={2.2}
         />
       </span>
-    </Link>
+    </LocaleLink>
   );
 }
 

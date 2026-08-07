@@ -1,6 +1,7 @@
 "use client";
 
 import { microcopy } from "@/content/site";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 
 const control =
   "w-full rounded-md border b-ink bg-paper px-4 py-3 text-[14px] text-ink " +
@@ -181,9 +182,12 @@ export function ConsentField({
         />
         <span className="text-[13px] leading-[1.8] text-ink-muted">
           {microcopy.privacyConsent}{" "}
-          <a href="/privacy-policy" className="text-gold-ink underline">
+          {/* LocaleLink, not <a>: a bare anchor drops the visitor out of their
+              locale AND forces a full page load mid-form, losing every field
+              already filled in. */}
+          <LocaleLink href="/privacy-policy" className="text-gold-ink underline">
             (اقرأ السياسة)
-          </a>
+          </LocaleLink>
           <span className="text-danger" aria-hidden>
             {" "}
             *

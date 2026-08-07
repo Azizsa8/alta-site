@@ -1,11 +1,12 @@
-"use client";
+﻿"use client";
 
-import Link from "next/link";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { Logo } from "@/components/ui/Logo";
 import { Icon } from "@/components/ui/Icon";
 import { mainNav } from "@/content/site";
+import { isLocale } from "@/i18n/config";
 
 /**
  * Scroll position is external browser state, so it is read with
@@ -49,8 +50,23 @@ export function Header() {
     };
   }, [open]);
 
+  /**
+   * Compare against the path WITHOUT its locale segment.
+   *
+   * `pathname` is now "/ar/about" while nav hrefs stay locale-free ("/about"),
+   * so a naive startsWith never matches and every item renders inactive — the
+   * gold underline and the current-page colour just quietly stop working. It
+   * fails silently, which is exactly why it is worth stripping here rather
+   * than prefixing the hrefs at each call site.
+   */
+  const bare = (() => {
+    const segments = pathname.split("/").filter(Boolean);
+    if (segments.length && isLocale(segments[0])) segments.shift();
+    return `/${segments.join("/")}`;
+  })();
+
   const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+    href === "/" ? bare === "/" : bare.startsWith(href);
 
   return (
     <header
@@ -85,7 +101,7 @@ export function Header() {
           <ul className="flex items-center gap-1">
             {mainNav.slice(0, 4).map((item) => (
               <li key={item.href}>
-                <Link
+                <LocaleLink
                   href={item.href}
                   className={`group relative flex items-center gap-1 px-3 py-2 text-[13.5px] font-medium transition-colors ${
                     isActive(item.href) ? "text-primary" : "text-text-muted hover:text-primary"
@@ -97,7 +113,7 @@ export function Header() {
                       isActive(item.href) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                     }`}
                   />
-                </Link>
+                </LocaleLink>
               </li>
             ))}
           </ul>
@@ -121,7 +137,7 @@ export function Header() {
                 onMouseEnter={() => item.children && setServicesOpen(true)}
                 onMouseLeave={() => item.children && setServicesOpen(false)}
               >
-                <Link
+                <LocaleLink
                   href={item.href}
                   className={`group relative flex items-center gap-1 px-3 py-2 text-[13.5px] font-medium transition-colors ${
                     isActive(item.href)
@@ -139,19 +155,19 @@ export function Header() {
                       isActive(item.href) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                     }`}
                   />
-                </Link>
+                </LocaleLink>
 
                 {item.children && servicesOpen && (
                   <div className="absolute start-0 top-full w-[320px] pt-2">
                     <ul className="overflow-hidden rounded-lg border b-ink bg-paper py-2 shadow-panel">
                       {item.children.map((child) => (
                         <li key={child.href}>
-                          <Link
+                          <LocaleLink
                             href={child.href}
                             className="block px-4 py-2.5 text-[13.5px] text-ink/80 transition-colors hover:bg-paper-dim hover:text-gold-ink"
                           >
                             {child.label}
-                          </Link>
+                          </LocaleLink>
                         </li>
                       ))}
                     </ul>
@@ -193,24 +209,24 @@ export function Header() {
             <ul className="flex flex-col">
               {mainNav.map((item) => (
                 <li key={item.href} className="border-b b-ink last:border-0">
-                  <Link
+                  <LocaleLink
                     href={item.href}
                     className={`block py-3.5 text-[15px] font-medium ${
                       isActive(item.href) ? "text-gold-ink" : "text-ink"
                     }`}
                   >
                     {item.label}
-                  </Link>
+                  </LocaleLink>
                   {item.children && (
                     <ul className="pb-3 ps-4">
                       {item.children.map((child) => (
                         <li key={child.href}>
-                          <Link
+                          <LocaleLink
                             href={child.href}
                             className="block py-2 text-[13.5px] text-ink-muted"
                           >
                             {child.label}
-                          </Link>
+                          </LocaleLink>
                         </li>
                       ))}
                     </ul>
