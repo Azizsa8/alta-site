@@ -70,6 +70,35 @@
   --spacing-section-sm: 52px;
 }
 
+/* ==========================================================================
+   Aurora field — "Sovereign Aurora"
+   --------------------------------------------------------------------------
+   The palette was never the problem. --color-paper and --color-surface are the
+   SAME hex (#091420), so `tone="paper"` and `tone="midnight"` painted
+   identically, and all four band tones together spanned about 6% of lightness.
+   The page was one colour repeated, which is what read as flat.
+
+   The fix is depth rather than more colours: one slow gold-and-blue wash
+   living behind the whole document, with the section bands sitting on top as
+   translucent tints. Each band then filters the same light differently, so the
+   page varies continuously instead of stepping between four near-identical
+   greys.
+
+   Cost control, in order of importance:
+     - ONE fixed layer for the whole document, not a gradient per section. It
+       paints once and never repaints on scroll.
+     - The drift animates `transform` only, so it stays on the compositor. No
+       animated filter, blur or background-position anywhere.
+     - The grain is a static SVG turbulence tile, generated once by the browser.
+   ========================================================================== */
+:root {
+  --aurora-gold: 247, 195, 102;
+  --aurora-blue: 34, 78, 140;
+  --aurora-ember: 186, 122, 46;
+  /* Deepest tone on the page. Every band is a translucent tint over this. */
+  --page-base: #05101c;
+}
+
 /* Alpha-based strokes and shadows live as plain custom properties. */
 :root {
   --stroke-gold: rgba(222, 172, 84, 0.28);
@@ -89,7 +118,8 @@
   }
 
   body {
-    background-color: var(--color-paper);
+    /* The bands above are translucent, so this is what shows through them. */
+    background-color: var(--page-base);
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -133,6 +163,49 @@
   }
   .rule-ink {
     border-top: 1px solid var(--stroke-ink);
+  }
+
+  /* --- Band tints -------------------------------------------------------
+     Section backgrounds are translucent so the aurora behind the document
+     reads through them. Alpha stays high (0.72–0.93) because the wash is
+     decoration and the text contrast is not negotiable — at these values the
+     composite sits within a couple of points of the original flat hex, so
+     every existing contrast ratio survives.
+
+     Each band also carries its own directional sheen, which is what makes
+     consecutive sections read as different surfaces rather than one colour. */
+  .band-paper {
+    background-color: rgba(9, 20, 32, 0.74);
+    background-image: linear-gradient(
+      115deg,
+      rgba(var(--aurora-gold), 0.045) 0%,
+      transparent 42%
+    );
+  }
+  .band-paper-dim {
+    background-color: rgba(13, 27, 41, 0.82);
+    background-image: linear-gradient(
+      115deg,
+      transparent 55%,
+      rgba(var(--aurora-blue), 0.13) 100%
+    );
+  }
+  .band-midnight {
+    background-color: rgba(6, 17, 29, 0.86);
+    background-image: linear-gradient(
+      115deg,
+      rgba(var(--aurora-ember), 0.07) 0%,
+      transparent 38%,
+      rgba(var(--aurora-blue), 0.09) 100%
+    );
+  }
+  .band-midnight-deep {
+    background-color: rgba(3, 11, 20, 0.93);
+    background-image: radial-gradient(
+      70% 90% at 50% 0%,
+      rgba(var(--aurora-gold), 0.055) 0%,
+      transparent 65%
+    );
   }
 
   .b-gold {
@@ -198,6 +271,72 @@
 }
 
 @layer utilities {
+  /* --- Aurora field ------------------------------------------------------
+     One fixed layer for the entire document. `inset: -25%` oversizes it so the
+     drift's translate and scale never expose an edge, and `fixed` means it is
+     painted once and composited — scrolling the page does not repaint it.
+
+     The 115deg sheen is the point of the whole treatment: it is the exact
+     angle of the .blueprint diagonals, so the light rakes along the brand's
+     own grain rather than cutting across it. That is the thing you would still
+     recognise with the logo cropped out. */
+  .aurora-field {
+    position: fixed;
+    inset: -25%;
+    z-index: -2;
+    pointer-events: none;
+    background-image:
+      linear-gradient(
+        115deg,
+        transparent 30%,
+        rgba(var(--aurora-gold), 0.05) 47%,
+        transparent 62%
+      ),
+      radial-gradient(
+        34% 40% at 76% 14%,
+        rgba(var(--aurora-gold), 0.15) 0%,
+        transparent 68%
+      ),
+      radial-gradient(
+        40% 36% at 12% 34%,
+        rgba(var(--aurora-blue), 0.22) 0%,
+        transparent 70%
+      ),
+      radial-gradient(
+        46% 38% at 62% 84%,
+        rgba(var(--aurora-ember), 0.13) 0%,
+        transparent 72%
+      );
+    animation: aurora-drift 32s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  /* 32s, and only two properties. The style guidance calls for 8-12s on
+     flowing gradients; this runs slower deliberately, because a corporate
+     page is read rather than watched and motion in peripheral vision competes
+     with the copy. Nothing here should ever be consciously noticed moving. */
+  @keyframes aurora-drift {
+    from {
+      transform: translate3d(-1.5%, -1%, 0) scale(1);
+    }
+    to {
+      transform: translate3d(2.5%, 1.5%, 0) scale(1.09);
+    }
+  }
+
+  /* Static film grain. Breaks up the large flat gradients — without it, wide
+     low-alpha washes band visibly on 8-bit panels. Generated by the browser
+     from an inline SVG, so it costs no request and no decode. */
+  .grain-field {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.038;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+
   /* DESIGN.md > Elevation: frosted nav at 82% over the midnight base. */
   .glass-nav {
     background-color: rgba(9, 20, 32, 0.82);
@@ -431,6 +570,11 @@
       animation: none;
     }
     .icon-float {
+      animation: none;
+    }
+    /* The wash stays — it is colour, not motion, and removing it would change
+       the design for these users rather than calm it. Only the drift stops. */
+    .aurora-field {
       animation: none;
     }
     .step-track::before {

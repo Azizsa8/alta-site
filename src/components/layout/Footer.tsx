@@ -6,7 +6,7 @@ import { company, footerNav, whatsapp, whatsappHref } from "@/content/site";
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-surface text-text-primary">
+    <footer className="band-midnight-deep relative overflow-hidden text-text-primary">
       {/* Blueprint diagonals, echoing the approved footer treatment. */}
       <div className="blueprint pointer-events-none absolute inset-0 opacity-60" />
 

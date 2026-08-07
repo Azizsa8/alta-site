@@ -85,6 +85,11 @@ export default function RootLayout({
         <ThemeVars />
       </head>
       <body className="flex min-h-full flex-col">
+        {/* Background stack, behind everything (z -2 and -1). Both are fixed,
+            so they paint once and stay on the compositor while the page
+            scrolls. aria-hidden: they carry no meaning to read out. */}
+        <div aria-hidden className="aurora-field" />
+        <div aria-hidden className="grain-field" />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:start-3 focus:z-[100] focus:rounded-md focus:bg-surface focus:px-4 focus:py-2 focus:text-text-primary"

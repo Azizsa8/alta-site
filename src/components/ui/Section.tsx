@@ -9,11 +9,22 @@
 
 type Tone = "paper" | "paper-dim" | "midnight" | "midnight-deep";
 
+/**
+ * Bands are translucent tints, not solid fills, so the aurora field behind the
+ * document reads through every section. `--color-paper` and `--color-surface`
+ * are the same hex, so the old solid tones made `paper` and `midnight`
+ * indistinguishable; the tint classes give each band its own alpha and its own
+ * directional sheen instead.
+ *
+ * Card fills inside sections stay OPAQUE (bg-paper, bg-surface-panel). The
+ * contrast between a solid card and a translucent band is what gives the
+ * layout its depth — making both translucent would flatten it again.
+ */
 const tones: Record<Tone, string> = {
-  paper: "bg-paper text-ink",
-  "paper-dim": "bg-paper-dim text-ink",
-  midnight: "bg-surface text-text-primary",
-  "midnight-deep": "bg-surface-lowest text-text-primary",
+  paper: "band-paper text-ink",
+  "paper-dim": "band-paper-dim text-ink",
+  midnight: "band-midnight text-text-primary",
+  "midnight-deep": "band-midnight-deep text-text-primary",
 };
 
 export function Section({

@@ -20,7 +20,10 @@ export function PageHero({
   trail?: { name: string; href: string }[];
 }) {
   return (
-    <section className="relative isolate overflow-hidden bg-surface">
+    // `isolate` is deliberately dropped: it creates a stacking context, which
+    // would trap this section above the document's aurora layer and paint a
+    // solid slab over it. The band tint replaces the opaque fill.
+    <section className="band-midnight relative overflow-hidden">
       <div className="blueprint absolute inset-0" />
       <div
         className="absolute inset-0 opacity-70"
