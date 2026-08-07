@@ -28,7 +28,14 @@ export type IconName =
   | "quote"
   | "shield"
   | "spark"
-  | "chart";
+  | "chart"
+  | "whatsapp"
+  | "linkedin"
+  | "instagram"
+  | "x"
+  | "youtube"
+  | "facebook"
+  | "play";
 
 const paths: Record<IconName, React.ReactNode> = {
   ai: (
@@ -125,6 +132,54 @@ const paths: Record<IconName, React.ReactNode> = {
       <rect x="15.5" y="4.5" width="3.5" height="13.5" rx="1" />
     </>
   ),
+
+  /* --- Channel marks ---------------------------------------------------
+     Drawn as strokes rather than the official filled glyphs so they sit in
+     the same visual language as the set above and inherit currentColor on
+     both surfaces. They read as the platform without being a pixel copy of
+     a trademarked lockup. */
+  whatsapp: (
+    <>
+      <path d="M12 3.4a8.6 8.6 0 0 0-7.4 12.9L3.4 20.6l4.4-1.1A8.6 8.6 0 1 0 12 3.4Z" />
+      <path d="M9.4 8.6h.8l.9 2-.7.9a5.6 5.6 0 0 0 2.6 2.3l.8-.7 2 .9v.9a1.3 1.3 0 0 1-1.4 1.2 7.5 7.5 0 0 1-6.3-6.3 1.3 1.3 0 0 1 1.3-1.2Z" />
+    </>
+  ),
+  linkedin: (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="2.5" />
+      <path d="M7.4 10.4V17" />
+      <path d="M7.4 7.3v.02" strokeWidth={2.4} />
+      <path d="M11.4 17v-3.6a2.6 2.6 0 0 1 5.2 0V17" />
+      <path d="M11.4 17v-6.6" />
+    </>
+  ),
+  instagram: (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="3.8" />
+      <path d="M16.9 7.1v.02" strokeWidth={2.4} />
+    </>
+  ),
+  x: (
+    <>
+      <path d="M4.2 4.2 19.8 19.8" />
+      <path d="M19.8 4.2 4.2 19.8" />
+    </>
+  ),
+  youtube: (
+    <>
+      <rect x="2.4" y="5.8" width="19.2" height="12.4" rx="3.6" />
+      <path d="M10.4 9.6 15.6 12l-5.2 2.4Z" />
+    </>
+  ),
+  facebook: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M14.8 8.2h-1.4c-.9 0-1.4.5-1.4 1.4v1.7h2.6l-.4 2.5h-2.2V21" />
+      <path d="M10 11.3h2" />
+    </>
+  ),
+  play: <path d="M8 5.4 19 12 8 18.6Z" />,
 };
 
 export function Icon({

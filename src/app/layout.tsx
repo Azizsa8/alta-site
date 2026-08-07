@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ChatWidget } from "@/components/ui/ChatWidget";
+import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { ThemeVars } from "@/components/theme/ThemeVars";
@@ -101,6 +102,9 @@ export default function RootLayout({
         <SiteChrome>
           <Footer />
           <ChatWidget />
+          {/* Sits on the start corner; the chat launcher owns the end corner,
+              so the two never overlap in either direction. */}
+          <WhatsAppButton />
         </SiteChrome>
       </body>
     </html>

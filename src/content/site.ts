@@ -8,6 +8,8 @@
  * than invent a value.
  */
 
+import type { IconName } from "@/components/ui/Icon";
+
 export const company = {
   nameAr: "شركة التا للاستثمار",
   nameEn: "ALTA Investment Company",
@@ -32,6 +34,44 @@ export const company = {
   descriptionShortAr:
     "حلول متكاملة للمنشآت تشمل الذكاء الاصطناعي، التشغيل والصيانة، الضيافة والإعاشة، الاستشارات، التوريدات، الإعلام، الفعاليات، والبحوث.",
 } as const;
+
+/**
+ * WhatsApp is the client's requested channel for all customer enquiries.
+ *
+ * The number lives here as digits only, in E.164 without the `+`, because that
+ * is the exact shape wa.me expects — storing it pretty-printed and stripping it
+ * at each call site is how a stray space ends up in a production link.
+ *
+ * NOTE: this is a personal mobile. The company's own published number on
+ * alta.sa is 966551331017, which is the safer public channel; swapping is a
+ * one-line change here and nothing else needs to move.
+ */
+export const whatsapp = {
+  number: "966509922329",
+  display: "+966 50 992 2329",
+  /** Pre-filled opener. Encoded at the call site, not here. */
+  greeting: "السلام عليكم، أود الاستفسار عن خدمات شركة التا للاستثمار.",
+} as const;
+
+/** wa.me link with an optional context line appended to the opener. */
+export function whatsappHref(context?: string) {
+  const text = context
+    ? `${whatsapp.greeting}\n(${context})`
+    : whatsapp.greeting;
+  return `https://wa.me/${whatsapp.number}?text=${encodeURIComponent(text)}`;
+}
+
+export type SocialLink = { label: string; href: string; icon: IconName };
+
+/**
+ * Social profiles.
+ *
+ * Deliberately empty. alta.sa renders Facebook/Twitter/Tumblr/Instagram icons
+ * in its footer, but every one of them is a bare <i> with no href — there are
+ * no accounts to link to. Rather than ship icons that go nowhere, the UI hides
+ * the whole strip while this array is empty. Add entries and it appears.
+ */
+export const socialLinks: SocialLink[] = [];
 
 export type NavItem = {
   label: string;

@@ -22,6 +22,7 @@ export function AutoCarousel({
   reverse = false,
   className = "",
   ariaLabel,
+  mask = "[mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]",
 }: {
   children: React.ReactNode;
   /** Pixels per frame at 60fps. */
@@ -29,6 +30,16 @@ export function AutoCarousel({
   reverse?: boolean;
   className?: string;
   ariaLabel?: string;
+  /**
+   * Edge-fade mask, as a single Tailwind class.
+   *
+   * A prop rather than something callers append via `className`: two arbitrary
+   * `[mask-image:…]` utilities set the same property at the same specificity,
+   * so which one wins depends on their order in the generated stylesheet, not
+   * on the order they appear in the class attribute. Exactly one is emitted
+   * this way. Pass "" to disable.
+   */
+  mask?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const paused = useRef(false);
@@ -103,7 +114,7 @@ export function AutoCarousel({
     <div
       ref={ref}
       aria-label={ariaLabel}
-      className={`no-scrollbar flex gap-5 overflow-x-auto overscroll-x-contain scroll-smooth [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] ${className}`}
+      className={`no-scrollbar flex gap-5 overflow-x-auto overscroll-x-contain scroll-smooth ${mask} ${className}`}
     >
       {/* Rendered twice for the loop. The duplicate is hidden from assistive
           tech so each item is announced once. */}

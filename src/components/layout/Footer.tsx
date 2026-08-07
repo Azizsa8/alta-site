@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Logo } from "@/components/ui/Logo";
-import { company, footerNav } from "@/content/site";
+import { SocialBar } from "@/components/ui/WhatsAppButton";
+import { company, footerNav, whatsapp, whatsappHref } from "@/content/site";
 
 export function Footer() {
   return (
@@ -74,6 +75,21 @@ export function Footer() {
                 </Link>
               )}
             </li>
+            <li className="flex items-center gap-2.5">
+              <Icon name="whatsapp" className="size-4 shrink-0 text-primary" />
+              <a
+                href={whatsappHref("من تذييل الموقع")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary"
+              >
+                {/* dir=ltr keeps the leading + and the digit grouping in place
+                    inside the surrounding RTL block. */}
+                <span dir="ltr" className="tnum">
+                  {whatsapp.display}
+                </span>
+              </a>
+            </li>
           </ul>
 
           <div className="flex flex-col justify-end gap-3 md:items-end">
@@ -83,6 +99,8 @@ export function Footer() {
             >
               {company.website}
             </a>
+            {/* Renders nothing until real profile URLs exist — see socialLinks. */}
+            <SocialBar className="md:justify-end" />
             <div className="flex gap-3 text-[12px] text-text-muted">
               <Link href="/privacy-policy" className="hover:text-primary">
                 سياسة الخصوصية

@@ -28,7 +28,7 @@ export default async function HomePage() {
   const heroAccent = content.heroTitleAccent ?? home.hero.titleAccent;
   const heroBody = content.heroBody ?? home.hero.body;
   const heroImage = images.hero ?? "/hero_cityscape.png";
-  const aboutImage = images.about ?? "/about_office.png";
+  const aboutImage = images.about ?? "/about_office.webp";
 
   return (
     <>
@@ -99,16 +99,27 @@ export default async function HomePage() {
       </section>
 
       {/* -------------------------------------------------------- SERVICES */}
-      <Section id="services" tone="paper">
-        <SectionTitle
-          eyebrow="OUR SERVICES"
-          title={home.servicesTitle}
-          body={home.intro.body}
-        />
+      {/* The heading keeps the reading measure; the track runs edge to edge so
+          the row reads as continuous motion across the viewport rather than a
+          strip parked inside a 1180px column. */}
+      <Section id="services" tone="paper" bleed>
+        <div className="alta-container">
+          <SectionTitle
+            eyebrow="OUR SERVICES"
+            title={home.servicesTitle}
+            body={home.intro.body}
+          />
+        </div>
         <div className="mt-12">
           <AutoCarousel speed={0.3} ariaLabel="خدماتنا">
-            {services.map((s) => (
-              <div key={s.slug} className="w-[260px] shrink-0 sm:w-[280px]">
+            {services.map((s, i) => (
+              <div
+                key={s.slug}
+                className="w-[300px] shrink-0 sm:w-[340px]"
+                // Spreads the icon drift across the row. 0.9s steps over a
+                // 4.5s cycle means five distinct phases before it repeats.
+                style={{ "--float-delay": `${-(i % 5) * 0.9}s` } as React.CSSProperties}
+              >
                 <ServiceCard
                   href={`/services/${s.slug}`}
                   icon={s.icon}
@@ -129,7 +140,11 @@ export default async function HomePage() {
         <div className="blueprint absolute inset-0 opacity-50" />
         <div className="relative">
           <SectionTitle eyebrow="HOW WE WORK" title={home.methodologyTitle} onDark />
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {/* `step-track` draws the gold connector between the four steps as
+              the band scrolls in; `stagger` brings the cards up along it, so
+              the eye is led left-to-right through the sequence instead of
+              being handed four tiles at once. */}
+          <div className="step-track stagger relative mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {home.methodology.map((m) => (
               <StepCard key={m.step} {...m} onDark />
             ))}
@@ -154,11 +169,21 @@ export default async function HomePage() {
       </Section>
 
       {/* ---------------------------------------------------- CLIENT STRIP */}
-      <Section tone="paper">
-        <SectionTitle eyebrow="CLIENTS & PARTNERS" title="شركاء النجاح" />
-        <div className="mt-10">
-          <PartnerCarousel />
+      {/* Bright band, full bleed. The logos are supplied on white, so on the
+          midnight page each one needed a white tile and the row read as a line
+          of blank rectangles. Lifting the band instead lets the marks sit on
+          light ground with nothing drawn around them, and releasing the width
+          cap lets the row run the full length of the screen. */}
+      <Section tone="bright" bleed className="!py-[44px] md:!py-[60px]">
+        <div className="alta-container">
+          <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a6d2f]">
+            CLIENTS &amp; PARTNERS
+          </p>
+          <h2 className="mb-9 text-center font-display text-[24px] font-bold text-[#0d1b29] md:text-[32px]">
+            شركاء النجاح
+          </h2>
         </div>
+        <PartnerCarousel />
       </Section>
 
       {/* ------------------------------------------------------------ ABOUT */}
@@ -174,11 +199,13 @@ export default async function HomePage() {
               className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-surface/80 via-transparent to-transparent" />
+            {/* The wordmark that used to sit here has gone: the mark is now
+                lit on the wall inside the photograph itself, so repeating it
+                as a caption put "ALTA" on the image twice. */}
             <div className="absolute bottom-5 start-5">
-              <p className="font-display text-2xl font-extrabold tracking-[0.2em] text-primary">
-                {company.mark}
+              <p className="text-[12.5px] font-semibold text-text-primary/90">
+                {company.nameAr}
               </p>
-              <p className="mt-1 text-[12px] text-text-primary/90">{company.nameAr}</p>
             </div>
           </div>
 

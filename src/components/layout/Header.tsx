@@ -204,9 +204,9 @@ export function Header() {
                 </li>
               ))}
             </ul>
-            <Button href="/request-quote" className="mt-5 w-full">
-              {cta.requestQuote}
-            </Button>
+            {/* No quote CTA in the phone menu. The sheet is for navigation;
+                the action is already at the foot of every page, so repeating
+                it here only pushed the menu items up and crowded the sheet. */}
           </nav>
         </div>
       )}

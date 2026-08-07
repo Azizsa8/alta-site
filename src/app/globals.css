@@ -166,7 +166,15 @@
     margin-inline: 0;
   }
 
-  /* The faint "blueprint" diagonals from the approved hero. */
+  /* The faint "blueprint" diagonals from the approved hero.
+
+     Both rules run at the SAME angle. They were previously 115deg and 65deg —
+     mirror images of each other — so the pair formed a shallow X, and because
+     the two lines leaned opposite ways they never agreed with the diagonals in
+     the band above or below. Stacking sections then read as a series of
+     unrelated crossings. Parallel lines at one fixed angle carry down the whole
+     page as a single continuing grain, which is what a blueprint motif is
+     supposed to do. */
   .blueprint::before {
     content: "";
     position: absolute;
@@ -180,11 +188,25 @@
         transparent 40%
       ),
       linear-gradient(
-        65deg,
+        115deg,
         transparent 69.7%,
         var(--stroke-gold) 69.85%,
         transparent 70%
       );
+  }
+
+  /* Bright band. The site is dark throughout, so partner logos supplied on
+     white previously sat as hard white rectangles on midnight — the "huge
+     white block with a small logo inside". Lifting the whole band instead
+     means the logos land on light ground with no tile around them at all. */
+  .band-bright {
+    background:
+      radial-gradient(
+        ellipse 80% 140% at 50% 0%,
+        rgba(247, 195, 102, 0.10) 0%,
+        rgba(255, 255, 255, 0) 70%
+      ),
+      linear-gradient(180deg, #f4f6fa 0%, #e9edf4 100%);
   }
 }
 
@@ -283,14 +305,84 @@
     width: 56px;
   }
 
-  /* Cards stagger in rather than arriving as one block. */
-  .js-reveal [data-reveal].is-visible > * > .stagger > * {
+  /* Cards stagger in rather than arriving as one block.
+
+     The descendant selector is deliberately loose (`.stagger > *` at any
+     depth) — the previous `> * > .stagger > *` required the track to sit
+     exactly two levels under the section, so wrapping a grid in one more div
+     silently killed the animation with no error anywhere. */
+  .js-reveal [data-reveal].is-visible .stagger > * {
     animation: alta-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
+  /* Without per-child delay every card animates on the same frame, which is
+     just a fade of the whole block. The cascade is the effect. */
+  .js-reveal [data-reveal].is-visible .stagger > *:nth-child(1) { animation-delay: 0ms; }
+  .js-reveal [data-reveal].is-visible .stagger > *:nth-child(2) { animation-delay: 110ms; }
+  .js-reveal [data-reveal].is-visible .stagger > *:nth-child(3) { animation-delay: 220ms; }
+  .js-reveal [data-reveal].is-visible .stagger > *:nth-child(4) { animation-delay: 330ms; }
+  .js-reveal [data-reveal].is-visible .stagger > *:nth-child(5) { animation-delay: 440ms; }
+  .js-reveal [data-reveal].is-visible .stagger > *:nth-child(6) { animation-delay: 550ms; }
   @keyframes alta-rise {
     from {
       opacity: 0;
       transform: translateY(18px);
+    }
+  }
+
+  /* --- "How We Work" connector ----------------------------------------
+     A gold rule that draws itself across the four steps as the band scrolls
+     in, so the sequence reads as a progression rather than four loose tiles.
+     It is inset by half a card so it starts and ends under the step markers
+     instead of running off the edges. */
+  .step-track::before {
+    content: "";
+    position: absolute;
+    top: 34px;
+    inset-inline: 12.5%;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--color-primary-container) 12%,
+      var(--color-primary-container) 88%,
+      transparent
+    );
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+  }
+  .js-reveal [data-reveal].is-visible .step-track::before {
+    transform: scaleX(1);
+  }
+  /* The connector is a desktop affordance: stacked on mobile the cards are
+     already vertically sequential and a horizontal rule would cut across them. */
+  @media (max-width: 1023px) {
+    .step-track::before {
+      display: none;
+    }
+  }
+
+  /* --- Service card icons ---------------------------------------------
+     Idle drift plus a hover lift. The drift is what the client asked for
+     ("animate the icons"); it is small enough to register as life rather
+     than as something demanding attention while copy is being read. */
+  .icon-float {
+    animation: alta-float 4.5s ease-in-out infinite;
+    /* Offset is supplied per card as --float-delay. Staggering the drift stops
+       a row pulsing in lockstep, which looks mechanical rather than alive.
+       A custom property is used instead of :nth-child because the cards sit
+       inside the carousel's internal wrappers, so no selector rooted at the
+       section can reach them by position. A NEGATIVE delay starts each icon
+       already partway through the cycle rather than holding it still first. */
+    animation-delay: var(--float-delay, 0s);
+  }
+  @keyframes alta-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-4px);
     }
   }
 
@@ -313,8 +405,15 @@
       width: 56px;
       transition: none;
     }
-    .js-reveal [data-reveal].is-visible > * > .stagger > * {
+    .js-reveal [data-reveal].is-visible .stagger > * {
       animation: none;
+    }
+    .icon-float {
+      animation: none;
+    }
+    .step-track::before {
+      transform: scaleX(1);
+      transition: none;
     }
     html {
       scroll-behavior: auto;

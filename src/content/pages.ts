@@ -425,6 +425,84 @@ export const projects = {
       ],
     },
   ],
+
+  /**
+   * Documented work — photographs and footage from actual sites and events.
+   *
+   * Every entry corresponds to a named line in `portfolio` above, and every
+   * asset is real material shot on site. This list is deliberately much
+   * shorter than the portfolio: it covers only the projects there is media
+   * for, rather than illustrating the rest with stand-in imagery, which would
+   * imply a documentary record that does not exist.
+   *
+   * `video` is a poster + short silent clip. `stills` are additional frames
+   * shown in the same card.
+   */
+  gallery: [
+    {
+      slug: "schools-taif",
+      title: "إصلاحات وترميم مدارس الطائف",
+      activity: "التشغيل والصيانة — المباني والترميم",
+      poster: "/projects/schools-taif-1.webp",
+      stills: [
+        "/projects/schools-taif-1.webp",
+        "/projects/schools-taif-2.webp",
+        "/projects/schools-taif-3.webp",
+        "/projects/schools-taif-4.webp",
+        "/projects/schools-taif-5.webp",
+      ],
+      video: null,
+    },
+    {
+      slug: "office-fitout",
+      title: "ترميم وتأثيث مكاتب شركة الإبداع العربي",
+      activity: "التشغيل والصيانة — المباني والترميم",
+      poster: "/projects/office-fitout.webp",
+      stills: [],
+      video: "/video/office-fitout.mp4",
+    },
+    {
+      slug: "hvac-maintenance",
+      title: "أعمال التكييف والتبريد",
+      activity: "التشغيل والصيانة — التكييف والتبريد",
+      poster: "/projects/hvac-maintenance.webp",
+      stills: [],
+      video: "/video/hvac-maintenance.mp4",
+    },
+    {
+      slug: "exhibition-ksu",
+      title: "معرض المسرح – جامعة الملك سعود",
+      activity: "الفعاليات والمعارض",
+      poster: "/projects/exhibition-ksu.webp",
+      stills: [],
+      video: "/video/exhibition-ksu.mp4",
+    },
+    {
+      slug: "exhibition-stc",
+      title: "معرض الإسعافات الأولية – STC",
+      activity: "الفعاليات والمعارض",
+      poster: "/projects/exhibition-stc.webp",
+      stills: [],
+      video: null,
+    },
+    {
+      slug: "exhibition-health-admin",
+      title: "جناح جمعية الإدارة الصحية — Global Health Exhibition",
+      activity: "الفعاليات والمعارض",
+      poster: "/projects/exhibition-health-admin.webp",
+      stills: [],
+      video: "/video/exhibition-health-admin.mp4",
+    },
+    {
+      slug: "ministry-investment",
+      title: "مشاركة في حفل توقيع اتفاقية — وزارة الاستثمار",
+      activity: "الفعاليات والمعارض",
+      poster: "/projects/ministry-investment.webp",
+      stills: [],
+      video: "/video/ministry-investment.mp4",
+    },
+  ],
+
   privacyNote:
     "نفذت شركة التا للاستثمار أعمالاً ومشاريع متنوعة لعدد من الجهات والمنشآت في قطاعات مختلفة. ونظراً لالتزامنا بخصوصية عملائنا، تُعرض التفاصيل والأسماء التي حصلت على موافقة للنشر فقط، بينما يمكن مشاركة الخبرات ذات الصلة ضمن العروض الفنية والاجتماعات المباشرة.",
   seo: {

@@ -31,7 +31,7 @@ export default function AboutPage() {
         <div className="grid items-start gap-12 lg:grid-cols-2">
           <div className="relative aspect-[4/3] overflow-hidden rounded-xl border b-ink">
             <Image
-              src="/about_office.png"
+              src="/about_office.webp"
               alt="بيئة عمل شركة التا للاستثمار"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"

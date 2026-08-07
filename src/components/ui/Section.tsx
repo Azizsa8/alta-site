@@ -7,13 +7,16 @@
  * page from drifting as sections are added.
  */
 
-type Tone = "paper" | "paper-dim" | "midnight" | "midnight-deep";
+type Tone = "paper" | "paper-dim" | "midnight" | "midnight-deep" | "bright";
 
 const tones: Record<Tone, string> = {
   paper: "bg-paper text-ink",
   "paper-dim": "bg-paper-dim text-ink",
   midnight: "bg-surface text-text-primary",
   "midnight-deep": "bg-surface-lowest text-text-primary",
+  /** Light band. Used where supplied-on-white artwork has to sit on the page
+      without a tile around it — see the partner strip. */
+  bright: "band-bright text-[#0d1b29]",
 };
 
 export function Section({
@@ -22,6 +25,7 @@ export function Section({
   className = "",
   id,
   rule = false,
+  bleed = false,
 }: {
   children: React.ReactNode;
   tone?: Tone;
@@ -29,6 +33,18 @@ export function Section({
   id?: string;
   /** Draws the 1px structural hairline above the section. */
   rule?: boolean;
+  /**
+   * Drops the max-width wrapper so content can span the full viewport.
+   *
+   * The section still owns the vertical rhythm; only the horizontal cap is
+   * released. Callers then wrap their own headings in `.alta-container` and
+   * leave the edge-to-edge element (a carousel, a marquee) outside it.
+   *
+   * This is preferred over the `width:100vw` + negative-margin trick, which
+   * measures the viewport INCLUDING the scrollbar and so overflows by its
+   * width, and which needs its translate direction flipped under `dir="rtl"`.
+   */
+  bleed?: boolean;
 }) {
   const isDark = tone === "midnight" || tone === "midnight-deep";
   return (
@@ -41,7 +57,7 @@ export function Section({
         rule ? (isDark ? "rule-soft" : "rule-ink") : ""
       } ${className}`}
     >
-      <div className="alta-container">{children}</div>
+      {bleed ? children : <div className="alta-container">{children}</div>}
     </section>
   );
 }

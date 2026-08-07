@@ -28,14 +28,23 @@ export function ServiceCard({
           : "b-ink bg-paper hover:border-[color:var(--color-primary-container)] hover:shadow-[0_18px_40px_-24px_rgba(11,22,34,0.35)]"
       }`}
     >
+      {/* Two independent movements, deliberately kept on separate elements:
+          the outer ring reacts to hover (lift, gold fill, glow) while the
+          glyph inside carries a slow idle drift. Putting both on one node
+          means the hover transform overwrites the running animation's
+          transform and the drift dies the moment a cursor arrives. */}
       <span
-        className={`mb-5 grid size-12 place-items-center rounded-md border transition-colors ${
+        className={`mb-5 grid size-14 place-items-center rounded-md border transition-all duration-300 group-hover:scale-110 group-hover:shadow-gold ${
           onDark
-            ? "b-gold bg-primary/10 text-primary"
-            : "b-gold bg-primary/10 text-gold-ink"
+            ? "b-gold bg-primary/10 text-primary group-hover:bg-primary/20"
+            : "b-gold bg-primary/10 text-gold-ink group-hover:bg-primary/20"
         }`}
       >
-        <Icon name={icon} className="size-6" />
+        <span className="icon-float grid place-items-center">
+          <span className="grid place-items-center transition-transform duration-300 group-hover:rotate-6">
+            <Icon name={icon} className="size-7" />
+          </span>
+        </span>
       </span>
       <h3
         className={`mb-2.5 text-[16px] font-bold leading-snug ${

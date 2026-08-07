@@ -4,6 +4,7 @@ import { Section, SectionTitle, Pill } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { FeatureCard } from "@/components/ui/Cards";
 import { Icon } from "@/components/ui/Icon";
+import { ProjectGallery } from "@/components/ui/ProjectGallery";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { projects } from "@/content/pages";
 import { cta } from "@/content/site";
@@ -126,6 +127,21 @@ export default function ProjectsPage() {
               </li>
             ))}
           </ul>
+        </div>
+      </Section>
+
+      {/* ------------------------------------------------ DOCUMENTED WORK */}
+      {/* Real photographs and footage from site. Placed above the written
+          portfolio because evidence carries further than a list, and kept
+          separate from it because media exists for only some of the work. */}
+      <Section tone="paper-dim">
+        <SectionTitle
+          eyebrow="FROM THE FIELD"
+          title="من أرض الواقع"
+          body="لقطات من مواقع التنفيذ والفعاليات، مصوّرة أثناء العمل."
+        />
+        <div className="mt-12">
+          <ProjectGallery items={projects.gallery} />
         </div>
       </Section>
 

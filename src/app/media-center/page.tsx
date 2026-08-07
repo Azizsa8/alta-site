@@ -5,7 +5,8 @@ import { Section, SectionTitle } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { FeatureCard } from "@/components/ui/Cards";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
-import { mediaCenter } from "@/content/pages";
+import { ProjectGallery } from "@/components/ui/ProjectGallery";
+import { mediaCenter, projects } from "@/content/pages";
 import { cta, microcopy } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -13,6 +14,15 @@ export const metadata: Metadata = {
   description: mediaCenter.seo.description,
   alternates: { canonical: "/media-center" },
 };
+
+/**
+ * Event material, drawn from the same documented-work set as /projects rather
+ * than duplicated — one asset list, filtered two ways, so a correction to a
+ * caption cannot land on one page and miss the other.
+ */
+const eventHighlights = projects.gallery.filter((g) =>
+  g.activity.startsWith("الفعاليات"),
+);
 
 export default function MediaCenterPage() {
   return (
@@ -31,6 +41,23 @@ export default function MediaCenterPage() {
           {mediaCenter.sections.map((s) => (
             <FeatureCard key={s.title} title={s.title} body={s.body} />
           ))}
+        </div>
+      </Section>
+
+      {/* Real footage from company events. This is the section that carries
+          "أخبار الشركة" credibly — the articles below are still awaiting
+          approved copy, but these are things that demonstrably happened. */}
+      {/* tone="paper" here and "paper-dim" below, not the other way round:
+          the gallery cards are bg-paper-dim and the article cards are
+          bg-paper, so each set needs the opposite band to stay visible. */}
+      <Section tone="paper" rule>
+        <SectionTitle
+          eyebrow="HIGHLIGHTS"
+          title="لقطات من مشاركاتنا"
+          body="مشاركات الشركة في المعارض والفعاليات وحفلات التوقيع."
+        />
+        <div className="mt-12">
+          <ProjectGallery items={eventHighlights} />
         </div>
       </Section>
 
