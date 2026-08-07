@@ -172,40 +172,9 @@ export default function ProjectsPage() {
             </div>
           ))}
         </div>
-      </Section>
 
-      {/* ------------------------------------------------------ BY ACTIVITY */}
-      {/* Stays on `paper`: the cards inside are bg-paper-dim, so a paper-dim
-          section would erase the contrast that separates them. */}
-      <Section tone="paper">
-        <SectionTitle
-          eyebrow="CLIENTS BY ACTIVITY"
-          title="نماذج من العملاء والأعمال حسب النشاط"
-        />
-        <div className="mt-12 grid gap-5 md:grid-cols-2">
-          {projects.byActivity.map((group) => (
-            <div key={group.title} className="rounded-lg border b-ink bg-paper-dim p-6">
-              <h3 className="mb-4 text-[15px] font-bold text-gold-ink">
-                {group.title}
-              </h3>
-              <ul className="space-y-2.5">
-                {group.items.map((item) => (
-                  <li key={item} className="flex items-start gap-2.5">
-                    <Icon
-                      name="check"
-                      className="mt-1 size-3.5 shrink-0 text-primary-container"
-                      strokeWidth={2.6}
-                    />
-                    <span className="text-[13px] leading-[1.8] text-ink-muted">
-                      {item}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
+        {/* Kept from the removed clients section: it explains why the list is
+            not exhaustive, which the approved document requires be stated. */}
         <p className="mt-10 rounded-lg border b-gold bg-primary/5 p-6 text-[13.5px] leading-[1.9] text-ink-muted">
           {projects.privacyNote}
         </p>

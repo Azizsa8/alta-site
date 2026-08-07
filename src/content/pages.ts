@@ -312,8 +312,9 @@ export const projects = {
    * Delivered projects, grouped by activity and sub-activity.
    *
    * Supplied directly by the client (Mr. Faisal, 2026-08-05) as the
-   * authoritative "سابقة الأعمال" list. Distinct from `byActivity` below, which
-   * names CLIENTS from section 17 of the approved document; this names the WORK.
+   * authoritative "سابقة الأعمال" list. It replaced an earlier section that
+   * named CLIENTS from section 17 of the approved document — the client asked
+   * for the work itself, not the client roster, so only this list remains.
    *
    * The client asked for a one-line description and an image per project. Neither
    * was supplied, and inventing them would put unverified claims about real
@@ -422,61 +423,6 @@ export const projects = {
           ],
         },
       ],
-    },
-  ],
-  /** Clients grouped by activity — document section 17. */
-  byActivity: [
-    {
-      title: "هندسة الذكاء الاصطناعي",
-      items: ["برنامج إدارة خدمة النزيل في الفنادق والمنتجعات."],
-    },
-    {
-      title: "التشغيل والصيانة والنظافة",
-      items: [
-        "مدارس حفص الأولى بالطائف",
-        "المدرسة الابتدائية الأولى لتحفيظ القرآن بالطائف",
-        "شركة الإبداع العربي",
-        "شركة فيدا المتحدة",
-        "شركة ستيال",
-      ],
-    },
-    {
-      title: "الضيافة وخدمات الإعاشة",
-      items: ["شركة الأنعام المتحدة", "شركة المباني الوطنية"],
-    },
-    {
-      title: "الاستشارات وتأهيل المنشآت",
-      items: ["شركة الأنعام المتحدة", "شركة المباني الوطنية", "شركة ستيال"],
-    },
-    {
-      title: "التوريدات",
-      items: [
-        "شركة الأنعام المتحدة",
-        "شركة المباني الوطنية",
-        "شركة فيدا المتحدة",
-        "شركة ستيال",
-      ],
-    },
-    {
-      title: "الدعاية والإعلام",
-      items: ["شركة نباتات", "شركة التحكم التقنية"],
-    },
-    {
-      title: "الفعاليات والمعارض",
-      items: [
-        "جامعة الملك سعود",
-        "شركة الاتصالات السعودية (stc)",
-        "شركة اليمامة",
-        "شركة نباتات",
-        "مركز الإسناد الطبي بالقوات المشتركة",
-        "مستشفى الدرعية",
-        "مستشفى الملك فيصل",
-        "شركة التحكم التقنية",
-      ],
-    },
-    {
-      title: "البحوث والقطاع المجتمعي",
-      items: ["جمعية البحث والابتكار"],
     },
   ],
   privacyNote:
