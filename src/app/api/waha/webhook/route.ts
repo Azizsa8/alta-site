@@ -27,7 +27,7 @@ export const maxDuration = 60;
  * not a rewrite.
  */
 
-/** "966509922329@c.us" -> "966509922329". Groups (@g.us) are ignored. */
+/** "9665XXXXXXXX@c.us" -> "9665XXXXXXXX". Groups (@g.us) are ignored. */
 function senderFromChatId(chatId: string): string | null {
   if (!chatId || chatId.includes("@g.us")) return null;
   const digits = chatId.split("@")[0].replace(/[^\d]/g, "");
