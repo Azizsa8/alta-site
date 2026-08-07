@@ -194,6 +194,20 @@
     background-color: rgba(9, 20, 32, 0.82);
     backdrop-filter: blur(16px);
   }
+
+  /* Lifts the centre of the nav bar so the dark-on-transparent monogram reads.
+     A radial falloff rather than a panel: the edges stay flush with the bar, so
+     it lightens the area without drawing a plate behind the approved artwork.
+     Gold is mixed in at low alpha so the lift reads as brand light, not grey. */
+  .nav-logo-glow {
+    background:
+      radial-gradient(
+        ellipse 60% 100% at 50% 50%,
+        rgba(247, 195, 102, 0.14) 0%,
+        rgba(255, 255, 255, 0.10) 38%,
+        rgba(255, 255, 255, 0) 72%
+      );
+  }
   /* Carousels are swipeable; the scrollbar itself is visual noise. */
   .no-scrollbar {
     scrollbar-width: none;

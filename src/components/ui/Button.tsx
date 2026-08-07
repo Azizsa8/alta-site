@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Icon } from "./Icon";
 
 type Variant = "primary" | "secondary" | "ghost" | "onDark";
-type Size = "md" | "lg";
+type Size = "sm" | "md" | "lg";
 
 const base =
   "inline-flex items-center justify-center gap-2 rounded-[10px] font-semibold transition-all duration-200 " +
@@ -26,6 +26,9 @@ const variants: Record<Variant, string> = {
 };
 
 const sizes: Record<Size, string> = {
+  // Nav-scale. Overrides the 48px base target because it sits inside a 72px
+  // bar beside 40px controls; a full-height button there reads as a banner.
+  sm: "min-h-10 px-4 text-[13.5px]",
   md: "",
   lg: "min-h-14 px-8 text-base",
 };

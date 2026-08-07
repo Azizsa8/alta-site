@@ -69,8 +69,14 @@ export function Header() {
           track it pushed inward and overlapped the logo instead of wrapping.
           minmax(0,1fr) lets the track shrink so nothing can spill into the
           centre column. */}
-      <div className="alta-container grid h-[72px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
-        <nav aria-label="القائمة الرئيسية" className="hidden justify-self-start xl:block">
+      <div className="alta-container relative flex h-[72px] items-center justify-between gap-3">
+        {/* Lightened wash behind the mark. The approved monogram is dark on
+            transparent, so on the midnight bar it was effectively invisible.
+            A soft radial lift keeps the artwork untouched — no plate, no
+            inversion — while giving the mark a surface it can be read against. */}
+        <div aria-hidden className="nav-logo-glow pointer-events-none absolute inset-y-0 left-1/2 w-[380px] -translate-x-1/2" />
+
+        <nav aria-label="القائمة الرئيسية" className="relative hidden xl:block">
           <ul className="flex items-center gap-1">
             {mainNav.slice(0, 4).map((item) => (
               <li key={item.href}>
@@ -92,13 +98,15 @@ export function Header() {
           </ul>
         </nav>
 
-        <div className="shrink-0 justify-self-center">
-          <Logo onDark />
+        <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="pointer-events-auto">
+            <Logo onDark />
+          </div>
         </div>
 
         {/* Third column: the remaining nav plus the actions, kept together so
             the grid stays exactly three columns and the logo stays centred. */}
-        <div className="flex items-center justify-end gap-3 justify-self-end">
+        <div className="relative flex items-center justify-end gap-3">
         <nav aria-label="بقية القائمة" className="hidden xl:block">
           <ul className="flex items-center gap-1">
             {mainNav.slice(4).map((item) => (
@@ -149,7 +157,7 @@ export function Header() {
           </ul>
         </nav>
 
-          <Button href="/request-quote" className="hidden xl:inline-flex">
+          <Button href="/request-quote" variant="secondary" size="sm" className="hidden xl:inline-flex">
             {cta.requestQuote}
           </Button>
           <button
