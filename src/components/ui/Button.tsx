@@ -5,9 +5,26 @@ type Variant = "primary" | "secondary" | "ghost" | "onDark";
 type Size = "sm" | "md" | "lg";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-[10px] font-semibold transition-all duration-200 " +
+  "items-center justify-center gap-2 rounded-[10px] font-semibold transition-all duration-200 " +
   // 48px minimum touch target, per DESIGN.md > Components > Buttons.
   "min-h-12 px-6 text-[15px] disabled:opacity-60 disabled:pointer-events-none";
+
+/**
+ * Any display utility, including a responsive variant of one.
+ *
+ * `display` is deliberately NOT part of `base`. It used to start with
+ * `inline-flex`, and a caller passing `className="hidden md:inline-flex"` then
+ * had two utilities setting `display` at identical specificity. Which one wins
+ * is decided by their order in the generated stylesheet — not by the order
+ * they appear in the class attribute — and `inline-flex` won. The result was a
+ * button that was supposed to be desktop-only rendering on every phone, on top
+ * of the centred logo. It looked like a z-index or layout bug and was neither.
+ *
+ * So: if the caller specifies a display, theirs is the only one emitted.
+ * Otherwise the default `inline-flex` is added back.
+ */
+const HAS_DISPLAY =
+  /(^|\s)(?:(?:sm|md|lg|xl|2xl):)?(hidden|flex|inline-flex|block|inline-block|inline|grid|inline-grid|contents)(\s|$)/;
 
 const variants: Record<Variant, string> = {
   // Gold fill, dark text, 2px lift on hover.
@@ -56,7 +73,8 @@ export function Button({
   disabled,
   onClick,
 }: Props) {
-  const cls = `${base} ${variants[variant]} ${sizes[size]} ${className}`;
+  const display = HAS_DISPLAY.test(className) ? "" : "inline-flex";
+  const cls = `${display} ${base} ${variants[variant]} ${sizes[size]} ${className}`;
   const inner = (
     <>
       <span>{children}</span>

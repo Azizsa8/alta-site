@@ -4,9 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { Logo } from "@/components/ui/Logo";
-import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
-import { mainNav, cta } from "@/content/site";
+import { mainNav } from "@/content/site";
 
 /**
  * Scroll position is external browser state, so it is read with
@@ -74,7 +73,13 @@ export function Header() {
             transparent, so on the midnight bar it was effectively invisible.
             A soft radial lift keeps the artwork untouched — no plate, no
             inversion — while giving the mark a surface it can be read against. */}
-        <div aria-hidden className="nav-logo-glow pointer-events-none absolute inset-y-0 left-1/2 w-[380px] -translate-x-1/2" />
+        {/* Width is capped, not fixed. A flat w-[380px] on a 360px phone hung
+            10px past the viewport on both sides and gave every page on the
+            site a horizontal scrollbar — the element is centred with
+            -translate-x-1/2, so any width above the viewport overflows in
+            both directions at once. w-full resolves against the container,
+            which is already inside the page gutters. */}
+        <div aria-hidden className="nav-logo-glow pointer-events-none absolute inset-y-0 left-1/2 w-full max-w-[380px] -translate-x-1/2" />
 
         <nav aria-label="القائمة الرئيسية" className="relative hidden xl:block">
           <ul className="flex items-center gap-1">
@@ -157,9 +162,18 @@ export function Header() {
           </ul>
         </nav>
 
-          <Button href="/request-quote" variant="secondary" size="sm" className="hidden xl:inline-flex">
-            {cta.requestQuote}
-          </Button>
+          {/* ==================================================================
+              DO NOT ADD A "اطلب عرض سعر" (request-quote) CTA TO THIS BAR.
+
+              Removed at the client's explicit and repeated instruction. The
+              action already appears in the hero, at the foot of every page,
+              and in the footer nav — the bar is for navigation and the mark.
+
+              This is enforced, not just documented: scripts/verify.mjs fails
+              if any link to /request-quote appears inside <header>. If you are
+              here because that check went red, the fix is to delete the link,
+              not to relax the check.
+              ================================================================== */}
           <button
             type="button"
             aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}

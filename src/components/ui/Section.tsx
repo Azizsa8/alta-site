@@ -7,16 +7,13 @@
  * page from drifting as sections are added.
  */
 
-type Tone = "paper" | "paper-dim" | "midnight" | "midnight-deep" | "bright";
+type Tone = "paper" | "paper-dim" | "midnight" | "midnight-deep";
 
 const tones: Record<Tone, string> = {
   paper: "bg-paper text-ink",
   "paper-dim": "bg-paper-dim text-ink",
   midnight: "bg-surface text-text-primary",
   "midnight-deep": "bg-surface-lowest text-text-primary",
-  /** Light band. Used where supplied-on-white artwork has to sit on the page
-      without a tile around it — see the partner strip. */
-  bright: "band-bright text-[#0d1b29]",
 };
 
 export function Section({

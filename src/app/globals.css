@@ -195,19 +195,6 @@
       );
   }
 
-  /* Bright band. The site is dark throughout, so partner logos supplied on
-     white previously sat as hard white rectangles on midnight — the "huge
-     white block with a small logo inside". Lifting the whole band instead
-     means the logos land on light ground with no tile around them at all. */
-  .band-bright {
-    background:
-      radial-gradient(
-        ellipse 80% 140% at 50% 0%,
-        rgba(247, 195, 102, 0.10) 0%,
-        rgba(255, 255, 255, 0) 70%
-      ),
-      linear-gradient(180deg, #f4f6fa 0%, #e9edf4 100%);
-  }
 }
 
 @layer utilities {
@@ -334,17 +321,22 @@
      in, so the sequence reads as a progression rather than four loose tiles.
      It is inset by half a card so it starts and ends under the step markers
      instead of running off the edges. */
+  /* The rail sits ABOVE the cards, in the grid's top margin. Inside the grid
+     it was drawn at the cards' own height, where opaque card backgrounds
+     covered all but the 20px gutters — technically animating, visually
+     nothing. Negative `top` lifts it clear so the whole line reads. */
   .step-track::before {
     content: "";
     position: absolute;
-    top: 34px;
+    top: -26px;
     inset-inline: 12.5%;
-    height: 1px;
+    height: 2px;
+    border-radius: 2px;
     background: linear-gradient(
       to right,
       transparent,
-      var(--color-primary-container) 12%,
-      var(--color-primary-container) 88%,
+      var(--color-primary-container) 10%,
+      var(--color-primary-container) 90%,
       transparent
     );
     transform: scaleX(0);
@@ -354,10 +346,40 @@
   .js-reveal [data-reveal].is-visible .step-track::before {
     transform: scaleX(1);
   }
-  /* The connector is a desktop affordance: stacked on mobile the cards are
-     already vertically sequential and a horizontal rule would cut across them. */
+
+  /* One marker per step, sitting on the rail. Positioned with physical `left`
+     plus a -50% shift rather than a logical inset, so the dot stays centred
+     over its card under both directions without a second rule. */
+  .step-track > * {
+    position: relative;
+  }
+  .step-track > *::before {
+    content: "";
+    position: absolute;
+    top: -32px;
+    left: 50%;
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: var(--color-surface);
+    border: 2px solid var(--color-primary-container);
+    transform: translateX(-50%) scale(0);
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .js-reveal [data-reveal].is-visible .step-track > *::before {
+    transform: translateX(-50%) scale(1);
+  }
+  /* Markers arrive left to right, arriving just behind the rail as it draws. */
+  .js-reveal [data-reveal].is-visible .step-track > *:nth-child(1)::before { transition-delay: 0.35s; }
+  .js-reveal [data-reveal].is-visible .step-track > *:nth-child(2)::before { transition-delay: 0.5s; }
+  .js-reveal [data-reveal].is-visible .step-track > *:nth-child(3)::before { transition-delay: 0.65s; }
+  .js-reveal [data-reveal].is-visible .step-track > *:nth-child(4)::before { transition-delay: 0.8s; }
+
+  /* Both are a desktop affordance: once the cards stack, a horizontal rail
+     would cut across them and each marker would float above its own card. */
   @media (max-width: 1023px) {
-    .step-track::before {
+    .step-track::before,
+    .step-track > *::before {
       display: none;
     }
   }
@@ -413,6 +435,10 @@
     }
     .step-track::before {
       transform: scaleX(1);
+      transition: none;
+    }
+    .step-track > *::before {
+      transform: translateX(-50%) scale(1);
       transition: none;
     }
     html {

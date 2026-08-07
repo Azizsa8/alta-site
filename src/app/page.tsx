@@ -169,21 +169,25 @@ export default async function HomePage() {
       </Section>
 
       {/* ---------------------------------------------------- CLIENT STRIP */}
-      {/* Bright band, full bleed. The logos are supplied on white, so on the
-          midnight page each one needed a white tile and the row read as a line
-          of blank rectangles. Lifting the band instead lets the marks sit on
-          light ground with nothing drawn around them, and releasing the width
-          cap lets the row run the full length of the screen. */}
-      <Section tone="bright" bleed className="!py-[44px] md:!py-[60px]">
-        <div className="alta-container">
-          <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8a6d2f]">
-            CLIENTS &amp; PARTNERS
-          </p>
-          <h2 className="mb-9 text-center font-display text-[24px] font-bold text-[#0d1b29] md:text-[32px]">
-            شركاء النجاح
-          </h2>
+      {/* Midnight band, full bleed. A light band was tried here to hide the
+          logos' baked-in white backgrounds and was wrong: it put a white slab
+          through the middle of a dark site. The plates go back on the tiles,
+          where they belong, and the band returns to the page's own palette. */}
+      <Section
+        tone="midnight-deep"
+        bleed
+        rule
+        className="relative overflow-hidden !py-[48px] md:!py-[64px]"
+      >
+        <div className="blueprint absolute inset-0 opacity-40" />
+        <div className="relative">
+          <div className="alta-container">
+            <SectionTitle eyebrow="CLIENTS & PARTNERS" title="شركاء النجاح" onDark />
+          </div>
+          <div className="mt-10">
+            <PartnerCarousel />
+          </div>
         </div>
-        <PartnerCarousel />
       </Section>
 
       {/* ------------------------------------------------------------ ABOUT */}

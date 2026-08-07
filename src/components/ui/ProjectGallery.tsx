@@ -32,7 +32,10 @@ export function ProjectGallery({ items }: { items: GalleryItem[] }) {
   const [frame, setFrame] = useState<Record<string, number>>({});
 
   return (
-    <ul className="stagger grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    // Four columns from xl. There are seven documented projects: in three
+    // columns that leaves the last card stranded beside two empty thirds,
+    // which at a 3:4 card height is a conspicuous hole. 4+3 reads as a block.
+    <ul className="stagger grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {items.map((item) => {
         const isPlaying = playing === item.slug;
         const shown = item.stills.length

@@ -139,6 +139,43 @@ async function checkPages() {
     }
   }
 
+  /*
+   * The header bar must never carry a "request a quote" CTA.
+   *
+   * Removed at the client's explicit and repeated instruction. This is a
+   * standing constraint rather than a one-off edit, so it is asserted on every
+   * page rather than trusted to a comment in Header.tsx — a CTA is exactly the
+   * kind of thing that gets helpfully re-added six months from now.
+   *
+   * The check reads only the markup between <header> and </header>; the same
+   * link elsewhere on the page (hero, closing band, footer) is expected and
+   * must keep working.
+   */
+  for (const [path] of PAGES) {
+    // PAGES also carries /robots.txt and /sitemap.xml, which are not documents
+    // and correctly have no chrome. Asserting against them fails on the
+    // absence of a header rather than on the thing being guarded.
+    if (/\.(txt|xml)$/.test(path)) continue;
+    const { body } = await getText(path);
+    const header = body.match(/<header[\s\S]*?<\/header>/i)?.[0] ?? "";
+    check(
+      `${path} renders a header`,
+      header !== "",
+      "no <header> element in the document",
+    );
+    check(
+      `${path} header has no request-quote CTA`,
+      !header.includes("/request-quote"),
+      "found /request-quote inside <header>",
+    );
+  }
+  // ...but the action must still be reachable from the page itself.
+  const homeForCta = await getText("/");
+  check(
+    "request-quote is still reachable off-header",
+    homeForCta.body.includes("/request-quote"),
+  );
+
   // Approved partner logos — all eighteen from the approved sheet, served and
   // rendered in the carousel. A missing file would 404 silently in an <img>.
   const homeForPartners = await getText("/");
@@ -165,9 +202,17 @@ async function checkPages() {
     "carousel content is duplicated for looping",
     (homeForPartners.body.match(/stc\.png/g) ?? []).length >= 2,
   );
+  /* Versioned path — see PartnerCarousel. The files are served immutable for a
+     year, so re-cut artwork ships under a new folder rather than overwriting.
+     Keep this in step with ASSETS there; a mismatch 404s all eighteen. */
+  const PARTNER_ASSETS = "v2";
   for (const file of PARTNER_FILES) {
-    const res = await fetch(`${BASE}/partners/${file}.png`);
-    check(`partner logo ${file}.png served`, res.status === 200, `got ${res.status}`);
+    const res = await fetch(`${BASE}/partners/${PARTNER_ASSETS}/${file}.png`);
+    check(
+      `partner logo ${PARTNER_ASSETS}/${file}.png served`,
+      res.status === 200,
+      `got ${res.status}`,
+    );
   }
   check(
     "all 18 partners referenced in the markup",
