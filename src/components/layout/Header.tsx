@@ -7,6 +7,7 @@ import { Logo } from "@/components/ui/Logo";
 import { Icon } from "@/components/ui/Icon";
 import { mainNav } from "@/content/site";
 import { isLocale } from "@/i18n/config";
+import { LocaleSwitch } from "@/components/ui/LocaleSwitch";
 
 /**
  * Scroll position is external browser state, so it is read with
@@ -190,6 +191,12 @@ export function Header() {
               here because that check went red, the fix is to delete the link,
               not to relax the check.
               ================================================================== */}
+          {/* Desktop only. The phone bar is logo + hamburger by design — the
+              client's first complaint was the bar being crowded on mobile, so
+              the switch lives inside the sheet there instead. */}
+          <div className="hidden xl:block">
+            <LocaleSwitch compact />
+          </div>
           <button
             type="button"
             aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}
@@ -237,6 +244,9 @@ export function Header() {
             {/* No quote CTA in the phone menu. The sheet is for navigation;
                 the action is already at the foot of every page, so repeating
                 it here only pushed the menu items up and crowded the sheet. */}
+            <div className="mt-5 flex justify-center">
+              <LocaleSwitch />
+            </div>
           </nav>
         </div>
       )}

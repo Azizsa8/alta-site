@@ -97,7 +97,7 @@ async function getJson(path, headers = {}) {
 
 /* --------------------------------------------------------------- checks -- */
 
-const PAGES = [
+const RAW_PAGES = [
   ["/", ["شركة التا للاستثمار", "حلول متكاملة", "ALTA Hospitality"]],
   ["/about", ["من نحن", "رؤيتنا", "قيمنا", "الجودة والسلامة والحوكمة"]],
   ["/services", ["خدماتنا", "هندسة الذكاء الاصطناعي", "البحوث واستطلاع الرأي"]],
@@ -129,6 +129,25 @@ const PAGES = [
   ["/sitemap.xml", ["/services/ai-engineering", "/projects"]],
   ["/robots.txt", ["Sitemap", "Disallow"]],
 ];
+
+/**
+ * Public pages moved under /[locale]. The list above deliberately stays
+ * locale-free so it reads as site structure rather than as URLs, and this is
+ * the single place the segment is added.
+ *
+ * Asserting the ARABIC tree specifically, not the bare paths: bare paths 307
+ * to a locale chosen from Accept-Language, so a suite run against them would
+ * be testing the redirect, not the page — and would silently follow whichever
+ * locale the runtime happened to negotiate.
+ *
+ * /sitemap.xml and /robots.txt are not pages and must never be prefixed.
+ */
+const VERIFY_LOCALE = "ar";
+const PAGES = RAW_PAGES.map(([path, needles]) =>
+  /\.(xml|txt)$/.test(path)
+    ? [path, needles]
+    : [`/${VERIFY_LOCALE}${path === "/" ? "" : path}`, needles],
+);
 
 async function checkPages() {
   for (const [path, needles] of PAGES) {
@@ -163,14 +182,22 @@ async function checkPages() {
       header !== "",
       "no <header> element in the document",
     );
+    /*
+     * Assert on the CTA's LABEL, not on the path.
+     *
+     * Matching "/request-quote" was a false positive: on /ar/request-quote the
+     * language switch links to that same page in the other locale, so its own
+     * href legitimately contains the string. The thing the client asked to be
+     * gone is the button, and the button is identified by its text.
+     */
     check(
       `${path} header has no request-quote CTA`,
-      !header.includes("/request-quote"),
-      "found /request-quote inside <header>",
+      !header.includes("اطلب عرض سعر"),
+      "found the quote CTA label inside <header>",
     );
   }
   // ...but the action must still be reachable from the page itself.
-  const homeForCta = await getText("/");
+  const homeForCta = await getText(`/${VERIFY_LOCALE}`);
   check(
     "request-quote is still reachable off-header",
     homeForCta.body.includes("/request-quote"),
@@ -178,7 +205,7 @@ async function checkPages() {
 
   // Approved partner logos — all eighteen from the approved sheet, served and
   // rendered in the carousel. A missing file would 404 silently in an <img>.
-  const homeForPartners = await getText("/");
+  const homeForPartners = await getText(`/${VERIFY_LOCALE}`);
   const PARTNER_FILES = [
     "stc", "king-saud-university", "nic", "intercontinental", "petlas",
     "alyamama", "princess-nourah-university", "iie", "jahez", "socpa",
@@ -231,7 +258,7 @@ async function checkPages() {
   );
 
   // Brand rules: transparent approved logo present, RTL Arabic document.
-  const home = await getText("/");
+  const home = await getText(`/${VERIFY_LOCALE}`);
   check("home references approved transparent mark", home.body.includes("alta-mark"));
   check("home is RTL Arabic", home.body.includes('dir="rtl"') && home.body.includes('lang="ar"'));
   check(
@@ -241,7 +268,10 @@ async function checkPages() {
   );
 
   // 404 uses the approved copy.
-  const missing = await getText("/this-page-does-not-exist");
+  // Must be requested INSIDE a locale. A bare unknown path is redirected by
+  // middleware before routing ever runs, so it answers 307 and the 404 page is
+  // never exercised.
+  const missing = await getText(`/${VERIFY_LOCALE}/this-page-does-not-exist`);
   check("404 status", missing.status === 404, `got ${missing.status}`);
   check("404 uses approved copy", missing.body.includes("يبدو أن الصفحة غير موجودة"));
 }
@@ -572,7 +602,7 @@ async function checkAgents() {
   }
 
   // The applied colour must actually reach the rendered page.
-  const home = await getText("/");
+  const home = await getText(`/${VERIFY_LOCALE}`);
   check(
     "applied theme is rendered as a CSS override",
     home.body.includes("alta-theme-overrides") && home.body.includes("#d9a84e"),
@@ -590,7 +620,7 @@ async function checkAgents() {
   if (contentId) {
     await postJson("/api/agent/message", { sender: SENDER, text: `موافقة ${contentId}` }, AUTH);
     // The homepage revalidates every 60s; force a fresh render.
-    const updated = await getText(`/?cachebust=${Date.now()}`);
+    const updated = await getText(`/${VERIFY_LOCALE}?cachebust=${Date.now()}`);
     check("approved headline appears on the homepage", updated.body.includes(headline));
   }
 
