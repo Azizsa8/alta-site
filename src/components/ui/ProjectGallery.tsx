@@ -32,9 +32,9 @@ export function ProjectGallery({ items }: { items: GalleryItem[] }) {
   const [frame, setFrame] = useState<Record<string, number>>({});
 
   return (
-    // Four columns from xl. There are seven documented projects: in three
-    // columns that leaves the last card stranded beside two empty thirds,
-    // which at a 3:4 card height is a conspicuous hole. 4+3 reads as a block.
+    // Four columns from xl. There are eight documented projects, so xl fills
+    // two clean rows of four. Three columns would leave a 3+3+2 tail with a
+    // gap beside the last card, conspicuous at a 3:4 card height.
     <ul className="stagger grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {items.map((item) => {
         const isPlaying = playing === item.slug;

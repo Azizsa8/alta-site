@@ -18,6 +18,45 @@
 [functions]
   node_bundler = "esbuild"
 
+# The four original media-center renders were deleted from public/ on 2026-08-10
+# and replaced by news-*.webp. They are absent from the deploy manifest, but the
+# Next runtime keeps its own copy of public/ in the deploy blob store and that
+# store is NOT cleared between deploys — so the old URLs kept returning 200 long
+# after the files were gone, and a CDN purge did not touch them. These rules end
+# that at the edge. 410 rather than 404: the removal is deliberate and permanent,
+# which is what a crawler holding the old URL should be told.
+# force = true is required — without it the rule loses to the asset still being
+# served underneath it, which is the entire problem here.
+#
+# `to` MUST point at a static file, not at "/". Rewriting to a rendered route
+# hands the request to the Next.js server handler, whose own 200 overrides the
+# declared status — the URL then returns the full homepage under an image path,
+# which is worse than the problem it was meant to fix. A plain file in public/
+# is served by the CDN, so the 410 survives.
+[[redirects]]
+  from = "/news_smart.png"
+  to = "/gone.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  from = "/news_conference.png"
+  to = "/gone.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  from = "/news_handshake.png"
+  to = "/gone.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  from = "/news_restaurant.png"
+  to = "/gone.html"
+  status = 410
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]

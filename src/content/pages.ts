@@ -501,6 +501,22 @@ export const projects = {
       stills: [],
       video: "/video/ministry-investment.mp4",
     },
+    {
+      // The written الدعاية والإعلان portfolio below lists seven clients and
+      // had no photographic evidence at all. These are the first three frames
+      // of that work: an installed signboard, produced event sashes, and a
+      // printed awareness display.
+      slug: "advertising-signage",
+      title: "تصميم وتنفيذ اللوحات والمواد الدعائية",
+      activity: "الدعاية والإعلان",
+      poster: "/projects/advertising-signage-1.webp",
+      stills: [
+        "/projects/advertising-signage-1.webp",
+        "/projects/advertising-signage-2.webp",
+        "/projects/advertising-signage-3.webp",
+      ],
+      video: null,
+    },
   ],
 
   privacyNote:
@@ -543,15 +559,22 @@ export const mediaCenter = {
     { title: "التطوير المؤسسي", body: "الهياكل والإجراءات ومؤشرات الأداء وإدارة التغيير." },
     { title: "دراسات السوق", body: "أهمية الاستطلاع ورضا العملاء وتحويل البيانات إلى قرار." },
   ],
+  /**
+   * Three images across eight cards, so each repeats. The order below is set
+   * by grid adjacency, not by topic: at 4, 2 and 1 columns no card ever sits
+   * next to or directly above another using the same image. Topic-matching is
+   * not possible here — none of the three depict maintenance, catering or
+   * research, so pretending otherwise would just cluster the repeats.
+   */
   articles: [
-    { title: "كيف تبدأ منشأتك رحلة الذكاء الاصطناعي دون تعقيد؟", topic: "رؤى الذكاء الاصطناعي", image: "/news_smart.png" },
-    { title: "خمسة مؤشرات تكشف كفاءة إدارة المرافق.", topic: "إدارة المرافق", image: "/news_conference.png" },
-    { title: "الفرق بين الصيانة الوقائية والصيانة التصحيحية.", topic: "إدارة المرافق", image: "/news_handshake.png" },
-    { title: "كيف تقلل خدمات الإعاشة الهدر وتحسن رضا المستفيد؟", topic: "الضيافة والإعاشة", image: "/news_restaurant.png" },
-    { title: "متى تحتاج المنشأة إلى إعادة تصميم هيكلها التنظيمي؟", topic: "التطوير المؤسسي", image: "/news_conference.png" },
-    { title: "كيف تختار المورد المناسب لمشروعك؟", topic: "التوريدات", image: "/news_handshake.png" },
-    { title: "ما الذي يجعل خطة المحتوى قابلة للقياس؟", topic: "الدعاية والإعلام", image: "/news_smart.png" },
-    { title: "كيف تصمم استطلاع رأي ينتج قرارات مفيدة؟", topic: "دراسات السوق", image: "/news_restaurant.png" },
+    { title: "كيف تبدأ منشأتك رحلة الذكاء الاصطناعي دون تعقيد؟", topic: "رؤى الذكاء الاصطناعي", image: "/news-executive-dialogue.webp" },
+    { title: "خمسة مؤشرات تكشف كفاءة إدارة المرافق.", topic: "إدارة المرافق", image: "/news-press-coverage.webp" },
+    { title: "الفرق بين الصيانة الوقائية والصيانة التصحيحية.", topic: "إدارة المرافق", image: "/news-forum-handshake.webp" },
+    { title: "كيف تقلل خدمات الإعاشة الهدر وتحسن رضا المستفيد؟", topic: "الضيافة والإعاشة", image: "/news-executive-dialogue.webp" },
+    { title: "متى تحتاج المنشأة إلى إعادة تصميم هيكلها التنظيمي؟", topic: "التطوير المؤسسي", image: "/news-press-coverage.webp" },
+    { title: "كيف تختار المورد المناسب لمشروعك؟", topic: "التوريدات", image: "/news-forum-handshake.webp" },
+    { title: "ما الذي يجعل خطة المحتوى قابلة للقياس؟", topic: "الدعاية والإعلام", image: "/news-executive-dialogue.webp" },
+    { title: "كيف تصمم استطلاع رأي ينتج قرارات مفيدة؟", topic: "دراسات السوق", image: "/news-press-coverage.webp" },
   ],
   seo: {
     title: "المركز الإعلامي | شركة التا للاستثمار",
