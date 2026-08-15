@@ -563,16 +563,24 @@ export const mediaCenter = {
    * Three images across eight cards, so each repeats. The order below is set
    * by grid adjacency, not by topic: at 4, 2 and 1 columns no card ever sits
    * next to or directly above another using the same image. Topic-matching is
-   * not possible here — none of the three depict maintenance, catering or
-   * research, so pretending otherwise would just cluster the repeats.
+   * mostly not possible here — none of them depict maintenance, catering or
+   * research, so pretending otherwise would just cluster the repeats. The one
+   * exception is التوريدات, which lands on the warehouse image by chance.
+   *
+   * `/news-forum-handshake.webp` was removed 2026-08-15 and must not come back.
+   * It was a Gemini render of a Saudi official being interviewed, carrying a
+   * fabricated broadcaster logo on the microphone — a synthetic press photo
+   * that reads as a real, attributable news event. Its two slots (indices 2
+   * and 5) now hold `/news-procurement-warehouse.webp`, which keeps the
+   * A-B-C-A-B-C-A-B adjacency pattern intact.
    */
   articles: [
     { title: "كيف تبدأ منشأتك رحلة الذكاء الاصطناعي دون تعقيد؟", topic: "رؤى الذكاء الاصطناعي", image: "/news-executive-dialogue.webp" },
     { title: "خمسة مؤشرات تكشف كفاءة إدارة المرافق.", topic: "إدارة المرافق", image: "/news-press-coverage.webp" },
-    { title: "الفرق بين الصيانة الوقائية والصيانة التصحيحية.", topic: "إدارة المرافق", image: "/news-forum-handshake.webp" },
+    { title: "الفرق بين الصيانة الوقائية والصيانة التصحيحية.", topic: "إدارة المرافق", image: "/news-procurement-warehouse.webp" },
     { title: "كيف تقلل خدمات الإعاشة الهدر وتحسن رضا المستفيد؟", topic: "الضيافة والإعاشة", image: "/news-executive-dialogue.webp" },
     { title: "متى تحتاج المنشأة إلى إعادة تصميم هيكلها التنظيمي؟", topic: "التطوير المؤسسي", image: "/news-press-coverage.webp" },
-    { title: "كيف تختار المورد المناسب لمشروعك؟", topic: "التوريدات", image: "/news-forum-handshake.webp" },
+    { title: "كيف تختار المورد المناسب لمشروعك؟", topic: "التوريدات", image: "/news-procurement-warehouse.webp" },
     { title: "ما الذي يجعل خطة المحتوى قابلة للقياس؟", topic: "الدعاية والإعلام", image: "/news-executive-dialogue.webp" },
     { title: "كيف تصمم استطلاع رأي ينتج قرارات مفيدة؟", topic: "دراسات السوق", image: "/news-press-coverage.webp" },
   ],
