@@ -33,9 +33,12 @@ export type IconName =
   | "linkedin"
   | "instagram"
   | "x"
+  | "tiktok"
   | "youtube"
   | "facebook"
-  | "play";
+  | "play"
+  | "image"
+  | "search";
 
 const paths: Record<IconName, React.ReactNode> = {
   ai: (
@@ -166,6 +169,14 @@ const paths: Record<IconName, React.ReactNode> = {
       <path d="M19.8 4.2 4.2 19.8" />
     </>
   ),
+  // The note + swoosh reads as the platform mark without tracing its
+  // trademarked glyph — same rationale as the other channel marks above.
+  tiktok: (
+    <>
+      <path d="M13.2 3.2v11.3a3.7 3.7 0 1 1-3.1-3.65" />
+      <path d="M13.2 3.2c.4 2.6 2.2 4.4 4.8 4.7v2.9c-1.8-.1-3.4-.7-4.8-1.75" />
+    </>
+  ),
   youtube: (
     <>
       <rect x="2.4" y="5.8" width="19.2" height="12.4" rx="3.6" />
@@ -180,6 +191,23 @@ const paths: Record<IconName, React.ReactNode> = {
     </>
   ),
   play: <path d="M8 5.4 19 12 8 18.6Z" />,
+  // Photo-count badge on gallery cards: frame, sun, and the diagonal that
+  // reads as a landscape even at 12px.
+  image: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <circle cx="8.5" cy="10" r="1.5" />
+      <path d="M21 16l-5-5-9 8" />
+    </>
+  ),
+  // "Look closer" affordance on hover — a magnifier, not a plus: the card
+  // opens a viewer, it does not add anything.
+  search: (
+    <>
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="M20 20l-4.4-4.4" />
+    </>
+  ),
 };
 
 export function Icon({

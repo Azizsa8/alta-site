@@ -67,9 +67,9 @@ export function WhatsAppInline({ context }: { context?: string }) {
 /**
  * Social profile row.
  *
- * Renders nothing while `socialLinks` is empty — alta.sa displays platform
- * icons but none of them carry an href, so there are no accounts to link to
- * yet. Icons that go nowhere are worse than no icons.
+ * Renders nothing while `socialLinks` is empty. Icons that go nowhere are
+ * worse than no icons, so the guard stays even though the array is populated
+ * again as of 2026-08-16 — see `socialLinks` in `content/site.ts`.
  */
 export function SocialBar({ className = "" }: { className?: string }) {
   if (socialLinks.length === 0) return null;

@@ -66,12 +66,41 @@ export type SocialLink = { label: string; href: string; icon: IconName };
 /**
  * Social profiles.
  *
- * Deliberately empty. alta.sa renders Facebook/Twitter/Tumblr/Instagram icons
- * in its footer, but every one of them is a bare <i> with no href — there are
- * no accounts to link to. Rather than ship icons that go nowhere, the UI hides
- * the whole strip while this array is empty. Add entries and it appears.
+ * Verified live 2026-08-16 (both accounts post as "التا للاستثمار" with the
+ * approved ALTA mark as their avatar): X handle supplied by the client on
+ * 2026-08-10, TikTok found on the client's WhatsApp thread. If either account
+ * is renamed or retired, update the href here — `SocialBar` and `SocialFeed`
+ * both read from this array, so nothing else needs to change.
  */
-export const socialLinks: SocialLink[] = [];
+export const socialLinks: SocialLink[] = [
+  { label: "التا للاستثمار على إكس (تويتر)", href: "https://x.com/alta_ksa", icon: "x" },
+  { label: "التا للاستثمار على تيك توك", href: "https://www.tiktok.com/@alta2030ksa", icon: "tiktok" },
+];
+
+/**
+ * Feed embed config for `SocialFeed` (rendered above the footer).
+ *
+ * Not from the approved document — the PDF predates these accounts. Wording
+ * kept short and neutral rather than styled as a marketing line, since it
+ * hasn't been through client sign-off the way the rest of `site.ts` has.
+ *
+ * X's embedded timeline auto-updates with no maintenance. TikTok has no
+ * equivalent — its oEmbed only supports a single video by URL, so
+ * `latestVideoId` is a manual pointer to the newest post and goes stale the
+ * moment a newer one ships. There is no way to make this self-updating
+ * without TikTok's paid Display API.
+ */
+export const socialFeed = {
+  heading: "آخر ما نشرناه",
+  intro: "تابعونا على منصات التواصل الاجتماعي.",
+  x: { handle: "alta_ksa", profileUrl: "https://x.com/alta_ksa" },
+  tiktok: {
+    handle: "alta2030ksa",
+    profileUrl: "https://www.tiktok.com/@alta2030ksa",
+    /** Newest video as of 2026-08-16 — bump this by hand when a newer one posts. */
+    latestVideoId: "7513085354363112722",
+  },
+} as const;
 
 export type NavItem = {
   label: string;

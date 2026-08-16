@@ -4,6 +4,7 @@ import { Hanken_Grotesk, IBM_Plex_Sans_Arabic } from "next/font/google";
 import "../globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SocialFeed } from "@/components/layout/SocialFeed";
 import { ChatWidget } from "@/components/ui/ChatWidget";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -125,6 +126,7 @@ export default async function LocaleLayout({
           {children}
         </main>
         <SiteChrome>
+          <SocialFeed />
           <Footer />
           <ChatWidget />
           {/* Sits on the start corner; the chat launcher owns the end corner,
