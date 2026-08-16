@@ -174,8 +174,20 @@ export function themeCss(theme: ThemeOverrides): string {
       // Re-validate at render time: defence in depth against a store that was
       // written by an older, looser version of this code.
       if (!value || !isValidColour(value)) return null;
-      return `${THEME_VAR_MAP[key]}:${value}`;
+      return `${THEME_VAR_MAP[key]}:${value} !important`;
     })
     .filter(Boolean);
+
+  if (theme.primary && isValidColour(theme.primary)) {
+    decls.push(`--stroke-gold: color-mix(in srgb, ${theme.primary} 32%, transparent) !important`);
+    decls.push(`--glow-gold: 0 12px 32px -10px color-mix(in srgb, ${theme.primary} 40%, transparent) !important`);
+  }
+  if (theme.primaryContainer && isValidColour(theme.primaryContainer)) {
+    decls.push(`--color-secondary: ${theme.primaryContainer} !important`);
+  }
+  if (theme.surface && isValidColour(theme.surface)) {
+    decls.push(`--page-base: ${theme.surface} !important`);
+  }
+
   return decls.length ? `:root{${decls.join(";")}}` : "";
 }

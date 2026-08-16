@@ -12,7 +12,9 @@ type Props = {
 
 const THEME_PRESETS = [
   {
+    id: "gold",
     name: "الذهبي والأزرق الكحلي الملكي (الأصلي)",
+    desc: "الهوية الرسمية المعتمدة لشركة التا للاستثمار",
     theme: {
       primary: "#d9a84e",
       primaryContainer: "#b88732",
@@ -23,7 +25,9 @@ const THEME_PRESETS = [
     },
   },
   {
+    id: "emerald",
     name: "الزمردي الملكي الفاخر (Vision 2030)",
+    desc: "طابع استثماري أخضر مستوحى من الاستدامة ورؤية المملكة",
     theme: {
       primary: "#10b981",
       primaryContainer: "#059669",
@@ -34,7 +38,9 @@ const THEME_PRESETS = [
     },
   },
   {
+    id: "ruby",
     name: "الياقوتي الفخم والرمادي الداكن",
+    desc: "طابع فاخر وجريء للمؤتمرات والفعاليات الكبرى",
     theme: {
       primary: "#e11d48",
       primaryContainer: "#be123c",
@@ -45,7 +51,9 @@ const THEME_PRESETS = [
     },
   },
   {
+    id: "cyan",
     name: "السياني والبلاتيني العصري",
+    desc: "طابع رقمي تقني متقدم يناسب حلول الذكاء الاصطناعي",
     theme: {
       primary: "#06b6d4",
       primaryContainer: "#0891b2",
@@ -61,7 +69,7 @@ export function SettingsClient({ initialSettings, initialRevisions, backend }: P
   const [settings, setSettings] = useState<SiteSettings>(initialSettings);
   const [revisions, setRevisions] = useState<SiteSettings[]>(initialRevisions);
   const [saving, setSaving] = useState(false);
-  const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string; link?: boolean } | null>(null);
   const [activeTab, setActiveTab] = useState<"theme" | "content" | "media" | "whatsapp" | "history">("theme");
 
   const updateTheme = (key: keyof ThemeOverrides, value: string) => {
@@ -94,15 +102,50 @@ export function SettingsClient({ initialSettings, initialRevisions, backend }: P
     }));
   };
 
-  const applyPreset = (presetTheme: ThemeOverrides) => {
-    setSettings((prev) => ({
-      ...prev,
+  const applyAndSavePreset = async (presetTheme: ThemeOverrides, presetName: string) => {
+    setSaving(true);
+    setStatusMsg(null);
+    const newSettings = {
+      ...settings,
       theme: {
-        ...prev.theme,
+        ...settings.theme,
         ...presetTheme,
       },
-    }));
-    setStatusMsg({ type: "success", text: "تم تطبيق النموذج. اضغط على حفظ التغييرات لاعتماده مباشرة." });
+    };
+    setSettings(newSettings);
+
+    try {
+      const res = await fetch("/api/admin/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          theme: newSettings.theme,
+          content: newSettings.content,
+          images: newSettings.images,
+          updatedBy: `لوحة المالك (تطبيق ${presetName})`,
+        }),
+      });
+      const data = await res.json();
+      if (data.ok && data.settings) {
+        setSettings(data.settings);
+        setStatusMsg({
+          type: "success",
+          text: `✅ تم تطبيق وحفظ (${presetName}) وتحديث الموقع الحي فوراً (الإصدار r${data.settings.revision})!`,
+          link: true,
+        });
+        const revRes = await fetch("/api/admin/settings");
+        const revData = await revRes.json();
+        if (revData.ok && revData.revisions) {
+          setRevisions(revData.revisions);
+        }
+      } else {
+        setStatusMsg({ type: "error", text: `فشل الحفظ: ${data.error || "خطأ غير متوقع"}` });
+      }
+    } catch {
+      setStatusMsg({ type: "error", text: "حدث خطأ أثناء الاتصال بالخادم." });
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleSave = async () => {
@@ -124,7 +167,8 @@ export function SettingsClient({ initialSettings, initialRevisions, backend }: P
         setSettings(data.settings);
         setStatusMsg({
           type: "success",
-          text: `✅ تم حفظ وتطبيق التغييرات بنجاح على الموقع الحي (الإصدار r${data.settings.revision})!`,
+          text: `✅ تم حفظ وتطبيق كافة التغييرات بنجاح على الموقع الحي (الإصدار r${data.settings.revision})!`,
+          link: true,
         });
         const revRes = await fetch("/api/admin/settings");
         const revData = await revRes.json();
@@ -157,6 +201,7 @@ export function SettingsClient({ initialSettings, initialRevisions, backend }: P
         setStatusMsg({
           type: "success",
           text: `✅ تم استرجاع الإصدار r${revision} وتطبيقه كإصدار جديد r${data.settings.revision}!`,
+          link: true,
         });
       } else {
         setStatusMsg({ type: "error", text: `فشل الاسترجاع: ${data.error || "خطأ غير متوقع"}` });
@@ -181,7 +226,7 @@ export function SettingsClient({ initialSettings, initialRevisions, backend }: P
       const data = await res.json();
       if (data.ok && data.settings) {
         setSettings(data.settings);
-        setStatusMsg({ type: "success", text: "✅ تمت استعادة الإعدادات الأصلية الافتراضية بنجاح." });
+        setStatusMsg({ type: "success", text: "✅ تمت استعادة الإعدادات الأصلية الافتراضية بنجاح.", link: true });
       }
     } catch {
       setStatusMsg({ type: "error", text: "حدث خطأ أثناء استعادة الإعدادات الأصلية." });
@@ -220,22 +265,34 @@ export function SettingsClient({ initialSettings, initialRevisions, backend }: P
             <Link
               href="/"
               target="_blank"
-              className="rounded-md border border-[color:var(--color-primary)] bg-primary/10 px-4 py-2.5 text-[13px] font-semibold text-primary hover:bg-primary/20 transition-colors"
+              className="rounded-md border border-[color:var(--color-primary)] bg-primary/10 px-4 py-2.5 text-[13px] font-semibold text-primary hover:bg-primary/20 transition-colors flex items-center gap-1.5"
             >
-              معاينة الموقع الحي ↗
+              <span>معاينة الموقع الحي</span>
+              <span>↗</span>
             </Link>
           </div>
         </header>
 
         {statusMsg && (
           <div
-            className={`mt-6 rounded-xl border p-4 text-[13.5px] font-semibold flex items-center justify-between ${
+            className={`mt-6 rounded-xl border p-4 text-[13.5px] font-semibold flex items-center justify-between shadow-lg ${
               statusMsg.type === "success"
-                ? "border-emerald-500/50 bg-emerald-950/40 text-emerald-300"
-                : "border-rose-500/50 bg-rose-950/40 text-rose-300"
+                ? "border-emerald-500/50 bg-emerald-950/60 text-emerald-300"
+                : "border-rose-500/50 bg-rose-950/60 text-rose-300"
             }`}
           >
-            <span>{statusMsg.text}</span>
+            <div className="flex items-center gap-3">
+              <span>{statusMsg.text}</span>
+              {statusMsg.link && (
+                <Link
+                  href="/"
+                  target="_blank"
+                  className="underline font-bold text-white hover:text-emerald-200"
+                >
+                  اضغط هنا لفتح وتحديث الموقع الحي
+                </Link>
+              )}
+            </div>
             <button onClick={() => setStatusMsg(null)} className="text-[12px] opacity-70 hover:opacity-100">
               ✕
             </button>
@@ -268,23 +325,37 @@ export function SettingsClient({ initialSettings, initialRevisions, backend }: P
           <div className="mt-8 grid gap-8 lg:grid-cols-3">
             <div className="lg:col-span-2 space-y-6">
               <div className="rounded-xl border b-soft bg-surface-panel p-6">
-                <h2 className="text-[16px] font-bold text-text-primary mb-3">نماذج ألوان جاهزة متناسقة</h2>
-                <p className="text-[13px] text-text-muted mb-4">اختر قالباً جاهزاً بضغطة واحدة أو قم بتخصيص كل لون بدقة أدناه:</p>
-                <div className="grid gap-3 sm:grid-cols-2">
+                <h2 className="text-[16px] font-bold text-text-primary mb-1.5">نماذج ألوان جاهزة متناسقة</h2>
+                <p className="text-[13px] text-text-muted mb-4">
+                  اضغط على زر <strong>تطبيق وحفظ</strong> لتفعيل الثيم مباشرة على الموقع:
+                </p>
+                <div className="grid gap-4 sm:grid-cols-2">
                   {THEME_PRESETS.map((preset) => (
-                    <button
-                      key={preset.name}
-                      onClick={() => applyPreset(preset.theme)}
-                      className="rounded-lg border b-soft bg-surface p-3.5 text-start hover:border-primary transition-all flex flex-col justify-between"
+                    <div
+                      key={preset.id}
+                      className="rounded-xl border b-soft bg-surface p-4 text-start hover:border-primary/60 transition-all flex flex-col justify-between"
                     >
-                      <span className="text-[12.5px] font-bold text-text-primary mb-2">{preset.name}</span>
-                      <div className="flex gap-1.5 mt-auto">
-                        <span className="size-4 rounded-full" style={{ backgroundColor: preset.theme.primary }} />
-                        <span className="size-4 rounded-full" style={{ backgroundColor: preset.theme.primaryContainer }} />
-                        <span className="size-4 rounded-full" style={{ backgroundColor: preset.theme.surface }} />
-                        <span className="size-4 rounded-full" style={{ backgroundColor: preset.theme.surfacePanel }} />
+                      <div>
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-[13px] font-bold text-text-primary">{preset.name}</span>
+                        </div>
+                        <p className="text-[11.5px] text-text-muted mb-3">{preset.desc}</p>
+                        <div className="flex gap-2 mb-4">
+                          <span className="size-5 rounded-full border border-white/20 shadow-sm" style={{ backgroundColor: preset.theme.primary }} title="اللون الرئيسي" />
+                          <span className="size-5 rounded-full border border-white/20 shadow-sm" style={{ backgroundColor: preset.theme.primaryContainer }} title="لون الحاوية" />
+                          <span className="size-5 rounded-full border border-white/20 shadow-sm" style={{ backgroundColor: preset.theme.surface }} title="الخلفية" />
+                          <span className="size-5 rounded-full border border-white/20 shadow-sm" style={{ backgroundColor: preset.theme.surfacePanel }} title="الألواح" />
+                        </div>
                       </div>
-                    </button>
+
+                      <button
+                        onClick={() => applyAndSavePreset(preset.theme, preset.name)}
+                        disabled={saving}
+                        className="w-full rounded-lg bg-primary/20 py-2 text-[12px] font-bold text-primary hover:bg-primary hover:text-on-primary transition-all disabled:opacity-50"
+                      >
+                        {saving ? "جاري التطبيق..." : "⚡ تطبيق وحفظ هذا النموذج فوراً"}
+                      </button>
+                    </div>
                   ))}
                 </div>
               </div>
