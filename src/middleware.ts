@@ -9,11 +9,20 @@ import { defaultLocale, isLocale, locales } from "@/i18n/config";
  * for anyone holding an old link — which matters because the client has been
  * sharing URLs from the pre-migration site.
  *
- * Locale is chosen from the visitor's Accept-Language ONLY as a tiebreaker.
- * Arabic stays the default for anything ambiguous: this is a Saudi company
- * whose approved content is Arabic, and an English-preferring browser in
- * Riyadh should not silently get the unapproved translation.
+ * Arabic ALWAYS wins the bare URL. Accept-Language is deliberately ignored:
+ * phones and laptops across the Gulf are routinely configured in English, so
+ * sniffing that header sent most visitors of a Saudi company's Arabic-first
+ * site to the derived English tree — and made the site look like it rendered
+ * left-to-right. English is reached only by asking for it.
+ *
+ * "Asking for it" means one of two things:
+ *   1. requesting an /en URL directly, or
+ *   2. having clicked the language switch before, which leaves LOCALE_COOKIE.
+ *
+ * Only an explicit click writes that cookie (see LocaleSwitch), so it can never
+ * be set by a browser default — which is exactly the failure being fixed here.
  */
+export const LOCALE_COOKIE = "alta_locale";
 const PASSTHROUGH = [
   "/api",
   "/admin",
@@ -24,15 +33,10 @@ const PASSTHROUGH = [
   "/brand",
 ];
 
-function preferred(request: NextRequest) {
-  const header = request.headers.get("accept-language");
-  if (!header) return defaultLocale;
-  // "en-GB,en;q=0.9,ar;q=0.8" -> first tag we actually publish
-  for (const part of header.split(",")) {
-    const tag = part.split(";")[0].trim().slice(0, 2).toLowerCase();
-    if (isLocale(tag)) return tag;
-  }
-  return defaultLocale;
+/** The visitor's remembered choice, or Arabic. Never reads Accept-Language. */
+function chosen(request: NextRequest) {
+  const saved = request.cookies.get(LOCALE_COOKIE)?.value;
+  return saved && isLocale(saved) ? saved : defaultLocale;
 }
 
 export function middleware(request: NextRequest) {
@@ -50,11 +54,11 @@ export function middleware(request: NextRequest) {
   const first = pathname.split("/")[1];
   if (isLocale(first)) return NextResponse.next();
 
-  const locale = preferred(request);
+  const locale = chosen(request);
   const url = request.nextUrl.clone();
   url.pathname = `/${locale}${pathname === "/" ? "" : pathname}`;
-  // 307, not 308: the choice depends on a request header, so it must not be
-  // cached as a permanent mapping by intermediaries.
+  // 307, not 308: the target depends on a cookie, so it must not be cached as
+  // a permanent mapping by intermediaries or by the visitor's own browser.
   return NextResponse.redirect(url, 307);
 }
 

@@ -26,6 +26,7 @@ export default async function HomePage() {
 
   const heroTitle = content.heroTitle ?? home.hero.title;
   const heroAccent = content.heroTitleAccent ?? home.hero.titleAccent;
+  const heroEyebrow = content.heroEyebrow ?? home.hero.eyebrow;
   const heroBody = content.heroBody ?? home.hero.body;
   const heroImage = images.hero ?? "/hero_cityscape.png";
   const aboutImage = images.about ?? "/about_office.webp";
@@ -61,7 +62,7 @@ export default async function HomePage() {
 
         <div className="alta-container relative flex min-h-[560px] flex-col justify-center py-20 md:min-h-[640px] md:py-28">
           <div className="reveal max-w-2xl">
-            <Pill onDark>{home.hero.eyebrow}</Pill>
+            <Pill onDark>{heroEyebrow}</Pill>
             <h1 className="mt-6 font-display text-[38px] font-extrabold leading-[1.15] tracking-tight text-text-primary sm:text-[52px] md:text-[64px] md:leading-[1.12]">
               {heroTitle}
               <span className="mt-2 block text-primary">{heroAccent}</span>

@@ -513,12 +513,18 @@ export async function handleInboundMessage(
   const bare = parseVerb(text);
   const idMatch = text.match(/\b([23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{5})\b/);
 
+  const currentSettings = await readSettings();
+  const dynamicSenders = (currentSettings.content?.allowedSenders ?? "")
+    .split(",")
+    .map((s) => s.replace(/[^\d]/g, ""))
+    .filter((s) => s.length >= 8);
+
   if ((bare === "approve" || bare === "reject") && idMatch) {
     const proposal = await readProposal(idMatch[1]);
     if (!proposal) return { reply: "لم أجد طلباً بهذا الرمز.", authorised: false };
 
     const site = getSites().find((s) => s.id === proposal.siteId);
-    if (!site || !isAuthorised(site, msg.sender)) {
+    if (!site || !isAuthorised(site, msg.sender, dynamicSenders)) {
       return { reply: "غير مصرح لهذا الرقم باعتماد التغييرات.", authorised: false };
     }
     if (proposal.status === "expired") {
@@ -549,7 +555,7 @@ export async function handleInboundMessage(
     };
   }
 
-  if (!isAuthorised(site, msg.sender)) {
+  if (!isAuthorised(site, msg.sender, dynamicSenders)) {
     // Log the attempt: an unknown number using a real keyword is worth seeing.
     await logAction({
       siteId: site.id,

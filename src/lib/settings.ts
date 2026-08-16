@@ -10,7 +10,7 @@
  * that can only move six named colours cannot be.
  */
 
-import { get, put } from "./store";
+import { get, put, listKeys } from "./store";
 
 export const SETTINGS_STORE = "alta-site-settings";
 export const SETTINGS_KEY = "site-settings";
@@ -28,14 +28,24 @@ export type ContentOverrides = {
   /** Home hero, when the client wants different words on the front page. */
   heroTitle?: string;
   heroTitleAccent?: string;
+  heroEyebrow?: string;
   heroBody?: string;
   /** Additional announcement bar text. */
   announcement?: string;
+  announcementActive?: boolean;
+  phone?: string;
+  whatsapp?: string;
+  email?: string;
+  address?: string;
+  crNumber?: string;
+  allowedSenders?: string;
+  wahaUrl?: string;
 };
 
 export type ImageOverrides = {
   hero?: string;
   about?: string;
+  logo?: string;
 };
 
 export type SiteSettings = {
@@ -143,6 +153,17 @@ export async function restoreRevision(revision: number, by: string) {
   await put(SETTINGS_STORE, SETTINGS_KEY, next);
   await put(SETTINGS_STORE, `history/${String(next.revision).padStart(6, "0")}`, next);
   return next;
+}
+
+export async function listRevisions(): Promise<SiteSettings[]> {
+  const keys = await listKeys(SETTINGS_STORE, "history/");
+  if (!keys.length) return [];
+  const entries = await Promise.all(
+    keys.map((k) => get<SiteSettings>(SETTINGS_STORE, k)),
+  );
+  return (entries.filter((e) => e !== null) as SiteSettings[]).sort(
+    (a, b) => b.revision - a.revision,
+  );
 }
 
 /** Serialise overrides into a CSS rule for the document root. */

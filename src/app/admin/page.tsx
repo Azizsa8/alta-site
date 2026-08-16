@@ -126,10 +126,17 @@ export default async function AdminDashboard({ searchParams }: Props) {
           </div>
           <div className="flex items-center gap-3">
             <Link
-              href="/"
-              className="rounded-md border b-soft px-4 py-2.5 text-[13px] text-text-muted hover:text-primary"
+              href="/admin/settings"
+              className="rounded-md border border-[color:var(--color-primary)] bg-primary/10 px-4 py-2.5 text-[13px] font-semibold text-primary hover:bg-primary/20 transition-colors"
             >
-              عرض الموقع
+              ⚙️ إعدادات وتخصيص الموقع
+            </Link>
+            <Link
+              href="/"
+              target="_blank"
+              className="rounded-md border b-soft px-4 py-2.5 text-[13px] text-text-muted hover:text-primary transition-colors"
+            >
+              عرض الموقع ↗
             </Link>
             {session && <LogoutButton />}
           </div>

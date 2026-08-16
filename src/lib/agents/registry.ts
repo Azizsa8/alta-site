@@ -29,11 +29,12 @@ export type AgentSite = {
 };
 
 function sendersFor(id: string): string[] {
-  const raw = process.env[`AGENT_ALLOWED_SENDERS_${id.toUpperCase()}`] ?? "";
-  return raw
+  const envRaw = process.env[`AGENT_ALLOWED_SENDERS_${id.toUpperCase()}`] ?? "";
+  const envNumbers = envRaw
     .split(",")
     .map((s) => s.replace(/[^\d]/g, ""))
     .filter((s) => s.length >= 8);
+  return envNumbers;
 }
 
 export function getSites(): AgentSite[] {
@@ -76,11 +77,17 @@ export function resolveSite(text: string): AgentSite | null {
   );
 }
 
-export function isAuthorised(site: AgentSite, sender: string) {
+export function isAuthorised(
+  site: AgentSite,
+  sender: string,
+  extraAllowed?: string[],
+) {
   const digits = sender.replace(/[^\d]/g, "");
-  // Empty allow-list => closed. This is the fail-closed default, on purpose.
-  if (site.allowedSenders.length === 0) return false;
-  return site.allowedSenders.includes(digits);
+  const allAllowed = [...site.allowedSenders, ...(extraAllowed ?? [])].map((s) =>
+    s.replace(/[^\d]/g, ""),
+  );
+  if (allAllowed.length === 0) return false;
+  return allAllowed.includes(digits);
 }
 
 export function canDo(site: AgentSite, capability: Capability) {

@@ -11,6 +11,7 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { ThemeVars } from "@/components/theme/ThemeVars";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
+import { PageTracker } from "@/components/analytics/PageTracker";
 import { company } from "@/content/site";
 import { home } from "@/content/pages";
 import { locales, defaultLocale, dir, isLocale, type Locale } from "@/i18n/config";
@@ -118,6 +119,7 @@ export default async function LocaleLayout({
           تخطَّ إلى المحتوى
         </a>
         <OrganizationJsonLd />
+        <PageTracker />
         <ScrollReveal />
         <SiteChrome>
           <Header />
