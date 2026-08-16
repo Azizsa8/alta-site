@@ -11,12 +11,7 @@ import { home, about, projects, mediaCenter } from "@/content/pages";
 import { cta, company } from "@/content/site";
 import { readSettings } from "@/lib/settings";
 
-/**
- * Re-read live settings at most once a minute rather than on every request:
- * a WhatsApp-driven copy change should appear quickly, but the homepage should
- * still be cacheable.
- */
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const featured = projects.featured;

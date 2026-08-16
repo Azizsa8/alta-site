@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { type SiteSettings, type ThemeOverrides } from "@/lib/settings";
+import { type SiteSettings, type ThemeOverrides, themeCss } from "@/lib/settings";
 
 type Props = {
   initialSettings: SiteSettings;
@@ -65,6 +65,28 @@ const THEME_PRESETS = [
   },
 ];
 
+function syncClientTheme(theme: ThemeOverrides) {
+  try {
+    const css = themeCss(theme);
+    if (css) {
+      localStorage.setItem("alta_theme_css", css);
+      document.cookie = "alta_theme_css=" + encodeURIComponent(css) + "; path=/; max-age=31536000";
+      let el = document.getElementById("alta-theme-overrides");
+      if (!el) {
+        el = document.createElement("style");
+        el.id = "alta-theme-overrides";
+        document.head.appendChild(el);
+      }
+      el.innerHTML = css;
+    } else {
+      localStorage.removeItem("alta_theme_css");
+      document.cookie = "alta_theme_css=; path=/; max-age=0";
+      let el = document.getElementById("alta-theme-overrides");
+      if (el) el.remove();
+    }
+  } catch {}
+}
+
 export function SettingsClient({ initialSettings, initialRevisions, backend }: Props) {
   const [settings, setSettings] = useState<SiteSettings>(initialSettings);
   const [revisions, setRevisions] = useState<SiteSettings[]>(initialRevisions);
@@ -113,6 +135,7 @@ export function SettingsClient({ initialSettings, initialRevisions, backend }: P
       },
     };
     setSettings(newSettings);
+    syncClientTheme(newSettings.theme);
 
     try {
       const res = await fetch("/api/admin/settings", {
@@ -128,9 +151,10 @@ export function SettingsClient({ initialSettings, initialRevisions, backend }: P
       const data = await res.json();
       if (data.ok && data.settings) {
         setSettings(data.settings);
+        syncClientTheme(data.settings.theme);
         setStatusMsg({
           type: "success",
-          text: `✅ تم تطبيق وحفظ (${presetName}) وتحديث الموقع الحي فوراً (الإصدار r${data.settings.revision})!`,
+          text: `✅ تم تطبيق وحفظ (${presetName}) وتحديث الموقع فوراً (الإصدار r${data.settings.revision})!`,
           link: true,
         });
         const revRes = await fetch("/api/admin/settings");
@@ -151,6 +175,7 @@ export function SettingsClient({ initialSettings, initialRevisions, backend }: P
   const handleSave = async () => {
     setSaving(true);
     setStatusMsg(null);
+    syncClientTheme(settings.theme);
     try {
       const res = await fetch("/api/admin/settings", {
         method: "POST",
@@ -165,6 +190,7 @@ export function SettingsClient({ initialSettings, initialRevisions, backend }: P
       const data = await res.json();
       if (data.ok && data.settings) {
         setSettings(data.settings);
+        syncClientTheme(data.settings.theme);
         setStatusMsg({
           type: "success",
           text: `✅ تم حفظ وتطبيق كافة التغييرات بنجاح على الموقع الحي (الإصدار r${data.settings.revision})!`,
@@ -198,6 +224,7 @@ export function SettingsClient({ initialSettings, initialRevisions, backend }: P
       const data = await res.json();
       if (data.ok && data.settings) {
         setSettings(data.settings);
+        syncClientTheme(data.settings.theme);
         setStatusMsg({
           type: "success",
           text: `✅ تم استرجاع الإصدار r${revision} وتطبيقه كإصدار جديد r${data.settings.revision}!`,
@@ -226,6 +253,7 @@ export function SettingsClient({ initialSettings, initialRevisions, backend }: P
       const data = await res.json();
       if (data.ok && data.settings) {
         setSettings(data.settings);
+        syncClientTheme({});
         setStatusMsg({ type: "success", text: "✅ تمت استعادة الإعدادات الأصلية الافتراضية بنجاح.", link: true });
       }
     } catch {

@@ -16,14 +16,7 @@ import { company } from "@/content/site";
 import { home } from "@/content/pages";
 import { locales, defaultLocale, dir, isLocale, type Locale } from "@/i18n/config";
 
-/**
- * Both locales are known at build time, so both trees prerender. Without this
- * every page would fall back to on-demand rendering and lose the static output
- * the site currently gets.
- */
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
+export const dynamic = "force-dynamic";
 
 /** Latin display face specified in DESIGN.md. */
 const grotesk = Hanken_Grotesk({
