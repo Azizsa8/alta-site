@@ -3,7 +3,7 @@ import { generate, hasAiKey } from "@/lib/ai";
 import { recordEvent } from "@/lib/analytics";
 import { rateLimit, clientKey } from "@/lib/submissions";
 import { services } from "@/content/services";
-import { about, faq, sectors, projects, home } from "@/content/pages";
+import { about, faq, industries, projects, home } from "@/content/pages";
 import { company } from "@/content/site";
 
 export const dynamic = "force-dynamic";
@@ -30,7 +30,7 @@ const KNOWLEDGE = [
         .map((o) => o.title)
         .join("، ")}.`,
   ),
-  `القطاعات: ${sectors.items.map((s) => s.title).join("، ")}.`,
+  `الفئات التي نخدمها: ${industries.items.map((s) => s.title).join("، ")}.`,
   `مشروع مميز: ${projects.featured.name} — ${projects.featured.summary}`,
   "الأسئلة الشائعة:",
   ...faq.items.map((f) => `س: ${f.q} ج: ${f.a}`),
@@ -127,11 +127,11 @@ const INDEX: Entry[] = [
     keys: `${s.title} ${s.short} ${s.offerings.map((o) => o.title).join(" ")}`,
     answer: `${s.title}: ${s.short} تفاصيل الخدمة في /services/${s.slug}، ويمكنك طلب عرض سعر عبر /request-quote.`,
   })),
-  ...sectors.items.map((s) => ({
+  ...industries.items.map((s) => ({
     // Synonyms matter: visitors ask about "المستشفيات", but the approved text
     // for that sector says "الرعاية الصحية" and never uses the word.
     keys: `${s.title} ${s.body} قطاع قطاعات ${SECTOR_SYNONYMS[s.title] ?? ""}`,
-    answer: `${s.title} — ${s.body} اطلع على جميع القطاعات في /sectors، أو ناقش احتياجك عبر /contact.`,
+    answer: `${s.title} — ${s.body} اطلع على جميع الفئات التي نخدمها في /industries، أو ناقش احتياجك عبر /contact.`,
   })),
   ...faq.items.map((f) => ({ keys: f.q, answer: f.a })),
   {

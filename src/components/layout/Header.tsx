@@ -131,7 +131,17 @@ export function Header() {
         <div className="relative flex items-center justify-end gap-3">
         <nav aria-label="بقية القائمة" className="hidden xl:block">
           <ul className="flex items-center gap-1">
-            {mainNav.slice(4).map((item) => (
+            {mainNav.slice(4).map((item) =>
+              item.cta ? (
+                <li key={item.href}>
+                  <LocaleLink
+                    href={item.href}
+                    className="flex items-center rounded-md bg-primary-container px-4 py-2 text-[13.5px] font-semibold text-on-primary transition-colors hover:bg-primary"
+                  >
+                    {item.label}
+                  </LocaleLink>
+                </li>
+              ) : (
               <li
                 key={item.href}
                 className="relative"
@@ -175,22 +185,11 @@ export function Header() {
                   </div>
                 )}
               </li>
-            ))}
+              ),
+            )}
           </ul>
         </nav>
 
-          {/* ==================================================================
-              DO NOT ADD A "اطلب عرض سعر" (request-quote) CTA TO THIS BAR.
-
-              Removed at the client's explicit and repeated instruction. The
-              action already appears in the hero, at the foot of every page,
-              and in the footer nav — the bar is for navigation and the mark.
-
-              This is enforced, not just documented: scripts/verify.mjs fails
-              if any link to /request-quote appears inside <header>. If you are
-              here because that check went red, the fix is to delete the link,
-              not to relax the check.
-              ================================================================== */}
           {/* Desktop only. The phone bar is logo + hamburger by design — the
               client's first complaint was the bar being crowded on mobile, so
               the switch lives inside the sheet there instead. */}
@@ -215,12 +214,16 @@ export function Header() {
           <nav aria-label="قائمة الجوال" className="alta-container py-4">
             <ul className="flex flex-col">
               {mainNav.map((item) => (
-                <li key={item.href} className="border-b b-ink last:border-0">
+                <li key={item.href} className={item.cta ? "pt-3" : "border-b b-ink last:border-0"}>
                   <LocaleLink
                     href={item.href}
-                    className={`block py-3.5 text-[15px] font-medium ${
-                      isActive(item.href) ? "text-gold-ink" : "text-ink"
-                    }`}
+                    className={
+                      item.cta
+                        ? "block rounded-md bg-primary-container px-4 py-3 text-center text-[15px] font-semibold text-on-primary"
+                        : `block py-3.5 text-[15px] font-medium ${
+                            isActive(item.href) ? "text-gold-ink" : "text-ink"
+                          }`
+                    }
                   >
                     {item.label}
                   </LocaleLink>
@@ -241,9 +244,6 @@ export function Header() {
                 </li>
               ))}
             </ul>
-            {/* No quote CTA in the phone menu. The sheet is for navigation;
-                the action is already at the foot of every page, so repeating
-                it here only pushed the menu items up and crowded the sheet. */}
             <div className="mt-5 flex justify-center">
               <LocaleSwitch />
             </div>

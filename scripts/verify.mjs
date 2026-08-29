@@ -159,16 +159,17 @@ async function checkPages() {
   }
 
   /*
-   * The header bar must never carry a "request a quote" CTA.
+   * The header bar must carry a "request a quote" CTA.
    *
-   * Removed at the client's explicit and repeated instruction. This is a
-   * standing constraint rather than a one-off edit, so it is asserted on every
-   * page rather than trusted to a comment in Header.tsx — a CTA is exactly the
-   * kind of thing that gets helpfully re-added six months from now.
+   * Reinstated 2026-08-29 per the client's restructuring plan (the nav is now
+   * الرئيسية | عن التا | قطاعاتنا | مشاريعنا | الرؤى والمقالات | تواصل معنا |
+   * اطلب عرض سعر) — this reverses the earlier "never add it" constraint from
+   * the same client, so it is asserted on every page rather than trusted to a
+   * comment in Header.tsx, same as the rule it replaces.
    *
    * The check reads only the markup between <header> and </header>; the same
    * link elsewhere on the page (hero, closing band, footer) is expected and
-   * must keep working.
+   * must keep working regardless.
    */
   for (const [path] of PAGES) {
     // PAGES also carries /robots.txt and /sitemap.xml, which are not documents
@@ -185,15 +186,15 @@ async function checkPages() {
     /*
      * Assert on the CTA's LABEL, not on the path.
      *
-     * Matching "/request-quote" was a false positive: on /ar/request-quote the
-     * language switch links to that same page in the other locale, so its own
-     * href legitimately contains the string. The thing the client asked to be
-     * gone is the button, and the button is identified by its text.
+     * Matching "/request-quote" was a false positive before too: on
+     * /ar/request-quote the language switch links to that same page in the
+     * other locale, so its own href legitimately contains the string. The
+     * thing being guarded is the button, identified by its visible text.
      */
     check(
-      `${path} header has no request-quote CTA`,
-      !header.includes("اطلب عرض سعر"),
-      "found the quote CTA label inside <header>",
+      `${path} header has the request-quote CTA`,
+      header.includes("اطلب عرض سعر"),
+      "quote CTA label missing from <header>",
     );
   }
   // ...but the action must still be reachable from the page itself.

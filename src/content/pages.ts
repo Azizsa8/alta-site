@@ -8,9 +8,9 @@
 export const home = {
   hero: {
     eyebrow: "شركة سعودية متعددة الحلول",
-    title: "حلول متكاملة تقود أعمالك",
-    titleAccent: "نحو كفاءة أعلى",
-    body: "نصمم وننفذ حلولاً متخصصة في الذكاء الاصطناعي، والتشغيل والصيانة، والضيافة والإعاشة، والاستشارات، والتوريدات، والإعلام، والفعاليات، والبحوث؛ بمنهج مؤسسي يركز على الجودة والنتائج.",
+    title: "شريك واحد لحلول",
+    titleAccent: "الأعمال والتشغيل والتقنية",
+    body: "تقدم شركة التا للاستثمار حلولاً متكاملة للجهات الحكومية والخاصة، تجمع بين التقنية والذكاء الاصطناعي والتشغيل والضيافة وخدمات الأعمال والإعلام والفعاليات.",
   },
   intro: {
     title: "نبذة مختصرة",
@@ -19,12 +19,11 @@ export const home = {
   servicesTitle: "خدماتنا",
   whyTitle: "لماذا التا؟",
   why: [
-    "منظومة خدمات متكاملة تحت مظلة واحدة.",
-    "حلول مصممة وفق احتياج كل عميل ومشروع.",
-    "إدارة واضحة للنطاق والوقت والجودة والمخاطر.",
-    "تقارير دورية ومؤشرات أداء قابلة للمتابعة.",
-    "مرونة في التنفيذ وسرعة في الاستجابة.",
-    "تركيز على القيمة المضافة والشراكات طويلة الأمد.",
+    "حلول متكاملة — جهة واحدة توفر مجموعة واسعة من الحلول.",
+    "خبرة تنفيذية — التركيز على التنفيذ وليس الاستشارة النظرية فقط.",
+    "مرونة في الحلول — تصميم الحلول حسب طبيعة كل جهة ومشروع.",
+    "جودة ومتابعة — متابعة مراحل التنفيذ وقياس الأداء.",
+    "تقنية وابتكار — دمج الذكاء الاصطناعي والأتمتة مع الخدمات التقليدية.",
   ],
   methodologyTitle: "منهجيتنا المختصرة",
   methodology: [
@@ -182,11 +181,18 @@ export const about = {
   },
 };
 
-/* ------------------------------------------------------------- SECTORS -- */
+/* ----------------------------------------------------------- INDUSTRIES -- */
+/**
+ * The industries/beneficiary types ALTA serves (hospitals, government,
+ * factories…) — distinct from `serviceSectors.ts`, which groups ALTA's own
+ * eight services into the five lines of business shown under "قطاعاتنا" in
+ * the main nav. Renamed from `sectors` when that word was reassigned to the
+ * service groupings, so the route moved from /sectors to /industries.
+ */
 
-export const sectors = {
+export const industries = {
   titleEn: "SECTORS WE SERVE",
-  title: "القطاعات التي نخدمها",
+  title: "الفئات التي نخدمها",
   intro:
     "نتعامل مع طبيعة كل قطاع بوصفها عاملاً أساسياً في تصميم الحل. لذلك نكيف نطاق الخدمة، ومستويات الأداء، وآليات التقارير، ومتطلبات السلامة والخصوصية بما يناسب بيئة العميل.",
   items: [
@@ -236,7 +242,7 @@ export const sectors = {
     body: "نراجع متطلبات القطاع ونبني نطاقاً متوافقاً مع احتياجات الموقع والمستفيدين.",
   },
   seo: {
-    title: "القطاعات التي نخدمها | شركة التا للاستثمار",
+    title: "الفئات التي نخدمها | شركة التا للاستثمار",
     description:
       "حلول متكاملة للجهات الحكومية والشركات والفنادق والتعليم والصحة والمصانع والقطاع غير الربحي والمجمعات.",
   },
@@ -316,18 +322,27 @@ export const projects = {
    * named CLIENTS from section 17 of the approved document — the client asked
    * for the work itself, not the client roster, so only this list remains.
    *
-   * The client asked for a one-line description and an image per project. Neither
-   * was supplied, and inventing them would put unverified claims about real
-   * client engagements on a live site — precisely what the approved document
-   * forbids. The UI therefore renders the names alone, cleanly, until real copy
-   * arrives.
+   * The client asked for a one-line description and an image per project.
+   * Neither was supplied, and inventing them would put unverified claims about
+   * real client engagements on a live site — precisely what the approved
+   * document forbids. The UI renders the names alone; do not add invented
+   * challenge/scope/result copy per project without the client supplying it.
    *
-   * A group with an empty `title` has no sub-activity; the UI omits the heading
-   * rather than rendering a blank one.
+   * Removed from the live page 2026-08-10 at the client's request ("the
+   * client reads the pictures and found the lists poor" — see the gallery
+   * below). Reinstated 2026-08-29 restructured by `sectorId` instead of raw
+   * activity, per the client's updated instruction — this supersedes that
+   * removal, not the no-invented-copy rule above, which still holds.
+   *
+   * `sectorId` maps each activity to one of the five `serviceSectors.ts`
+   * entries so /projects can group by sector like the rest of the site.
+   * A group with an empty `title` has no sub-activity; the UI omits the
+   * heading rather than rendering a blank one.
    */
   portfolio: [
     {
       title: "التشغيل والصيانة",
+      sectorId: "operations-facilities",
       groups: [
         {
           title: "المباني والترميم",
@@ -356,6 +371,7 @@ export const projects = {
     },
     {
       title: "الإعاشة",
+      sectorId: "hospitality-catering",
       groups: [
         {
           title: "الإعاشة المطهية",
@@ -368,6 +384,7 @@ export const projects = {
     },
     {
       title: "تقنية المعلومات",
+      sectorId: "tech-ai",
       groups: [
         {
           title: "",
@@ -380,6 +397,7 @@ export const projects = {
     },
     {
       title: "الفعاليات والمعارض",
+      sectorId: "media-events",
       groups: [
         {
           title: "",
@@ -394,6 +412,7 @@ export const projects = {
     },
     {
       title: "الدعاية والإعلان",
+      sectorId: "media-events",
       groups: [
         {
           title: "",
@@ -411,6 +430,7 @@ export const projects = {
     },
     {
       title: "التوريدات",
+      sectorId: "business-solutions",
       groups: [
         {
           title: "",

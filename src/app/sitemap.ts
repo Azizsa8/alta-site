@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { services } from "@/content/services";
+import { serviceSectors } from "@/content/serviceSectors";
 import { platforms } from "@/content/platforms";
 import { company } from "@/content/site";
 
@@ -10,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/about", priority: 0.9 },
     { path: "/services", priority: 0.9 },
     { path: "/sectors", priority: 0.8 },
+    { path: "/industries", priority: 0.6 },
     { path: "/projects", priority: 0.8 },
     { path: "/media-center", priority: 0.7 },
     { path: "/careers", priority: 0.6 },
@@ -29,6 +31,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     ...services.map((s) => ({
       url: `${company.origin}/services/${s.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    })),
+    ...serviceSectors.map((s) => ({
+      url: `${company.origin}/sectors/${s.id}`,
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.85,
