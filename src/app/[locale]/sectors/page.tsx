@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/PageHero";
-import { Section, SectionTitle } from "@/components/ui/Section";
+import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { ServiceCard } from "@/components/ui/Cards";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { serviceSectors } from "@/content/serviceSectors";
-import { serviceBySlug } from "@/content/services";
 import { cta } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -26,28 +25,19 @@ export default function SectorsPage() {
         trail={[{ name: "قطاعاتنا", href: "/sectors" }]}
       />
 
-      {serviceSectors.map((sector, i) => {
-        const sectorServices = sector.serviceSlugs
-          .map((slug) => serviceBySlug(slug))
-          .filter((s) => s !== undefined);
-
-        return (
-          <Section key={sector.id} id={sector.id} tone={i % 2 === 0 ? "paper" : "paper-dim"} rule>
-            <SectionTitle eyebrow={sector.titleEn} title={sector.title} body={sector.blurb} />
-            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {sectorServices.map((s) => (
-                <ServiceCard
-                  key={s.slug}
-                  href={`/services/${s.slug}`}
-                  icon={s.icon}
-                  title={s.title}
-                  body={s.short}
-                />
-              ))}
-            </div>
-          </Section>
-        );
-      })}
+      <Section tone="paper">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {serviceSectors.map((sector) => (
+            <ServiceCard
+              key={sector.id}
+              href={`/sectors/${sector.id}`}
+              icon={sector.icon}
+              title={sector.title}
+              body={sector.blurb}
+            />
+          ))}
+        </div>
+      </Section>
 
       <Section tone="midnight" className="relative overflow-hidden">
         <div className="blueprint absolute inset-0" />

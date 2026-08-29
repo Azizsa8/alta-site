@@ -44,11 +44,11 @@ export const mainNavEn: Widen<typeof mainNav> = [
     label: "Our Sectors",
     href: "/sectors",
     children: [
-      { label: "Technology & AI", href: "/sectors#tech-ai" },
-      { label: "Operations & Facilities", href: "/sectors#operations-facilities" },
-      { label: "Hospitality & Catering", href: "/sectors#hospitality-catering" },
-      { label: "Business Solutions", href: "/sectors#business-solutions" },
-      { label: "Media & Events", href: "/sectors#media-events" },
+      { label: "Technology & AI", href: "/sectors/tech-ai" },
+      { label: "Operations & Facilities", href: "/sectors/operations-facilities" },
+      { label: "Hospitality & Catering", href: "/sectors/hospitality-catering" },
+      { label: "Business Solutions", href: "/sectors/business-solutions" },
+      { label: "Media & Events", href: "/sectors/media-events" },
     ],
   },
   { label: "Projects", href: "/projects" },
@@ -71,11 +71,11 @@ export const footerNavEn: Widen<typeof footerNav> = [
   {
     title: "Our Sectors",
     links: [
-      { label: "Technology & AI", href: "/sectors#tech-ai" },
-      { label: "Operations & Facilities", href: "/sectors#operations-facilities" },
-      { label: "Hospitality & Catering", href: "/sectors#hospitality-catering" },
-      { label: "Business Solutions", href: "/sectors#business-solutions" },
-      { label: "Media & Events", href: "/sectors#media-events" },
+      { label: "Technology & AI", href: "/sectors/tech-ai" },
+      { label: "Operations & Facilities", href: "/sectors/operations-facilities" },
+      { label: "Hospitality & Catering", href: "/sectors/hospitality-catering" },
+      { label: "Business Solutions", href: "/sectors/business-solutions" },
+      { label: "Media & Events", href: "/sectors/media-events" },
     ],
   },
   {

@@ -98,15 +98,15 @@ export default async function HomePage() {
       {/* --------------------------------------------------------- SECTORS */}
       {/* Five cards, one per line of business — the entry point the header's
           "قطاعاتنا" dropdown and the footer both point back into. Each card
-          jumps straight to its group on /sectors rather than duplicating
-          that page's copy here. */}
+          links to its own dedicated page rather than duplicating that page's
+          copy here. */}
       <Section id="sectors" tone="paper-dim" rule>
         <SectionTitle eyebrow="OUR SECTORS" title="قطاعات التا" />
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {serviceSectors.map((sector) => (
             <ServiceCard
               key={sector.id}
-              href={`/sectors#${sector.id}`}
+              href={`/sectors/${sector.id}`}
               icon={sector.icon}
               title={sector.title}
               body={sector.blurb}

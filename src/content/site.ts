@@ -128,11 +128,11 @@ export const mainNav: NavItem[] = [
     label: "قطاعاتنا",
     href: "/sectors",
     children: [
-      { label: "التقنية والذكاء الاصطناعي", href: "/sectors#tech-ai" },
-      { label: "التشغيل وإدارة المرافق", href: "/sectors#operations-facilities" },
-      { label: "الضيافة والإعاشة", href: "/sectors#hospitality-catering" },
-      { label: "حلول الأعمال", href: "/sectors#business-solutions" },
-      { label: "الإعلام والفعاليات", href: "/sectors#media-events" },
+      { label: "التقنية والذكاء الاصطناعي", href: "/sectors/tech-ai" },
+      { label: "التشغيل وإدارة المرافق", href: "/sectors/operations-facilities" },
+      { label: "الضيافة والإعاشة", href: "/sectors/hospitality-catering" },
+      { label: "حلول الأعمال", href: "/sectors/business-solutions" },
+      { label: "الإعلام والفعاليات", href: "/sectors/media-events" },
     ],
   },
   { label: "مشاريعنا", href: "/projects" },
@@ -155,11 +155,11 @@ export const footerNav = [
   {
     title: "قطاعاتنا",
     links: [
-      { label: "التقنية والذكاء الاصطناعي", href: "/sectors#tech-ai" },
-      { label: "التشغيل وإدارة المرافق", href: "/sectors#operations-facilities" },
-      { label: "الضيافة والإعاشة", href: "/sectors#hospitality-catering" },
-      { label: "حلول الأعمال", href: "/sectors#business-solutions" },
-      { label: "الإعلام والفعاليات", href: "/sectors#media-events" },
+      { label: "التقنية والذكاء الاصطناعي", href: "/sectors/tech-ai" },
+      { label: "التشغيل وإدارة المرافق", href: "/sectors/operations-facilities" },
+      { label: "الضيافة والإعاشة", href: "/sectors/hospitality-catering" },
+      { label: "حلول الأعمال", href: "/sectors/business-solutions" },
+      { label: "الإعلام والفعاليات", href: "/sectors/media-events" },
     ],
   },
   {

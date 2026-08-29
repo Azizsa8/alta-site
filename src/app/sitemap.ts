@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { services } from "@/content/services";
+import { serviceSectors } from "@/content/serviceSectors";
 import { platforms } from "@/content/platforms";
 import { company } from "@/content/site";
 
@@ -30,6 +31,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     ...services.map((s) => ({
       url: `${company.origin}/services/${s.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    })),
+    ...serviceSectors.map((s) => ({
+      url: `${company.origin}/sectors/${s.id}`,
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.85,
