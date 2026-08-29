@@ -322,18 +322,27 @@ export const projects = {
    * named CLIENTS from section 17 of the approved document — the client asked
    * for the work itself, not the client roster, so only this list remains.
    *
-   * The client asked for a one-line description and an image per project. Neither
-   * was supplied, and inventing them would put unverified claims about real
-   * client engagements on a live site — precisely what the approved document
-   * forbids. The UI therefore renders the names alone, cleanly, until real copy
-   * arrives.
+   * The client asked for a one-line description and an image per project.
+   * Neither was supplied, and inventing them would put unverified claims about
+   * real client engagements on a live site — precisely what the approved
+   * document forbids. The UI renders the names alone; do not add invented
+   * challenge/scope/result copy per project without the client supplying it.
    *
-   * A group with an empty `title` has no sub-activity; the UI omits the heading
-   * rather than rendering a blank one.
+   * Removed from the live page 2026-08-10 at the client's request ("the
+   * client reads the pictures and found the lists poor" — see the gallery
+   * below). Reinstated 2026-08-29 restructured by `sectorId` instead of raw
+   * activity, per the client's updated instruction — this supersedes that
+   * removal, not the no-invented-copy rule above, which still holds.
+   *
+   * `sectorId` maps each activity to one of the five `serviceSectors.ts`
+   * entries so /projects can group by sector like the rest of the site.
+   * A group with an empty `title` has no sub-activity; the UI omits the
+   * heading rather than rendering a blank one.
    */
   portfolio: [
     {
       title: "التشغيل والصيانة",
+      sectorId: "operations-facilities",
       groups: [
         {
           title: "المباني والترميم",
@@ -362,6 +371,7 @@ export const projects = {
     },
     {
       title: "الإعاشة",
+      sectorId: "hospitality-catering",
       groups: [
         {
           title: "الإعاشة المطهية",
@@ -374,6 +384,7 @@ export const projects = {
     },
     {
       title: "تقنية المعلومات",
+      sectorId: "tech-ai",
       groups: [
         {
           title: "",
@@ -386,6 +397,7 @@ export const projects = {
     },
     {
       title: "الفعاليات والمعارض",
+      sectorId: "media-events",
       groups: [
         {
           title: "",
@@ -400,6 +412,7 @@ export const projects = {
     },
     {
       title: "الدعاية والإعلان",
+      sectorId: "media-events",
       groups: [
         {
           title: "",
@@ -417,6 +430,7 @@ export const projects = {
     },
     {
       title: "التوريدات",
+      sectorId: "business-solutions",
       groups: [
         {
           title: "",

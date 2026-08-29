@@ -152,9 +152,14 @@ export default async function SectorPage({ params }: Params) {
           <p className="max-w-2xl text-[15px] leading-[1.9] text-text-muted">
             نبدأ بفهم احتياجك وتحديد نطاق واضح، ثم نقدم تصوراً فنياً ومالياً مناسباً.
           </p>
-          <Button href="/request-quote" size="lg" withArrow>
-            {cta.requestQuote}
-          </Button>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button href="/request-quote" size="lg" withArrow>
+              {cta.requestQuote}
+            </Button>
+            <Button href={`/projects#${sector.id}`} variant="secondary" size="lg">
+              مشاريعنا في هذا القطاع
+            </Button>
+          </div>
         </div>
       </Section>
     </>

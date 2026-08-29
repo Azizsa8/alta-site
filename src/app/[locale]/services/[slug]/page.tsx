@@ -8,6 +8,7 @@ import { FeatureCard, StepCard, TickList } from "@/components/ui/Cards";
 import { Icon } from "@/components/ui/Icon";
 import { ServiceJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { services, serviceBySlug, serviceClosing } from "@/content/services";
+import { serviceSectors } from "@/content/serviceSectors";
 import { cta } from "@/content/site";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -35,6 +36,16 @@ export default async function ServicePage({ params }: Params) {
   if (!service) notFound();
 
   const others = services.filter((s) => s.slug !== service.slug).slice(0, 3);
+  // Every service belongs to exactly one of the five sectors (serviceSectors.ts
+  // is exhaustive over `services`), so this is never undefined in practice —
+  // the fallback just keeps the breadcrumb from throwing if that ever changes.
+  const sector = serviceSectors.find((s) => s.serviceSlugs.includes(service.slug));
+
+  const trail = [
+    { name: "قطاعاتنا", href: "/sectors" },
+    ...(sector ? [{ name: sector.title, href: `/sectors/${sector.id}` }] : []),
+    { name: service.title, href: `/services/${service.slug}` },
+  ];
 
   return (
     <>
@@ -43,21 +54,13 @@ export default async function ServicePage({ params }: Params) {
         description={service.seo.description}
         slug={service.slug}
       />
-      <BreadcrumbJsonLd
-        trail={[
-          { name: "خدماتنا", href: "/services" },
-          { name: service.title, href: `/services/${service.slug}` },
-        ]}
-      />
+      <BreadcrumbJsonLd trail={trail} />
 
       <PageHero
         eyebrow={service.titleEn}
         title={service.headline}
         body={service.intro}
-        trail={[
-          { name: "خدماتنا", href: "/services" },
-          { name: service.title, href: `/services/${service.slug}` },
-        ]}
+        trail={trail}
       />
 
       {/* ---------------------------- SUB-PAGES (AI & IT only, for now) ---- */}

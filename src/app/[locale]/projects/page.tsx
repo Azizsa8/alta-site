@@ -6,6 +6,7 @@ import { FeatureCard } from "@/components/ui/Cards";
 import { ProjectGallery } from "@/components/ui/ProjectGallery";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { projects } from "@/content/pages";
+import { serviceSectors } from "@/content/serviceSectors";
 import { cta } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -129,16 +130,62 @@ export default function ProjectsPage() {
         </div>
       </Section>
 
+      {/* ------------------------------------------------------- PORTFOLIO */}
+      {/* Reinstated 2026-08-29, restructured by sector instead of raw
+          activity — see the long comment on `projects.portfolio` in
+          pages.ts for why this was removed in 2026-08-10 and what changed.
+          Names only, same as before: no invented challenge/scope/result copy
+          per project without the client supplying it. */}
+      <Section tone="paper">
+        <SectionTitle
+          eyebrow="TRACK RECORD"
+          title="سابقة الأعمال حسب القطاعات"
+          body="مشاريع منفذة، مصنفة ضمن قطاعاتنا الخمسة."
+        />
+        <div className="mt-12 space-y-12">
+          {serviceSectors.map((sector) => {
+            const activities = projects.portfolio.filter(
+              (p) => p.sectorId === sector.id,
+            );
+            if (activities.length === 0) return null;
+
+            return (
+              <div key={sector.id} id={sector.id} className="scroll-mt-24">
+                <h3 className="font-display text-[18px] font-bold text-ink md:text-[22px]">
+                  {sector.title}
+                </h3>
+                <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {activities.flatMap((activity) =>
+                    activity.groups.map((group, i) => (
+                      <div
+                        key={`${activity.title}-${group.title || i}`}
+                        className="rounded-lg border b-ink bg-paper p-5"
+                      >
+                        <h4 className="mb-3 text-[13px] font-bold uppercase tracking-[0.08em] text-gold-ink">
+                          {group.title || activity.title}
+                        </h4>
+                        <ul className="space-y-2">
+                          {group.items.map((item) => (
+                            <li
+                              key={item}
+                              className="text-[13px] leading-[1.8] text-ink-muted"
+                            >
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )),
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Section>
+
       {/* ------------------------------------------------ DOCUMENTED WORK */}
-      {/* Real photographs and footage from site — now the whole of the page's
-          proof. The written سابقة الأعمال checklists and the privacy-note
-          paragraph that used to sit below this were removed on the owner's
-          request (2026-08-10): the client reads the pictures and found the
-          lists poor. `projects.portfolio` and `projects.privacyNote` are
-          deliberately left in the content module so the copy is not lost and
-          the ar/en key parity that `Widen` enforces still holds — nothing
-          renders them. */}
-      <Section tone="paper-dim">
+      <Section tone="paper-dim" rule>
         <SectionTitle
           eyebrow="FROM THE FIELD"
           title="من أرض الواقع"
