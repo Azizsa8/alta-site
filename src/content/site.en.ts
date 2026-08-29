@@ -39,34 +39,29 @@ export const companyEn: Widen<typeof company> = {
 
 export const mainNavEn: Widen<typeof mainNav> = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
+  { label: "About ALTA", href: "/about" },
   {
-    label: "Services",
-    href: "/services",
+    label: "Our Sectors",
+    href: "/sectors",
     children: [
-      { label: "AI & Information Technology", href: "/services/ai-engineering" },
-      { label: "— Our platforms", href: "/services/ai-engineering/platforms" },
-      { label: "— ALTA Hospitality AI", href: "/services/ai-engineering/platforms/alta-hospitality" },
-      { label: "Operations, Maintenance & Cleaning", href: "/services/facilities-management" },
-      { label: "Hospitality & Catering", href: "/services/hospitality-catering" },
-      { label: "Consulting & Institutional Development", href: "/services/management-consulting" },
-      { label: "Procurement", href: "/services/procurement-supplies" },
-      { label: "Media & Platform Management", href: "/services/media-social" },
-      { label: "Events, Exhibitions & Conferences", href: "/services/events-exhibitions" },
-      { label: "Research & Polling", href: "/services/research-surveys" },
+      { label: "Technology & AI", href: "/sectors#tech-ai" },
+      { label: "Operations & Facilities", href: "/sectors#operations-facilities" },
+      { label: "Hospitality & Catering", href: "/sectors#hospitality-catering" },
+      { label: "Business Solutions", href: "/sectors#business-solutions" },
+      { label: "Media & Events", href: "/sectors#media-events" },
     ],
   },
-  { label: "Sectors", href: "/sectors" },
   { label: "Projects", href: "/projects" },
-  { label: "Media Centre", href: "/media-center" },
+  { label: "Insights & Articles", href: "/media-center" },
   { label: "Contact", href: "/contact" },
+  { label: "Request a Quote", href: "/request-quote", cta: true },
 ];
 
 export const footerNavEn: Widen<typeof footerNav> = [
   {
     title: "The company",
     links: [
-      { label: "About us", href: "/about" },
+      { label: "About ALTA", href: "/about" },
       { label: "Vision & mission", href: "/about#vision" },
       { label: "Our values", href: "/about#values" },
       { label: "How we work", href: "/about#methodology" },
@@ -74,23 +69,24 @@ export const footerNavEn: Widen<typeof footerNav> = [
     ],
   },
   {
-    title: "Services",
+    title: "Our Sectors",
     links: [
-      { label: "AI & Information Technology", href: "/services/ai-engineering" },
-      { label: "Our platforms", href: "/services/ai-engineering/platforms" },
-      { label: "Operations, Maintenance & Cleaning", href: "/services/facilities-management" },
-      { label: "Hospitality & Catering", href: "/services/hospitality-catering" },
-      { label: "Consulting & Institutional Development", href: "/services/management-consulting" },
-      { label: "Procurement", href: "/services/procurement-supplies" },
-      { label: "Media & Communications", href: "/services/media-social" },
+      { label: "Technology & AI", href: "/sectors#tech-ai" },
+      { label: "Operations & Facilities", href: "/sectors#operations-facilities" },
+      { label: "Hospitality & Catering", href: "/sectors#hospitality-catering" },
+      { label: "Business Solutions", href: "/sectors#business-solutions" },
+      { label: "Media & Events", href: "/sectors#media-events" },
     ],
   },
   {
     title: "Information",
     links: [
-      { label: "Sectors we serve", href: "/sectors" },
       { label: "Projects & track record", href: "/projects" },
-      { label: "Media Centre", href: "/media-center" },
+      { label: "Insights & Articles", href: "/media-center" },
+      { label: "Request a Quote", href: "/request-quote" },
+      { label: "Contact", href: "/contact" },
+      { label: "Industries we serve", href: "/industries" },
+      { label: "All services", href: "/services" },
       { label: "Careers", href: "/careers" },
       { label: "FAQ", href: "/faq" },
       { label: "Privacy policy", href: "/privacy-policy" },
@@ -101,6 +97,7 @@ export const footerNavEn: Widen<typeof footerNav> = [
 
 export const ctaEn: Widen<typeof cta> = {
   exploreServices: "Explore our services",
+  exploreSectors: "Explore our sectors",
   requestQuote: "Request a quote",
   talkToTeam: "Talk to our team",
   discoverMore: "Discover more",

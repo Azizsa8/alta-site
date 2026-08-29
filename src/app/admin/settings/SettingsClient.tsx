@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { type SiteSettings, type ThemeOverrides, themeCss } from "@/lib/settings";
+import { type SiteSettings, type ThemeOverrides, themeCss } from "@/lib/settings.shared";
 
 type Props = {
   initialSettings: SiteSettings;

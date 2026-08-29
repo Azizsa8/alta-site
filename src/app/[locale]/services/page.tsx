@@ -4,7 +4,8 @@ import { Section, SectionTitle } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { ServiceCard } from "@/components/ui/Cards";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
-import { services } from "@/content/services";
+import { services, serviceBySlug } from "@/content/services";
+import { serviceSectors } from "@/content/serviceSectors";
 import { cta } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -25,19 +26,31 @@ export default function ServicesPage() {
         trail={[{ name: "خدماتنا", href: "/services" }]}
       />
 
-      <Section tone="paper">
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {services.map((s) => (
-            <ServiceCard
-              key={s.slug}
-              href={`/services/${s.slug}`}
-              icon={s.icon}
-              title={s.title}
-              body={s.short}
-            />
-          ))}
-        </div>
-      </Section>
+      {/* Grouped by the five sectors from /sectors, so a visitor who lands
+          here directly still sees the same structure as the sector menu —
+          the flat numbered index further down stays as the exhaustive list. */}
+      {serviceSectors.map((sector) => {
+        const sectorServices = sector.serviceSlugs
+          .map((slug) => serviceBySlug(slug))
+          .filter((s) => s !== undefined);
+
+        return (
+          <Section key={sector.id} id={sector.id} tone="paper" rule>
+            <SectionTitle eyebrow={sector.titleEn} title={sector.title} body={sector.blurb} />
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {sectorServices.map((s) => (
+                <ServiceCard
+                  key={s.slug}
+                  href={`/services/${s.slug}`}
+                  icon={s.icon}
+                  title={s.title}
+                  body={s.short}
+                />
+              ))}
+            </div>
+          </Section>
+        );
+      })}
 
       {/* Numbered index, mirroring the 01–08 list in the approved document. */}
       <Section tone="paper-dim" rule>

@@ -7,6 +7,7 @@ import { Icon } from "@/components/ui/Icon";
 import { PartnerCarousel } from "@/components/ui/PartnerCarousel";
 import { AutoCarousel } from "@/components/ui/AutoCarousel";
 import { services } from "@/content/services";
+import { serviceSectors } from "@/content/serviceSectors";
 import { home, about, projects, mediaCenter } from "@/content/pages";
 import { cta, company } from "@/content/site";
 import { readSettings } from "@/lib/settings";
@@ -69,8 +70,8 @@ export default async function HomePage() {
                 buttons stacked full-width dominated the hero; the same action
                 is one tap away in the menu and at the foot of every page. */}
             <div className="mt-9 flex flex-wrap gap-3">
-              <Button href="/services" withArrow className="w-auto">
-                {cta.exploreServices}
+              <Button href="/sectors" withArrow className="w-auto">
+                {cta.exploreSectors}
               </Button>
               <Button
                 href="/request-quote"
@@ -85,14 +86,34 @@ export default async function HomePage() {
 
         <div className="absolute inset-x-0 bottom-6 hidden justify-center md:flex">
           <a
-            href="#services"
-            aria-label="انتقل إلى الخدمات"
+            href="#sectors"
+            aria-label="انتقل إلى قطاعاتنا"
             className="grid size-10 place-items-center rounded-full border b-gold text-primary/70 transition-colors hover:text-primary"
           >
             <Icon name="arrow-down" className="size-4" />
           </a>
         </div>
       </section>
+
+      {/* --------------------------------------------------------- SECTORS */}
+      {/* Five cards, one per line of business — the entry point the header's
+          "قطاعاتنا" dropdown and the footer both point back into. Each card
+          jumps straight to its group on /sectors rather than duplicating
+          that page's copy here. */}
+      <Section id="sectors" tone="paper-dim" rule>
+        <SectionTitle eyebrow="OUR SECTORS" title="قطاعات التا" />
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {serviceSectors.map((sector) => (
+            <ServiceCard
+              key={sector.id}
+              href={`/sectors#${sector.id}`}
+              icon={sector.icon}
+              title={sector.title}
+              body={sector.blurb}
+            />
+          ))}
+        </div>
+      </Section>
 
       {/* -------------------------------------------------------- SERVICES */}
       {/* The heading keeps the reading measure; the track runs edge to edge so

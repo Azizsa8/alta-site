@@ -106,45 +106,46 @@ export type NavItem = {
   label: string;
   href: string;
   children?: { label: string; href: string }[];
+  /** Rendered as a filled button instead of a text link — see مسمى "اطلب عرض سعر". */
+  cta?: boolean;
 };
 
-/** Main menu — document section 02, خريطة الموقع والقائمة الرئيسية. */
+/**
+ * Main menu — رئيسية | عن التا | قطاعاتنا | مشاريعنا | الرؤى والمقالات |
+ * تواصل معنا | اطلب عرض سعر.
+ *
+ * "قطاعاتنا" groups the eight services from `serviceSectors.ts` into five
+ * lines of business; the services themselves still live at their existing
+ * /services/<slug> URLs, this only changes how they're grouped in the menu.
+ * The old flat "خدماتنا" item and the industries-served "القطاعات" item
+ * (now at /industries) are gone from the primary bar — both stay reachable
+ * from the footer.
+ */
 export const mainNav: NavItem[] = [
   { label: "الرئيسية", href: "/" },
-  { label: "من نحن", href: "/about" },
+  { label: "عن التا", href: "/about" },
   {
-    label: "خدماتنا",
-    href: "/services",
+    label: "قطاعاتنا",
+    href: "/sectors",
     children: [
-      {
-        label: "الذكاء الاصطناعي وتقنية المعلومات",
-        href: "/services/ai-engineering",
-      },
-      { label: "— برامجنا ومنصاتنا", href: "/services/ai-engineering/platforms" },
-      {
-        label: "— ALTA Hospitality AI",
-        href: "/services/ai-engineering/platforms/alta-hospitality",
-      },
-      { label: "التشغيل والصيانة والنظافة", href: "/services/facilities-management" },
-      { label: "الضيافة وخدمات الإعاشة", href: "/services/hospitality-catering" },
-      { label: "الاستشارات الإدارية وتأهيل المنشآت", href: "/services/management-consulting" },
-      { label: "التوريدات", href: "/services/procurement-supplies" },
-      { label: "الدعاية والإعلام وإدارة المنصات", href: "/services/media-social" },
-      { label: "الفعاليات والمعارض والمؤتمرات", href: "/services/events-exhibitions" },
-      { label: "البحوث واستطلاع الرأي", href: "/services/research-surveys" },
+      { label: "التقنية والذكاء الاصطناعي", href: "/sectors#tech-ai" },
+      { label: "التشغيل وإدارة المرافق", href: "/sectors#operations-facilities" },
+      { label: "الضيافة والإعاشة", href: "/sectors#hospitality-catering" },
+      { label: "حلول الأعمال", href: "/sectors#business-solutions" },
+      { label: "الإعلام والفعاليات", href: "/sectors#media-events" },
     ],
   },
-  { label: "القطاعات", href: "/sectors" },
   { label: "مشاريعنا", href: "/projects" },
-  { label: "المركز الإعلامي", href: "/media-center" },
+  { label: "الرؤى والمقالات", href: "/media-center" },
   { label: "تواصل معنا", href: "/contact" },
+  { label: "اطلب عرض سعر", href: "/request-quote", cta: true },
 ];
 
 export const footerNav = [
   {
     title: "عن الشركة",
     links: [
-      { label: "من نحن", href: "/about" },
+      { label: "عن التا", href: "/about" },
       { label: "رؤيتنا ورسالتنا", href: "/about#vision" },
       { label: "قيمنا", href: "/about#values" },
       { label: "منهجية العمل", href: "/about#methodology" },
@@ -152,26 +153,24 @@ export const footerNav = [
     ],
   },
   {
-    title: "خدماتنا",
+    title: "قطاعاتنا",
     links: [
-      {
-        label: "الذكاء الاصطناعي وتقنية المعلومات",
-        href: "/services/ai-engineering",
-      },
-      { label: "برامجنا ومنصاتنا", href: "/services/ai-engineering/platforms" },
-      { label: "التشغيل والصيانة والنظافة", href: "/services/facilities-management" },
-      { label: "الضيافة وخدمات الإعاشة", href: "/services/hospitality-catering" },
-      { label: "الاستشارات وتأهيل المنشآت", href: "/services/management-consulting" },
-      { label: "التوريدات", href: "/services/procurement-supplies" },
-      { label: "الدعاية والإعلام", href: "/services/media-social" },
+      { label: "التقنية والذكاء الاصطناعي", href: "/sectors#tech-ai" },
+      { label: "التشغيل وإدارة المرافق", href: "/sectors#operations-facilities" },
+      { label: "الضيافة والإعاشة", href: "/sectors#hospitality-catering" },
+      { label: "حلول الأعمال", href: "/sectors#business-solutions" },
+      { label: "الإعلام والفعاليات", href: "/sectors#media-events" },
     ],
   },
   {
     title: "معلومات",
     links: [
-      { label: "القطاعات التي نخدمها", href: "/sectors" },
-      { label: "مشاريعنا وسابقة الأعمال", href: "/projects" },
-      { label: "المركز الإعلامي", href: "/media-center" },
+      { label: "مشاريعنا", href: "/projects" },
+      { label: "الرؤى والمقالات", href: "/media-center" },
+      { label: "اطلب عرض سعر", href: "/request-quote" },
+      { label: "تواصل معنا", href: "/contact" },
+      { label: "الفئات التي نخدمها", href: "/industries" },
+      { label: "جميع الخدمات", href: "/services" },
       { label: "الوظائف", href: "/careers" },
       { label: "الأسئلة الشائعة", href: "/faq" },
       { label: "سياسة الخصوصية", href: "/privacy-policy" },
@@ -183,6 +182,7 @@ export const footerNav = [
 /** Approved button labels — document section 24, رسائل الأزرار. */
 export const cta = {
   exploreServices: "استكشف خدماتنا",
+  exploreSectors: "استكشف قطاعاتنا",
   requestQuote: "اطلب عرض سعر",
   talkToTeam: "تحدث مع فريقنا",
   discoverMore: "اكتشف المزيد",
