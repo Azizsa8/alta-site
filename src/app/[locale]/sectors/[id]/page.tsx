@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { ServiceCard, StepCard, TickList } from "@/components/ui/Cards";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { serviceSectors, serviceSectorById } from "@/content/serviceSectors";
+import { publishedArticles } from "@/content/articles";
+import { ArticleStrip } from "@/components/ui/ArticleStrip";
 import { serviceBySlug } from "@/content/services";
 import { home, faq } from "@/content/pages";
 import { cta } from "@/content/site";
@@ -43,6 +45,9 @@ export default async function SectorPage({ params }: Params) {
   const faqExcerpt = faq.items.slice(0, 3);
 
   const others = serviceSectors.filter((s) => s.id !== sector.id).slice(0, 3);
+  const sectorArticles = publishedArticles
+    .filter((a) => a.sectorId === sector.id)
+    .slice(0, 3);
 
   return (
     <>
@@ -125,6 +130,16 @@ export default async function SectorPage({ params }: Params) {
           </div>
         </div>
       </Section>
+
+      {/* ----------------------------------------------- مقالات مقترحة */}
+      {sectorArticles.length > 0 && (
+        <Section tone="paper" rule>
+          <SectionTitle eyebrow="INSIGHTS" title="مقالات مقترحة" />
+          <div className="mt-12">
+            <ArticleStrip items={sectorArticles} />
+          </div>
+        </Section>
+      )}
 
       {/* --------------------------------------------------------- OTHER SECTORS */}
       <Section tone="paper" rule>

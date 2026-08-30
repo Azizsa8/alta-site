@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { services } from "@/content/services";
 import { serviceSectors } from "@/content/serviceSectors";
+import { publishedArticles } from "@/content/articles";
 import { platforms } from "@/content/platforms";
 import { company } from "@/content/site";
 
@@ -40,6 +41,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.85,
+    })),
+    ...publishedArticles.map((a) => ({
+      url: `${company.origin}/media-center/${a.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
     {
       url: `${company.origin}/services/ai-engineering/platforms`,

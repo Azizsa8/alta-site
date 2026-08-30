@@ -6,8 +6,12 @@ import { Button } from "@/components/ui/Button";
 import { FeatureCard } from "@/components/ui/Cards";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { ProjectGallery } from "@/components/ui/ProjectGallery";
+import { Icon } from "@/components/ui/Icon";
+import { LocaleLink } from "@/components/ui/LocaleLink";
 import { mediaCenter, projects } from "@/content/pages";
-import { cta, microcopy } from "@/content/site";
+import { publishedArticles } from "@/content/articles";
+import { serviceSectorById } from "@/content/serviceSectors";
+import { cta } from "@/content/site";
 
 export const metadata: Metadata = {
   title: mediaCenter.seo.title,
@@ -27,12 +31,12 @@ const eventHighlights = projects.gallery.filter((g) =>
 export default function MediaCenterPage() {
   return (
     <>
-      <BreadcrumbJsonLd trail={[{ name: "المركز الإعلامي", href: "/media-center" }]} />
+      <BreadcrumbJsonLd trail={[{ name: "الرؤى والمقالات", href: "/media-center" }]} />
       <PageHero
         eyebrow={mediaCenter.titleEn}
         title={mediaCenter.title}
         body={mediaCenter.intro}
-        trail={[{ name: "المركز الإعلامي", href: "/media-center" }]}
+        trail={[{ name: "الرؤى والمقالات", href: "/media-center" }]}
       />
 
       <Section tone="paper">
@@ -44,9 +48,7 @@ export default function MediaCenterPage() {
         </div>
       </Section>
 
-      {/* Real footage from company events. This is the section that carries
-          "أخبار الشركة" credibly — the articles below are still awaiting
-          approved copy, but these are things that demonstrably happened. */}
+      {/* Real footage from company events, carrying "أخبار الشركة". */}
       {/* tone="paper" here and "paper-dim" below, not the other way round:
           the gallery cards are bg-paper-dim and the article cards are
           bg-paper, so each set needs the opposite band to stay visible. */}
@@ -62,36 +64,51 @@ export default function MediaCenterPage() {
       </Section>
 
       <Section tone="paper-dim" rule>
-        <SectionTitle eyebrow="INSIGHTS" title="أحدث المقالات" />
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {mediaCenter.articles.map((a) => (
-            <article
-              key={a.title}
-              className="flex h-full flex-col overflow-hidden rounded-lg border b-ink bg-paper"
-            >
-              <div className="relative aspect-[16/10]">
-                <Image
-                  src={a.image}
-                  alt=""
-                  fill
-                  sizes="(max-width: 640px) 100vw, 25vw"
-                  className="object-cover"
-                />
-              </div>
-              <div className="flex flex-1 flex-col p-5">
-                <span className="mb-2.5 text-[11px] font-semibold text-gold-ink">
-                  {a.topic}
-                </span>
-                <h3 className="flex-1 text-[14px] font-bold leading-[1.7] text-ink">
-                  {a.title}
-                </h3>
-                {/* Article bodies are not part of the approved content set yet,
-                    so the approved "قيد التحديث" state is shown instead of a
-                    dead link. */}
-                <p className="mt-4 text-[12px] text-ink-muted">{microcopy.updating}</p>
-              </div>
-            </article>
-          ))}
+        <SectionTitle
+          eyebrow="INSIGHTS"
+          title="أحدث المقالات"
+          body="مقالات عملية في مجالات عمل التا، كل مقال مرتبط بالخدمة والقطاع الذي يخدمه."
+        />
+        <div className="mt-12 card-row">
+          {publishedArticles.map((a) => {
+            const sector = serviceSectorById(a.sectorId);
+            return (
+              <LocaleLink
+                key={a.slug}
+                href={`/media-center/${a.slug}`}
+                className="group flex h-full flex-col overflow-hidden rounded-lg border b-ink bg-paper transition-all duration-200 hover:-translate-y-1 hover:border-[color:var(--color-primary-container)]"
+              >
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <Image
+                    src={a.image}
+                    alt=""
+                    fill
+                    sizes="(max-width: 640px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <div className="flex flex-1 flex-col p-5">
+                  <span className="mb-2.5 text-[11px] font-semibold text-gold-ink">
+                    {sector?.title ?? a.serviceLabel}
+                  </span>
+                  <h3 className="text-[14.5px] font-bold leading-[1.7] text-ink">
+                    {a.title}
+                  </h3>
+                  <p className="mt-2.5 text-[12.5px] leading-[1.85] text-ink-muted">
+                    {a.excerpt}
+                  </p>
+                  <span className="mt-auto flex items-center gap-1.5 pt-4 text-[12.5px] font-semibold text-gold-ink">
+                    {cta.readArticle}
+                    <Icon
+                      name="arrow"
+                      className="size-3.5 transition-transform group-hover:-translate-x-1"
+                      strokeWidth={2.2}
+                    />
+                  </span>
+                </div>
+              </LocaleLink>
+            );
+          })}
         </div>
       </Section>
 

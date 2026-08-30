@@ -9,6 +9,8 @@ import { Icon } from "@/components/ui/Icon";
 import { ServiceJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { services, serviceBySlug, serviceClosing } from "@/content/services";
 import { serviceSectors } from "@/content/serviceSectors";
+import { publishedArticles } from "@/content/articles";
+import { ArticleStrip } from "@/components/ui/ArticleStrip";
 import { cta } from "@/content/site";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -40,6 +42,9 @@ export default async function ServicePage({ params }: Params) {
   // is exhaustive over `services`), so this is never undefined in practice —
   // the fallback just keeps the breadcrumb from throwing if that ever changes.
   const sector = serviceSectors.find((s) => s.serviceSlugs.includes(service.slug));
+  const serviceArticles = publishedArticles
+    .filter((a) => a.serviceSlug === service.slug)
+    .slice(0, 3);
 
   const trail = [
     { name: "قطاعاتنا", href: "/sectors" },
@@ -166,6 +171,16 @@ export default async function ServicePage({ params }: Params) {
           <p className="text-[14.5px] leading-[2] text-ink-muted">{service.sectors}</p>
         </div>
       </Section>
+
+      {/* ----------------------------------------------- مقالات مقترحة */}
+      {serviceArticles.length > 0 && (
+        <Section tone="paper" rule>
+          <SectionTitle eyebrow="INSIGHTS" title="مقالات مقترحة" />
+          <div className="mt-12">
+            <ArticleStrip items={serviceArticles} />
+          </div>
+        </Section>
+      )}
 
       {/* ---------------------------------------------------------- OTHER SVC */}
       <Section tone="paper-dim">
