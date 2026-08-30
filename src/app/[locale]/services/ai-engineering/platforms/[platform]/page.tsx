@@ -92,7 +92,7 @@ export default async function PlatformPage({ params }: Params) {
           title="الوكلاء الأذكياء"
           body="مجموعة من وكلاء الذكاء الاصطناعي يعملون من أجلك على مدار الساعة."
         />
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 card-row">
           {p.agents.map((a) => (
             <FeatureCard key={a.title} title={a.title} body={a.body} />
           ))}

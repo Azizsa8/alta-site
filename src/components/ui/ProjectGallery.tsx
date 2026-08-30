@@ -155,7 +155,7 @@ export function ProjectGallery({ items }: { items: GalleryItem[] }) {
 
   return (
     <>
-      <ul className="stagger grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="stagger card-row">
         {items.map((item) => {
           const count = item.stills.length;
           return (

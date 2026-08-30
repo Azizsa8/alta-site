@@ -88,7 +88,7 @@ export default function AboutPage() {
       {/* ------------------------------------------------------------ VALUES */}
       <Section id="values" tone="paper">
         <SectionTitle eyebrow="OUR VALUES" title="قيمنا" />
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 card-row">
           {about.values.map((v) => (
             <FeatureCard key={v.title} title={v.title} body={v.body} />
           ))}
@@ -168,7 +168,7 @@ export default function AboutPage() {
           <h3 className="mb-6 mt-12 font-display text-[20px] font-bold text-text-primary">
             إدارة المخاطر
           </h3>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="card-row">
             {about.governance.risks.map((r) => (
               <FeatureCard key={r.title} title={r.title} body={r.body} onDark />
             ))}

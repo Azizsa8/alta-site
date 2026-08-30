@@ -25,7 +25,7 @@ export default function IndustriesPage() {
       />
 
       <Section tone="paper">
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="card-row">
           {industries.items.map((s) => (
             <FeatureCard key={s.title} title={s.title} body={s.body} />
           ))}

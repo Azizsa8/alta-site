@@ -590,3 +590,37 @@
     }
   }
 }
+
+/* ---------------------------------------------------------------- CARD ROW
+ * Wrapping card row whose final, partly-filled line stays centred.
+ *
+ * `grid-cols-3` turns a five-card set (the five sectors) into 3 + 2 with the
+ * orphan pair shoved against the start edge and a conspicuous hole beside it.
+ * Every sector group whose card count isn't a multiple of three had the same
+ * problem. Flex-wrap plus `justify-content:center` centres the remainder.
+ *
+ * The widths reproduce the 1-up / 2-up / 3-up counts the grid used, each less
+ * its share of the 20px gutter, so full rows line up exactly as before. Items
+ * stretch to equal height per line, so the cards' own `h-full` still works.
+ * Breakpoints mirror Tailwind's sm/lg so the swap is visually identical
+ * except for the centring.
+ */
+.card-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+.card-row > * {
+  width: 100%;
+}
+@media (min-width: 640px) {
+  .card-row > * {
+    width: calc(50% - 10px);
+  }
+}
+@media (min-width: 1024px) {
+  .card-row > * {
+    width: calc(33.333% - 13.34px);
+  }
+}

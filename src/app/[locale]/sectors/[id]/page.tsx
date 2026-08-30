@@ -74,7 +74,7 @@ export default async function SectorPage({ params }: Params) {
       {/* --------------------------------------------------------- SERVICES */}
       <Section tone="paper-dim" rule>
         <SectionTitle eyebrow="WHAT'S INCLUDED" title="الخدمات" />
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 card-row">
           {sectorServices.map((s) => (
             <ServiceCard
               key={s.slug}

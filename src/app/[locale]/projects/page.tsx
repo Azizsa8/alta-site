@@ -90,7 +90,7 @@ export default function ProjectsPage() {
         <h3 className="mb-6 mt-12 font-display text-[20px] font-bold text-ink">
           الوكلاء الأذكياء داخل المنصة
         </h3>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="card-row">
           {p.agents.map((a) => (
             <FeatureCard key={a.title} title={a.title} body={a.body} />
           ))}
@@ -154,7 +154,7 @@ export default function ProjectsPage() {
                 <h3 className="font-display text-[18px] font-bold text-ink md:text-[22px]">
                   {sector.title}
                 </h3>
-                <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-6 card-row">
                   {activities.flatMap((activity) =>
                     activity.groups.map((group, i) => (
                       <div
