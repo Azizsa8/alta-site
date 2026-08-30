@@ -11,6 +11,7 @@ import {
 } from "@/lib/validation";
 import { microcopy } from "@/content/site";
 import { services } from "@/content/services";
+import { serviceSectors } from "@/content/serviceSectors";
 
 const CONTACT_METHODS = [
   { value: "phone", label: "مكالمة هاتفية" },
@@ -24,6 +25,7 @@ const EMPTY = {
   jobTitle: "",
   phone: "",
   email: "",
+  sector: "",
   service: "",
   city: "",
   scope: "",
@@ -35,7 +37,15 @@ const EMPTY = {
 type Attachment = { name: string; size: number; type: string; data: string };
 
 export function QuoteForm({ defaultService = "" }: { defaultService?: string }) {
-  const [form, setForm] = useState({ ...EMPTY, service: defaultService });
+  // Arriving from a service page (?service=slug) should pre-fill the sector
+  // too, so the visitor never has to re-state something the link already knew.
+  const defaultSector =
+    serviceSectors.find((x) => x.serviceSlugs.includes(defaultService))?.id ?? "";
+  const [form, setForm] = useState({
+    ...EMPTY,
+    sector: defaultSector,
+    service: defaultService,
+  });
   const [attachment, setAttachment] = useState<Attachment | null>(null);
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
@@ -45,6 +55,28 @@ export function QuoteForm({ defaultService = "" }: { defaultService?: string }) 
 
   const set = (k: keyof typeof EMPTY) => (v: string) =>
     setForm((f) => ({ ...f, [k]: v }));
+
+  /**
+   * Picking a sector narrows the service list to that sector. A service left
+   * selected from a different sector would otherwise stay submitted while
+   * invisible in the narrowed dropdown, so it is cleared on mismatch.
+   */
+  const setSector = (v: string) =>
+    setForm((f) => {
+      const allowed = serviceSectors.find((x) => x.id === v)?.serviceSlugs ?? [];
+      const keep = !v || allowed.includes(f.service);
+      return { ...f, sector: v, service: keep ? f.service : "" };
+    });
+
+  const serviceOptions = (
+    form.sector
+      ? services.filter((sv) =>
+          serviceSectors
+            .find((x) => x.id === form.sector)
+            ?.serviceSlugs.includes(sv.slug),
+        )
+      : services
+  ).map((sv) => ({ value: sv.slug, label: sv.title }));
 
   async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -177,15 +209,25 @@ export function QuoteForm({ defaultService = "" }: { defaultService?: string }) 
         />
       </div>
 
-      <SelectField
-        id="service"
-        label="الخدمة المطلوبة"
-        required
-        value={form.service}
-        onChange={set("service")}
-        options={services.map((s) => ({ value: s.slug, label: s.title }))}
-        error={errors.service}
-      />
+      <div className="grid gap-5 sm:grid-cols-2">
+        <SelectField
+          id="sector"
+          label="القطاع"
+          value={form.sector}
+          onChange={setSector}
+          options={serviceSectors.map((x) => ({ value: x.id, label: x.title }))}
+          error={errors.sector}
+        />
+        <SelectField
+          id="service"
+          label="الخدمة المطلوبة"
+          required
+          value={form.service}
+          onChange={set("service")}
+          options={serviceOptions}
+          error={errors.service}
+        />
+      </div>
 
       <TextArea
         id="scope"

@@ -70,6 +70,7 @@ export async function POST(req: Request) {
       jobTitle: String(body.jobTitle ?? ""),
       phone: normalisePhone(String(body.phone ?? "")),
       email: String(body.email ?? ""),
+      sector: String(body.sector ?? ""),
       service,
       city: String(body.city ?? ""),
       scope,
