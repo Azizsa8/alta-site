@@ -7,6 +7,9 @@ import {
 } from "@/lib/validation";
 import { saveSubmission, rateLimit, clientKey } from "@/lib/submissions";
 import { recordEvent } from "@/lib/analytics";
+import { notifyQuote } from "@/lib/notify";
+import { serviceBySlug } from "@/content/services";
+import { serviceSectorById } from "@/content/serviceSectors";
 import { microcopy } from "@/content/site";
 
 export const dynamic = "force-dynamic";
@@ -60,6 +63,7 @@ export async function POST(req: Request) {
   }
 
   const service = String(body.service ?? "");
+  const sector = String(body.sector ?? "");
   const scope = String(body.scope ?? "");
 
   const id = await saveSubmission(
@@ -70,7 +74,7 @@ export async function POST(req: Request) {
       jobTitle: String(body.jobTitle ?? ""),
       phone: normalisePhone(String(body.phone ?? "")),
       email: String(body.email ?? ""),
-      sector: String(body.sector ?? ""),
+      sector,
       service,
       city: String(body.city ?? ""),
       scope,
@@ -90,6 +94,27 @@ export async function POST(req: Request) {
     String(body.path ?? ""),
   );
 
+  // Notify the company inbox and the official WhatsApp. Deliberately awaited
+  // but never allowed to fail the request: the submission is already stored,
+  // so a mail outage must not turn a captured lead into an error page for the
+  // visitor. `notifyQuote` swallows its own failures and reports per channel.
+  const delivered = await notifyQuote({
+    id,
+    fullName: String(body.fullName ?? ""),
+    organisation: String(body.organisation ?? ""),
+    jobTitle: String(body.jobTitle ?? ""),
+    phone: normalisePhone(String(body.phone ?? "")),
+    email: String(body.email ?? ""),
+    sectorLabel: serviceSectorById(sector)?.title ?? sector,
+    serviceLabel: serviceBySlug(service)?.title ?? service,
+    city: String(body.city ?? ""),
+    scope,
+    timeline: String(body.timeline ?? ""),
+    budget: String(body.budget ?? ""),
+    preferredContact: String(body.preferredContact ?? ""),
+    hasAttachment: Boolean(attachment),
+  });
+
   await recordEvent({
     type: "form_submit",
     source: "quote",
@@ -102,6 +127,8 @@ export async function POST(req: Request) {
       submissionId: id,
       hasAttachment: Boolean(attachment),
       city: String(body.city ?? ""),
+      notifiedEmail: delivered.email,
+      notifiedWhatsapp: delivered.whatsapp,
     },
   });
 
