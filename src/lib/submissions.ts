@@ -1,5 +1,6 @@
 import { put, listKeys, getMany } from "./store";
 import { riyadhDay } from "./analytics";
+import { isConfigured as supabaseConfigured, insertRow } from "./supabase";
 
 export const SUBMISSIONS_STORE = "alta-submissions";
 
@@ -22,6 +23,20 @@ export async function saveSubmission(
   const id = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
   const record: Submission = { id, kind, at: at.toISOString(), day, path, data };
   await put(SUBMISSIONS_STORE, `${kind}/${day}/${id}`, record);
+
+  // Also land it in the typed `submissions` table. The KV copy above keeps
+  // the existing admin dashboard working unchanged; this row is what the CMS
+  // inbox sorts, filters and tracks status on. Failure here must not lose the
+  // lead, so it is fire-and-forget over an already-completed KV write.
+  if (supabaseConfigured()) {
+    await insertRow("submissions", {
+      id,
+      kind,
+      data,
+      path: path ?? null,
+    }).catch(() => null);
+  }
+
   return id;
 }
 

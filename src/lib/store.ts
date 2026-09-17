@@ -8,8 +8,9 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import os from "node:os";
+import { isConfigured as supabaseConfigured, rpc } from "./supabase";
 
-export type Backend = "kv" | "blobs" | "filesystem";
+export type Backend = "supabase" | "kv" | "blobs" | "filesystem";
 
 type BlobStore = {
   get(key: string, opts?: { type?: "json"; consistency?: "strong" }): Promise<unknown>;
@@ -81,12 +82,22 @@ function fsPath(name: string, key: string) {
 }
 
 export function backendName(): Backend {
+  // Supabase first: it is the only backend here that survives a deploy.
+  // "filesystem" on Vercel means the lambda's own /tmp, which is wiped on
+  // every deployment and whenever an idle instance recycles — that is how
+  // submissions were being lost before this existed.
+  if (supabaseConfigured()) return "supabase";
   if (getKvConfig()) return "kv";
   if (process.env.NETLIFY || process.env.NETLIFY_BLOBS_CONTEXT) return "blobs";
   return "filesystem";
 }
 
 export async function put(name: string, key: string, value: unknown) {
+  if (supabaseConfigured()) {
+    await rpc("admin_kv_put", { p_store: name, p_key: key, p_value: value });
+    return;
+  }
+
   const kv = getKvConfig();
   if (kv) {
     const kvKey = `alta:${name}:${key}`;
@@ -111,6 +122,10 @@ export async function put(name: string, key: string, value: unknown) {
 }
 
 export async function get<T>(name: string, key: string): Promise<T | null> {
+  if (supabaseConfigured()) {
+    return (await rpc<T>("admin_kv_get", { p_store: name, p_key: key })) ?? null;
+  }
+
   const kv = getKvConfig();
   if (kv) {
     const kvKey = `alta:${name}:${key}`;
@@ -137,6 +152,14 @@ export async function get<T>(name: string, key: string): Promise<T | null> {
 }
 
 export async function listKeys(name: string, prefix: string): Promise<string[]> {
+  if (supabaseConfigured()) {
+    const rows = await rpc<{ key: string }[]>("admin_kv_list", {
+      p_store: name,
+      p_prefix: prefix,
+    });
+    return Array.isArray(rows) ? rows.map((r) => r.key).sort() : [];
+  }
+
   const kv = getKvConfig();
   if (kv) {
     const kvPrefix = `alta:${name}:${prefix}`;
@@ -183,6 +206,11 @@ export async function getMany<T>(name: string, keys: string[]): Promise<T[]> {
 }
 
 export async function remove(name: string, key: string) {
+  if (supabaseConfigured()) {
+    await rpc("admin_kv_delete", { p_store: name, p_key: key });
+    return;
+  }
+
   const kv = getKvConfig();
   if (kv) {
     const kvKey = `alta:${name}:${key}`;

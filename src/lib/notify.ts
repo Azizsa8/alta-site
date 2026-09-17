@@ -37,7 +37,7 @@ export type NotifyResult = { email: boolean; whatsapp: boolean };
 
 /* ------------------------------------------------------------------ MAIL */
 
-async function sendViaResend(subject: string, text: string, html: string) {
+async function sendViaResend(subject: string, text: string, html: string, replyTo?: string) {
   const key = process.env.RESEND_API_KEY;
   if (!key) return false;
   const from = process.env.RESEND_FROM || `ALTA Website <onboarding@resend.dev>`;
@@ -48,7 +48,14 @@ async function sendViaResend(subject: string, text: string, html: string) {
         authorization: `Bearer ${key}`,
         "content-type": "application/json",
       },
-      body: JSON.stringify({ from, to: [NOTIFY_EMAIL], subject, text, html }),
+      body: JSON.stringify({
+        from,
+        to: [NOTIFY_EMAIL],
+        subject,
+        text,
+        html,
+        ...(replyTo ? { reply_to: replyTo } : {}),
+      }),
       signal: AbortSignal.timeout(15_000),
     });
     return res.ok;
@@ -57,7 +64,7 @@ async function sendViaResend(subject: string, text: string, html: string) {
   }
 }
 
-async function sendViaSmtp(subject: string, text: string, html: string) {
+async function sendViaSmtp(subject: string, text: string, html: string, replyTo?: string) {
   const host = process.env.SMTP_HOST;
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
@@ -80,6 +87,10 @@ async function sendViaSmtp(subject: string, text: string, html: string) {
       subject,
       text,
       html,
+      // Lets the admin just hit "Reply" in their mail client to reach the
+      // person who submitted the request, without hunting for their email
+      // in the table below.
+      ...(replyTo ? { replyTo } : {}),
     });
     return true;
   } catch (err) {
@@ -88,11 +99,11 @@ async function sendViaSmtp(subject: string, text: string, html: string) {
   }
 }
 
-async function sendEmail(subject: string, text: string, html: string) {
+async function sendEmail(subject: string, text: string, html: string, replyTo?: string) {
   // SMTP first: the client already owns the alta@alta.sa mailbox, so it is
   // the path most likely to be configured. Resend is the fallback.
-  if (await sendViaSmtp(subject, text, html)) return true;
-  return sendViaResend(subject, text, html);
+  if (await sendViaSmtp(subject, text, html, replyTo)) return true;
+  return sendViaResend(subject, text, html, replyTo);
 }
 
 /* -------------------------------------------------------------- WHATSAPP */
@@ -242,7 +253,7 @@ export async function notifyQuote(q: QuoteNotice): Promise<NotifyResult> {
   const subject = `طلب عرض سعر — ${q.organisation || q.fullName}`;
   const text = asText(q);
   const [email, whatsapp] = await Promise.all([
-    sendEmail(subject, text, asHtml(q)).catch(() => false),
+    sendEmail(subject, text, asHtml(q), q.email || undefined).catch(() => false),
     sendWhatsApp(text).catch(() => false),
   ]);
   if (!email && !whatsapp) {
